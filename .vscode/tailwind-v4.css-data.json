@@ -1,0 +1,37 @@
+{
+  "version": 1.1,
+  "atDirectives": [
+    {
+      "name": "@theme",
+      "description": "Tailwind CSS v4 theme configuration directive for defining design tokens such as colors, fonts, spacing, and breakpoints."
+    },
+    {
+      "name": "@custom-variant",
+      "description": "Tailwind CSS v4 directive for registering custom variants (for example, class-based dark mode)."
+    },
+    {
+      "name": "@utility",
+      "description": "Tailwind CSS v4 directive for registering custom utility classes."
+    },
+    {
+      "name": "@variant",
+      "description": "Tailwind CSS v4 directive for applying a Tailwind variant inside custom CSS."
+    },
+    {
+      "name": "@source",
+      "description": "Tailwind CSS v4 directive for specifying additional template source paths to scan."
+    },
+    {
+      "name": "@plugin",
+      "description": "Tailwind CSS v4 directive for loading legacy JavaScript plugins."
+    },
+    {
+      "name": "@reference",
+      "description": "Tailwind CSS v4 directive for importing theme tokens and utilities by reference without emitting CSS."
+    },
+    {
+      "name": "@apply",
+      "description": "Tailwind CSS directive for inlining utility classes into custom CSS rules."
+    }
+  ]
+}
