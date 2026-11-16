@@ -137,34 +137,38 @@ export function JobsListClient({
     <div className="mx-auto max-w-7xl space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-headline-md text-[#0F172A] dark:text-slate-100">
+          <div className="mb-1 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-[#3f674f] dark:text-[#a5d1b4]">
+            <span>Career Assets</span>
+            <span>/</span>
+            <span className="text-[#006a42] dark:text-[#69dca0]">
+              Opportunity Discovery
+            </span>
+          </div>
+          <h1 className="text-headline-md text-[#171d19] dark:text-[#ecf3eb]">
             Find & Discover Job Opportunities
           </h1>
-          <p className="text-[13px] text-[#64748B]">
+          <p className="mt-0.5 text-[13px] text-[#3f674f] dark:text-[#a5d1b4]">
             Organize vacancies by industry, position, location, salary, and
             suitability score before applying.
           </p>
         </div>
 
-        <Link
-          href="/jobs/new"
-          className="inline-flex h-9 items-center gap-1.5 rounded-[4px] bg-[#204CD3] px-3.5 text-xs font-semibold text-white transition-all hover:bg-[#1D4ED8] active:scale-[0.98]"
-        >
+        <Link href="/jobs/new" className="btn-primary h-10 px-4 text-xs">
           <Plus className="h-3.5 w-3.5" />
           Add Job Vacancy
         </Link>
       </div>
 
       {/* Filters Bar */}
-      <div className="elevation-1 grid grid-cols-1 gap-2.5 rounded-[8px] border border-[#E2E8F0] bg-[#FFFFFF] p-3.5 sm:grid-cols-2 lg:grid-cols-6 dark:border-slate-800 dark:bg-slate-900">
+      <div className="elevation-1 grid grid-cols-1 gap-2.5 rounded-2xl border border-[#bdcabf]/40 bg-[#ffffff] p-3.5 sm:grid-cols-2 lg:grid-cols-6 dark:border-[#24332a] dark:bg-[#111a15]">
         <div className="relative sm:col-span-2">
-          <Search className="pointer-events-none absolute top-3 left-3 h-4 w-4 text-[#94A3B8]" />
+          <Search className="pointer-events-none absolute top-3 left-3 h-4 w-4 text-[#3f674f] dark:text-[#a5d1b4]" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search position, company, industry, skill, or JOB ID..."
-            className="h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#F8FAFC] pr-3 pl-9 text-xs text-[#0F172A] outline-none placeholder:text-[#64748B] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+            className="h-10 w-full rounded-xl border border-transparent bg-[#eff5ee] pr-3 pl-9 text-xs text-[#171d19] outline-none placeholder:text-[#3f674f] focus:border-[#006a42] focus:bg-[#ffffff] dark:bg-[#17231c] dark:text-[#ecf3eb]"
           />
         </div>
 
@@ -174,7 +178,7 @@ export function JobsListClient({
           onChange={(e) =>
             setTriageFilter(e.target.value as TriageStatus | "all")
           }
-          className="h-10 rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+          className="h-10 rounded-xl border border-transparent bg-[#eff5ee] px-3 text-xs font-medium text-[#171d19] dark:bg-[#17231c] dark:text-[#ecf3eb]"
         >
           <option value="all">All Triage Statuses</option>
           {TRIAGE_STATUSES.map((s) => (
@@ -190,7 +194,7 @@ export function JobsListClient({
           onChange={(e) =>
             setPriorityFilter(e.target.value as JobPriority | "all")
           }
-          className="h-10 rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+          className="h-10 rounded-xl border border-transparent bg-[#eff5ee] px-3 text-xs font-medium text-[#171d19] dark:bg-[#17231c] dark:text-[#ecf3eb]"
         >
           <option value="all">All Priorities</option>
           {JOB_PRIORITIES.map((p) => (
@@ -204,7 +208,7 @@ export function JobsListClient({
           aria-label="Filter by platform source"
           value={sourceFilter}
           onChange={(e) => setSourceFilter(e.target.value)}
-          className="h-10 rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+          className="h-10 rounded-xl border border-transparent bg-[#eff5ee] px-3 text-xs font-medium text-[#171d19] dark:bg-[#17231c] dark:text-[#ecf3eb]"
         >
           <option value="all">All Platforms</option>
           {sources.map((s) => (
@@ -226,7 +230,7 @@ export function JobsListClient({
                 | "salary_desc",
             )
           }
-          className="h-10 rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+          className="h-10 rounded-xl border border-transparent bg-[#eff5ee] px-3 text-xs font-medium text-[#171d19] dark:bg-[#17231c] dark:text-[#ecf3eb]"
         >
           <option value="newest">Sort: Date Discovered</option>
           <option value="score_desc">Sort: Suitability Score</option>
@@ -237,40 +241,39 @@ export function JobsListClient({
 
       {/* Work Arrangement Pills */}
       <div className="flex flex-wrap items-center gap-1.5 text-xs">
-        <span className="font-medium text-[#64748B]">Work Arrangement:</span>
+        <span className="font-semibold text-[#3f674f] dark:text-[#a5d1b4]">
+          Work Arrangement:
+        </span>
         {(["all", ...WORK_ARRANGEMENTS] as const).map((arr) => (
           <button
             key={arr}
             type="button"
             onClick={() => setArrangementFilter(arr)}
-            className={`rounded-[4px] px-3 py-1 text-xs font-semibold transition-colors ${
+            className={`rounded-full px-3.5 py-1 text-xs font-semibold transition-all ${
               arrangementFilter === arr
-                ? "bg-[#204CD3] text-white"
-                : "border border-[#CBD5E1] bg-[#FFFFFF] text-[#334155] hover:border-[#94A3B8] hover:bg-[#F8FAFC] dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300"
+                ? "bg-[#006a42] text-white shadow-sm"
+                : "border border-[#bdcabf]/50 bg-[#ffffff] text-[#3e4a41] hover:bg-[#eff5ee] hover:text-[#006a42] dark:border-[#24332a] dark:bg-[#111a15] dark:text-[#b7c6ba]"
             }`}
           >
             {arr === "all" ? "All" : WORK_ARRANGEMENT_LABELS[arr]}
           </button>
         ))}
-        <span className="ml-auto font-mono text-xs text-[#64748B] tabular-nums">
+        <span className="ml-auto rounded-full bg-[#eff5ee] px-3 py-1 font-mono text-xs font-semibold text-[#3f674f] tabular-nums dark:bg-[#17231c] dark:text-[#a5d1b4]">
           {filtered.length} {filtered.length === 1 ? "vacancy" : "vacancies"}
         </span>
       </div>
 
       {filtered.length === 0 ? (
-        <div className="elevation-1 flex flex-col items-center justify-center rounded-[8px] border border-[#E2E8F0] bg-[#FFFFFF] py-14 text-center dark:border-slate-800 dark:bg-slate-900">
-          <Briefcase className="h-7 w-7 text-[#64748B]" />
-          <p className="mt-2 font-display text-sm font-semibold text-[#0F172A] dark:text-slate-100">
+        <div className="elevation-1 flex flex-col items-center justify-center rounded-2xl border border-[#bdcabf]/40 bg-[#ffffff] py-14 text-center dark:border-[#24332a] dark:bg-[#111a15]">
+          <Briefcase className="h-7 w-7 text-[#3f674f]" />
+          <p className="mt-2 font-display text-sm font-semibold text-[#171d19] dark:text-[#ecf3eb]">
             No job vacancies match your current filters
           </p>
-          <p className="mt-1 text-xs text-[#64748B]">
+          <p className="mt-1 text-xs text-[#3f674f]">
             Add a job opportunity manually or paste a job URL from LinkedIn,
             JobStreet, Glints, or Kalibrr.
           </p>
-          <Link
-            href="/jobs/new"
-            className="mt-4 inline-flex h-9 items-center gap-1.5 rounded-[4px] bg-[#204CD3] px-3.5 text-xs font-semibold text-white hover:bg-[#1D4ED8]"
-          >
+          <Link href="/jobs/new" className="btn-primary mt-4 h-10 px-4 text-xs">
             <Plus className="h-3.5 w-3.5" />
             Add First Vacancy
           </Link>
@@ -288,20 +291,20 @@ export function JobsListClient({
             return (
               <div
                 key={v.id}
-                className="elevation-2 rounded-[8px] border border-[#E2E8F0] bg-[#FFFFFF] p-4 dark:border-slate-800 dark:bg-slate-900"
+                className="elevation-2 rounded-2xl border border-[#bdcabf]/40 bg-[#ffffff] p-5 transition-all dark:border-[#24332a] dark:bg-[#111a15]"
               >
                 <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-start">
                   <div className="min-w-0 space-y-1.5">
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-[4px] bg-[#EEF2FF] font-display text-[10px] font-bold text-[#1D4ED8] dark:bg-[#204CD3]/20 dark:text-[#B7C4FF]">
+                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#006a42] font-display text-[11px] font-bold text-white">
                         {getCompanyInitials(v.company.name)}
                       </span>
-                      <span className="font-mono text-xs text-[#64748B] tabular-nums">
+                      <span className="font-mono text-xs text-[#3f674f] tabular-nums dark:text-[#a5d1b4]">
                         {v.code}
                       </span>
                       <Link
                         href={`/jobs/${v.id}`}
-                        className="text-headline-sm text-[#0F172A] hover:text-[#204CD3] dark:text-slate-100 dark:hover:text-[#B7C4FF]"
+                        className="text-headline-sm text-[#171d19] transition-colors hover:text-[#006a42] dark:text-[#ecf3eb] dark:hover:text-[#69dca0]"
                       >
                         {v.title}
                       </Link>
@@ -311,8 +314,8 @@ export function JobsListClient({
                       {v.isSample && <SampleBadge />}
                     </div>
 
-                    <p className="text-[13px] text-[#64748B] dark:text-slate-400">
-                      <span className="font-semibold text-[#0F172A] dark:text-slate-200">
+                    <p className="text-[13px] text-[#3f674f] dark:text-[#a5d1b4]">
+                      <span className="font-semibold text-[#171d19] dark:text-[#ecf3eb]">
                         {v.company.name}
                       </span>
                       {v.department ? ` · ${v.department}` : ""}
@@ -326,8 +329,8 @@ export function JobsListClient({
                         : ""}
                     </p>
 
-                    <div className="flex flex-wrap items-center gap-3 pt-1 text-xs text-[#64748B] tabular-nums">
-                      <span className="rounded-full bg-[#F1F5F9] px-2.5 py-0.5 font-mono font-semibold text-[#0F172A] dark:bg-slate-800 dark:text-slate-200">
+                    <div className="flex flex-wrap items-center gap-3 pt-1 text-xs text-[#3f674f] tabular-nums dark:text-[#a5d1b4]">
+                      <span className="rounded-full bg-[#eff5ee] px-2.5 py-0.5 font-mono font-semibold text-[#171d19] dark:bg-[#17231c] dark:text-[#ecf3eb]">
                         {formatSalaryRange(
                           v.salaryMin,
                           v.salaryMax,
@@ -345,7 +348,7 @@ export function JobsListClient({
                           href={v.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 font-semibold text-[#204CD3] hover:underline dark:text-[#B7C4FF]"
+                          className="inline-flex items-center gap-1 font-semibold text-[#006a42] hover:underline dark:text-[#69dca0]"
                         >
                           Job Posting
                           <ExternalLink className="h-3 w-3" />
@@ -358,7 +361,7 @@ export function JobsListClient({
                         {v.skills.map((skill) => (
                           <span
                             key={skill}
-                            className="rounded-full bg-[#F1F5F9] px-2.5 py-0.5 text-[11px] font-medium text-[#334155] dark:bg-slate-800 dark:text-slate-300"
+                            className="rounded-full bg-[#e3eae3] px-2.5 py-0.5 text-[11px] font-medium text-[#3e4a41] dark:bg-[#1d2b23] dark:text-[#b7c6ba]"
                           >
                             {skill}
                           </span>
@@ -376,7 +379,7 @@ export function JobsListClient({
                       onChange={(e) =>
                         handleTriage(v.id, e.target.value as TriageStatus)
                       }
-                      className="h-9 rounded-[4px] border border-[#CBD5E1] bg-[#F8FAFC] px-2.5 text-xs font-semibold text-[#334155] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
+                      className="h-9 rounded-xl border border-[#bdcabf]/60 bg-[#eff5ee] px-3 text-xs font-semibold text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
                     >
                       {TRIAGE_STATUSES.map((s) => (
                         <option key={s} value={s}>
@@ -388,7 +391,7 @@ export function JobsListClient({
                     {activeApp ? (
                       <Link
                         href={`/applications/${activeApp.id}`}
-                        className="inline-flex h-9 items-center gap-1.5 rounded-[4px] border border-[#204CD3]/30 bg-[#EEF2FF] px-2.5 text-xs font-semibold text-[#1D4ED8] tabular-nums dark:border-[#204CD3]/40 dark:bg-[#204CD3]/20 dark:text-[#B7C4FF]"
+                        className="inline-flex h-9 items-center gap-1.5 rounded-xl border border-[#a5d1b4] bg-[#c0edcf]/60 px-3 text-xs font-semibold text-[#005232] tabular-nums dark:border-[#006a42]/40 dark:bg-[#006a42]/20 dark:text-[#86f9ba]"
                       >
                         <span>{activeApp.code}:</span>
                         <StageBadge
@@ -412,7 +415,7 @@ export function JobsListClient({
                             hasClosedApp: Boolean(closedApp),
                           })
                         }
-                        className="inline-flex h-9 items-center gap-1.5 rounded-[4px] bg-[#204CD3] px-3 text-xs font-semibold text-white transition-all hover:bg-[#1D4ED8] active:scale-[0.98]"
+                        className="btn-primary h-10 px-4 text-xs"
                       >
                         <Send className="h-3 w-3" />
                         {closedApp ? "Re-apply" : "Record Submission"}
@@ -421,7 +424,7 @@ export function JobsListClient({
 
                     <Link
                       href={`/jobs/${v.id}`}
-                      className="inline-flex h-9 items-center rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-3 text-xs font-semibold text-[#0F172A] hover:border-[#94A3B8] hover:bg-[#F8FAFC] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
+                      className="btn-secondary h-10 px-4 text-xs"
                     >
                       Evaluate & Details
                     </Link>

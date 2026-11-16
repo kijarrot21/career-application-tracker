@@ -226,10 +226,10 @@ export function InterviewsClient({
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-headline-md text-[#0F172A] dark:text-slate-100">
+          <h1 className="text-headline-md text-[#171d19] dark:text-[#ecf3eb]">
             Interview & Technical Assessment Management
           </h1>
-          <p className="mt-0.5 text-body-sm text-[#64748B]">
+          <p className="mt-0.5 text-body-sm text-[#3f674f]">
             Monitor upcoming interviews, calendar schedules, preparation notes, interview feedback, and technical assessments.
           </p>
         </div>
@@ -238,7 +238,7 @@ export function InterviewsClient({
           <button
             type="button"
             onClick={() => setTab("assessments")}
-            className="btn-secondary h-9 px-3 text-xs dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
+            className="btn-secondary h-10 px-4 text-xs"
           >
             <ClipboardCheck className="h-3.5 w-3.5" />
             Assessments ({data.assessments.length})
@@ -246,7 +246,7 @@ export function InterviewsClient({
           <button
             type="button"
             onClick={() => setTab("schedule")}
-            className="btn-primary h-9 px-3.5 text-xs"
+            className="btn-primary h-10 px-4 text-xs"
           >
             <Plus className="h-3.5 w-3.5" />
             Schedule Interview
@@ -256,57 +256,57 @@ export function InterviewsClient({
 
       {/* KPI Metric Tiles (Executive Precision 4-Column Grid) */}
       <section className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <div className="elevation-1 rounded-[8px] border border-[#E2E8F0] bg-[#FFFFFF] p-4 dark:border-slate-800 dark:bg-slate-900">
-          <p className="text-label-md uppercase text-[#64748B]">
+        <div className="elevation-1 rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] p-4 dark:border-[#24332a] dark:bg-[#111a15]">
+          <p className="text-label-md uppercase text-[#3f674f]">
             Scheduled Interviews
           </p>
-          <p className="mt-2 text-metric-num text-[#0F172A] dark:text-slate-100">
+          <p className="mt-2 text-metric-num text-[#171d19] dark:text-[#ecf3eb]">
             {data.metrics.scheduledCount}
           </p>
-          <p className="mt-1 text-[11px] font-semibold text-[#204CD3] dark:text-[#B7C4FF]">
+          <p className="mt-1 text-[11px] font-semibold text-[#006a42] dark:text-[#86f9ba]">
             Upcoming in pipeline
           </p>
         </div>
 
-        <div className="elevation-1 rounded-[8px] border border-[#E2E8F0] bg-[#FFFFFF] p-4 dark:border-slate-800 dark:bg-slate-900">
-          <p className="text-label-md uppercase text-[#64748B]">
+        <div className="elevation-1 rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] p-4 dark:border-[#24332a] dark:bg-[#111a15]">
+          <p className="text-label-md uppercase text-[#3f674f]">
             Completed Rounds
           </p>
-          <p className="mt-2 text-metric-num text-[#0F172A] dark:text-slate-100">
+          <p className="mt-2 text-metric-num text-[#171d19] dark:text-[#ecf3eb]">
             {data.metrics.completedCount}
           </p>
-          <p className="mt-1 text-[11px] font-semibold text-[#10B981]">
+          <p className="mt-1 text-[11px] font-semibold text-[#006a42]">
             {data.metrics.passedCount} passed rounds
           </p>
         </div>
 
-        <div className="elevation-1 rounded-[8px] border border-[#E2E8F0] bg-[#FFFFFF] p-4 dark:border-slate-800 dark:bg-slate-900">
-          <p className="text-label-md uppercase text-[#64748B]">
+        <div className="elevation-1 rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] p-4 dark:border-[#24332a] dark:bg-[#111a15]">
+          <p className="text-label-md uppercase text-[#3f674f]">
             Interview Pass Rate
           </p>
-          <p className="mt-2 text-metric-num text-[#0F172A] dark:text-slate-100">
+          <p className="mt-2 text-metric-num text-[#171d19] dark:text-[#ecf3eb]">
             {data.metrics.passRate != null ? `${data.metrics.passRate}%` : "N/A"}
           </p>
-          <p className="mt-1 text-[11px] text-[#64748B]">
+          <p className="mt-1 text-[11px] text-[#3f674f]">
             Across decided rounds
           </p>
         </div>
 
-        <div className="elevation-1 rounded-[8px] border border-[#E2E8F0] bg-[#FFFFFF] p-4 dark:border-slate-800 dark:bg-slate-900">
-          <p className="text-label-md uppercase text-[#64748B]">
+        <div className="elevation-1 rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] p-4 dark:border-[#24332a] dark:bg-[#111a15]">
+          <p className="text-label-md uppercase text-[#3f674f]">
             Pending Assessments
           </p>
-          <p className="mt-2 text-metric-num text-[#0F172A] dark:text-slate-100">
+          <p className="mt-2 text-metric-num text-[#171d19] dark:text-[#ecf3eb]">
             {data.metrics.pendingAssessmentsCount}
           </p>
-          <p className="mt-1 text-[11px] font-semibold text-[#B45309]">
+          <p className="mt-1 text-[11px] font-semibold text-[#5d4211]">
             {data.assessments.length} total recorded tests
           </p>
         </div>
       </section>
 
       {/* View Switcher Tabs */}
-      <div className="flex flex-wrap gap-1 border-b border-[#E2E8F0] dark:border-slate-800">
+      <div className="flex flex-wrap gap-1 border-b border-[#bdcabf]/50 dark:border-[#24332a]">
         {(
           [
             {
@@ -339,8 +339,8 @@ export function InterviewsClient({
               onClick={() => setTab(item.key)}
               className={`inline-flex items-center gap-1.5 border-b-2 px-4 py-2.5 text-xs font-semibold transition-colors ${
                 tab === item.key
-                  ? "border-[#204CD3] text-[#204CD3] dark:border-[#3B66F5] dark:text-[#B7C4FF]"
-                  : "border-transparent text-[#64748B] hover:text-[#0F172A] dark:hover:text-slate-200"
+                  ? "border-[#006a42] text-[#006a42] dark:border-[#69dca0] dark:text-[#86f9ba]"
+                  : "border-transparent text-[#3f674f] hover:text-[#171d19] dark:hover:text-slate-200"
               }`}
             >
               <Icon className="h-3.5 w-3.5" />
@@ -354,13 +354,13 @@ export function InterviewsClient({
       {tab === "calendar" && (
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
           {/* 60% Left: Month Calendar Grid */}
-          <div className="elevation-1 rounded-[8px] border border-[#E2E8F0] bg-[#FFFFFF] p-5 lg:col-span-7 dark:border-slate-800 dark:bg-slate-900">
+          <div className="elevation-1 rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] p-5 lg:col-span-7 dark:border-[#24332a] dark:bg-[#111a15]">
             <div className="mb-4 flex items-center justify-between">
               <div>
-                <h2 className="text-headline-sm text-[#0F172A] dark:text-slate-100">
+                <h2 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
                   {MONTH_NAMES[calMonth]} {calYear}
                 </h2>
-                <p className="text-[11px] text-[#64748B]">
+                <p className="text-[11px] text-[#3f674f]">
                   Click any interview on the calendar to open its preparation & feedback inspector.
                 </p>
               </div>
@@ -394,7 +394,7 @@ export function InterviewsClient({
               </div>
             </div>
 
-            <div className="grid grid-cols-7 gap-1 text-center text-[11px] font-semibold uppercase tracking-[0.04em] text-[#64748B]">
+            <div className="grid grid-cols-7 gap-1 text-center text-[11px] font-semibold uppercase tracking-[0.04em] text-[#3f674f]">
               {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((d) => (
                 <div key={d} className="py-1.5">
                   {d}
@@ -408,7 +408,7 @@ export function InterviewsClient({
                   return (
                     <div
                       key={`empty-${idx}`}
-                      className="min-h-24 rounded-[6px] bg-[#F8FAFC]/60 dark:bg-slate-950/40"
+                      className="min-h-24 rounded-xl bg-[#eff5ee]/60 dark:bg-[#17231c]/40"
                     />
                   );
                 }
@@ -425,9 +425,9 @@ export function InterviewsClient({
                 return (
                   <div
                     key={cell.dateStr}
-                    className="min-h-24 rounded-[6px] border border-[#E2E8F0] bg-[#FFFFFF] p-1.5 transition-colors hover:border-[#CBD5E1] dark:border-slate-800 dark:bg-slate-950"
+                    className="min-h-24 rounded-xl border border-[#bdcabf]/50 bg-[#ffffff] p-1.5 transition-colors hover:border-[#bdcabf]/70 dark:border-[#24332a] dark:bg-[#17231c]"
                   >
-                    <div className="mb-1 text-right font-mono text-[11px] font-semibold text-[#64748B] tabular-nums">
+                    <div className="mb-1 text-right font-mono text-[11px] font-semibold text-[#3f674f] tabular-nums">
                       {cell.dayNumber}
                     </div>
 
@@ -439,14 +439,14 @@ export function InterviewsClient({
                             key={intv.id}
                             type="button"
                             onClick={() => setSelectedInterviewId(intv.id)}
-                            className={`block w-full truncate rounded-[4px] px-1.5 py-0.5 text-left text-[10px] font-semibold transition-colors ${
+                            className={`block w-full truncate rounded-xl px-1.5 py-0.5 text-left text-[10px] font-semibold transition-colors ${
                               isSelected
-                                ? "bg-[#204CD3] text-white"
+                                ? "bg-[#006a42] text-white"
                                 : intv.result === "passed"
-                                  ? "bg-[#ECFDF5] text-[#047857]"
+                                  ? "bg-[#c0edcf] text-[#005232]"
                                   : intv.status === "cancelled"
-                                    ? "bg-[#FFF1F2] text-[#BE123C]"
-                                    : "bg-[#EEF2FF] text-[#1D4ED8]"
+                                    ? "bg-[#ffdad6]/70 text-[#93000a]"
+                                    : "bg-[#c0edcf]/60 text-[#005232]"
                             }`}
                           >
                             {intv.application.companyName}
@@ -459,7 +459,7 @@ export function InterviewsClient({
                           key={ass.id}
                           type="button"
                           onClick={() => setTab("assessments")}
-                          className="block w-full truncate rounded-[4px] bg-[#FFFBEB] px-1.5 py-0.5 text-left text-[10px] font-semibold text-[#B45309]"
+                          className="block w-full truncate rounded-xl bg-[#ffdead]/60 px-1.5 py-0.5 text-left text-[10px] font-semibold text-[#5d4211]"
                         >
                           Test: {ass.application.companyName}
                         </button>
@@ -480,12 +480,12 @@ export function InterviewsClient({
                 timezone={data.timezone}
               />
             ) : (
-              <div className="elevation-1 flex h-full flex-col items-center justify-center rounded-[8px] border border-[#E2E8F0] bg-[#FFFFFF] p-8 text-center dark:border-slate-800 dark:bg-slate-900">
-                <CalendarClock className="h-8 w-8 text-[#64748B]" />
-                <p className="mt-2 text-title-md text-[#0F172A] dark:text-slate-100">
+              <div className="elevation-1 flex h-full flex-col items-center justify-center rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] p-8 text-center dark:border-[#24332a] dark:bg-[#111a15]">
+                <CalendarClock className="h-8 w-8 text-[#3f674f]" />
+                <p className="mt-2 text-title-md text-[#171d19] dark:text-[#ecf3eb]">
                   No interview selected
                 </p>
-                <p className="mt-1 text-xs text-[#64748B]">
+                <p className="mt-1 text-xs text-[#3f674f]">
                   Schedule your first interview or click any event on the calendar to inspect preparation notes and record feedback.
                 </p>
               </div>
@@ -497,14 +497,14 @@ export function InterviewsClient({
       {/* TAB 2: All Interviews List */}
       {tab === "list" && (
         <div className="space-y-4">
-          <div className="elevation-1 flex flex-wrap items-center gap-3 rounded-[8px] border border-[#E2E8F0] bg-[#FFFFFF] p-3.5 dark:border-slate-800 dark:bg-slate-900">
+          <div className="elevation-1 flex flex-wrap items-center gap-3 rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] p-3.5 dark:border-[#24332a] dark:bg-[#111a15]">
             <select
               aria-label="Filter by interview type"
               value={typeFilter}
               onChange={(e) =>
                 setTypeFilter(e.target.value as InterviewType | "all")
               }
-              className="h-10 rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-3 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              className="h-10 rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-3 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
             >
               <option value="all">All Interview Types</option>
               {INTERVIEW_TYPES.map((t) => (
@@ -520,7 +520,7 @@ export function InterviewsClient({
               onChange={(e) =>
                 setStatusFilter(e.target.value as InterviewStatus | "all")
               }
-              className="h-10 rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-3 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              className="h-10 rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-3 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
             >
               <option value="all">All Statuses</option>
               {INTERVIEW_STATUSES.map((s) => (
@@ -532,7 +532,7 @@ export function InterviewsClient({
           </div>
 
           {filteredInterviews.length === 0 ? (
-            <div className="elevation-1 rounded-[8px] border border-[#E2E8F0] bg-[#FFFFFF] py-12 text-center text-[#64748B] dark:border-slate-800 dark:bg-slate-900">
+            <div className="elevation-1 rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] py-12 text-center text-[#3f674f] dark:border-[#24332a] dark:bg-[#111a15]">
               No interviews match the selected filters.
             </div>
           ) : (
@@ -540,34 +540,34 @@ export function InterviewsClient({
               {filteredInterviews.map((intv) => (
                 <div
                   key={intv.id}
-                  className="elevation-2 flex flex-col justify-between gap-3 rounded-[8px] border border-[#E2E8F0] bg-[#FFFFFF] p-4 sm:flex-row sm:items-center dark:border-slate-800 dark:bg-slate-900"
+                  className="elevation-2 flex flex-col justify-between gap-3 rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] p-4 sm:flex-row sm:items-center dark:border-[#24332a] dark:bg-[#111a15]"
                 >
                   <div className="space-y-1">
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="rounded-full border border-[#C7D2FE] bg-[#EEF2FF] px-2.5 py-[2px] text-[11px] font-semibold text-[#1D4ED8]">
+                      <span className="rounded-full border border-[#a5d1b4] bg-[#c0edcf]/60 px-2.5 py-[2px] text-[11px] font-semibold text-[#005232]">
                         {
                           INTERVIEW_TYPE_LABELS[
                             intv.interviewType as InterviewType
                           ]
                         }
                       </span>
-                      <span className="text-headline-sm text-[#0F172A] dark:text-slate-100">
+                      <span className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
                         {intv.application.jobTitle} at{" "}
                         {intv.application.companyName}
                       </span>
                       <Link
                         href={`/applications/${intv.application.id}`}
-                        className="font-mono text-xs font-semibold text-[#204CD3] hover:underline"
+                        className="font-mono text-xs font-semibold text-[#006a42] hover:underline"
                       >
                         ({intv.application.code})
                       </Link>
                       {intv.isSample && <SampleBadge />}
                     </div>
 
-                    <div className="flex flex-wrap items-center gap-3 text-[12px] text-[#64748B] tabular-nums">
+                    <div className="flex flex-wrap items-center gap-3 text-[12px] text-[#3f674f] tabular-nums">
                       <span>
                         When:{" "}
-                        <strong className="text-[#0F172A] dark:text-slate-200">
+                        <strong className="text-[#171d19] dark:text-[#ecf3eb]">
                           {formatDateTime(intv.startsAt, data.timezone)}
                         </strong>{" "}
                         ({intv.durationMinutes} min)
@@ -585,7 +585,7 @@ export function InterviewsClient({
                           href={intv.meetingUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 font-semibold text-[#204CD3] hover:underline"
+                          className="inline-flex items-center gap-1 font-semibold text-[#006a42] hover:underline"
                         >
                           Meeting Link <ExternalLink className="h-3 w-3" />
                         </a>
@@ -594,7 +594,7 @@ export function InterviewsClient({
                   </div>
 
                   <div className="flex items-center gap-2">
-                    <span className="rounded-full bg-[#F1F5F9] px-2.5 py-1 text-[11px] font-semibold text-[#334155] dark:bg-slate-800 dark:text-slate-300">
+                    <span className="rounded-full bg-[#eff5ee] px-2.5 py-1 text-[11px] font-semibold text-[#3e4a41] dark:bg-[#1d2b23] dark:text-[#b7c6ba]">
                       {INTERVIEW_STATUS_LABELS[intv.status as InterviewStatus]}{" "}
                       ·{" "}
                       {INTERVIEW_RESULT_LABELS[intv.result as InterviewResult]}
@@ -621,13 +621,13 @@ export function InterviewsClient({
       {tab === "assessments" && (
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
           <div className="space-y-3 lg:col-span-7">
-            <div className="elevation-1 rounded-[8px] border border-[#E2E8F0] bg-[#FFFFFF] p-5 space-y-3 dark:border-slate-800 dark:bg-slate-900">
-              <h2 className="text-headline-sm text-[#0F172A] dark:text-slate-100">
+            <div className="elevation-1 rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] p-5 space-y-3 dark:border-[#24332a] dark:bg-[#111a15]">
+              <h2 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
                 Technical Tests, Case Studies & Psychometric Assessments
               </h2>
 
               {data.assessments.length === 0 ? (
-                <p className="py-6 text-[#64748B]">
+                <p className="py-6 text-[#3f674f]">
                   No assessments recorded yet.
                 </p>
               ) : (
@@ -635,18 +635,18 @@ export function InterviewsClient({
                   {data.assessments.map((ass) => (
                     <div
                       key={ass.id}
-                      className="rounded-[8px] border border-[#E2E8F0] bg-[#F8FAFC] p-3.5 space-y-1.5 dark:border-slate-800 dark:bg-slate-950"
+                      className="rounded-2xl border border-[#bdcabf]/50 bg-[#eff5ee] p-3.5 space-y-1.5 dark:border-[#24332a] dark:bg-[#17231c]"
                     >
                       <div className="flex flex-wrap items-center justify-between gap-2">
                         <div className="flex flex-wrap items-center gap-2">
-                          <span className="rounded-full bg-[#FFFBEB] px-2.5 py-0.5 text-[11px] font-semibold text-[#B45309]">
+                          <span className="rounded-full bg-[#ffdead]/60 px-2.5 py-0.5 text-[11px] font-semibold text-[#5d4211]">
                             {
                               ASSESSMENT_TYPE_LABELS[
                                 ass.assessmentType as AssessmentType
                               ]
                             }
                           </span>
-                          <span className="font-semibold text-[#0F172A] dark:text-slate-100">
+                          <span className="font-semibold text-[#171d19] dark:text-[#ecf3eb]">
                             {ass.title}
                           </span>
                         </div>
@@ -660,16 +660,16 @@ export function InterviewsClient({
                               router.refresh();
                             })
                           }
-                          className="rounded-[4px] p-1 text-[#64748B] hover:bg-[#FFF1F2] hover:text-[#BE123C]"
+                          className="btn-destructive h-8 w-8 p-0"
                         >
                           <Trash2 className="h-3.5 w-3.5" />
                         </button>
                       </div>
 
-                      <p className="text-[#334155] dark:text-slate-300">
+                      <p className="text-[#3e4a41] dark:text-[#b7c6ba]">
                         <Link
                           href={`/applications/${ass.application.id}`}
-                          className="font-mono font-semibold text-[#204CD3] hover:underline"
+                          className="font-mono font-semibold text-[#006a42] hover:underline"
                         >
                           {ass.application.code}
                         </Link>{" "}
@@ -677,14 +677,14 @@ export function InterviewsClient({
                         {ass.application.companyName}
                       </p>
 
-                      <div className="flex flex-wrap gap-4 text-[11px] text-[#64748B] tabular-nums">
+                      <div className="flex flex-wrap gap-4 text-[11px] text-[#3f674f] tabular-nums">
                         {ass.dueAt && (
                           <span>Due: {formatDate(ass.dueAt)}</span>
                         )}
                         {ass.score && (
                           <span>
                             Score:{" "}
-                            <strong className="text-[#0F172A] dark:text-slate-100">
+                            <strong className="text-[#171d19] dark:text-[#ecf3eb]">
                               {ass.score}
                               {ass.maxScore ? ` / ${ass.maxScore}` : ""}
                             </strong>
@@ -703,7 +703,7 @@ export function InterviewsClient({
                       </div>
 
                       {ass.notes && (
-                        <p className="text-[#64748B]">{ass.notes}</p>
+                        <p className="text-[#3f674f]">{ass.notes}</p>
                       )}
                     </div>
                   ))}
@@ -714,21 +714,21 @@ export function InterviewsClient({
 
           <form
             onSubmit={handleSaveAssessment}
-            className="elevation-1 rounded-[8px] border border-[#E2E8F0] bg-[#FFFFFF] p-5 space-y-3.5 lg:col-span-5 dark:border-slate-800 dark:bg-slate-900"
+            className="elevation-1 rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] p-5 space-y-3.5 lg:col-span-5 dark:border-[#24332a] dark:bg-[#111a15]"
           >
-            <h3 className="text-headline-sm text-[#0F172A] dark:text-slate-100">
+            <h3 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
               Record Technical Test / Assessment
             </h3>
 
             <div>
-              <label className="block font-semibold text-[#334155] dark:text-slate-300">
+              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
                 Application *
               </label>
               <select
                 required
                 value={assAppId}
                 onChange={(e) => setAssAppId(e.target.value)}
-                className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950"
+                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
               >
                 <option value="">Select application...</option>
                 {data.applications.map((a) => (
@@ -741,13 +741,13 @@ export function InterviewsClient({
 
             <div className="grid grid-cols-2 gap-2.5">
               <div>
-                <label className="block font-semibold text-[#334155] dark:text-slate-300">
+                <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
                   Assessment Type
                 </label>
                 <select
                   value={assType}
                   onChange={(e) => setAssType(e.target.value as AssessmentType)}
-                  className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950"
+                  className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
                 >
                   {ASSESSMENT_TYPES.map((t) => (
                     <option key={t} value={t}>
@@ -757,20 +757,20 @@ export function InterviewsClient({
                 </select>
               </div>
               <div>
-                <label className="block font-semibold text-[#334155] dark:text-slate-300">
+                <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
                   Due Date
                 </label>
                 <input
                   type="date"
                   value={assDueAt}
                   onChange={(e) => setAssDueAt(e.target.value)}
-                  className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950"
+                  className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block font-semibold text-[#334155] dark:text-slate-300">
+              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
                 Assessment Title *
               </label>
               <input
@@ -779,13 +779,13 @@ export function InterviewsClient({
                 value={assTitle}
                 onChange={(e) => setAssTitle(e.target.value)}
                 placeholder="HackerRank Backend Concurrency Challenge"
-                className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950"
+                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
               />
             </div>
 
             <div className="grid grid-cols-3 gap-2.5">
               <div>
-                <label className="block font-semibold text-[#334155] dark:text-slate-300">
+                <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
                   Score
                 </label>
                 <input
@@ -793,11 +793,11 @@ export function InterviewsClient({
                   value={assScore}
                   onChange={(e) => setAssScore(e.target.value)}
                   placeholder="90"
-                  className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] tabular-nums dark:border-slate-700 dark:bg-slate-950"
+                  className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] tabular-nums dark:border-[#2d3d33] dark:bg-[#17231c]"
                 />
               </div>
               <div>
-                <label className="block font-semibold text-[#334155] dark:text-slate-300">
+                <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
                   Max Score
                 </label>
                 <input
@@ -805,11 +805,11 @@ export function InterviewsClient({
                   value={assMaxScore}
                   onChange={(e) => setAssMaxScore(e.target.value)}
                   placeholder="100"
-                  className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] tabular-nums dark:border-slate-700 dark:bg-slate-950"
+                  className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] tabular-nums dark:border-[#2d3d33] dark:bg-[#17231c]"
                 />
               </div>
               <div>
-                <label className="block font-semibold text-[#334155] dark:text-slate-300">
+                <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
                   Result
                 </label>
                 <select
@@ -817,7 +817,7 @@ export function InterviewsClient({
                   onChange={(e) =>
                     setAssResult(e.target.value as InterviewResult)
                   }
-                  className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950"
+                  className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
                 >
                   {INTERVIEW_RESULTS.map((r) => (
                     <option key={r} value={r}>
@@ -829,7 +829,7 @@ export function InterviewsClient({
             </div>
 
             <div>
-              <label className="block font-semibold text-[#334155] dark:text-slate-300">
+              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
                 Notes & Evaluation Summary
               </label>
               <textarea
@@ -837,14 +837,14 @@ export function InterviewsClient({
                 value={assNotes}
                 onChange={(e) => setAssNotes(e.target.value)}
                 placeholder="Topics covered, test platform link, or submission notes..."
-                className="mt-1 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] p-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950"
+                className="mt-1 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] p-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
               />
             </div>
 
             <button
               type="submit"
               disabled={isPending}
-              className="btn-primary h-9 w-full text-xs disabled:opacity-50"
+              className="btn-primary h-10 w-full px-4 text-xs disabled:opacity-50"
             >
               Save Assessment
             </button>
@@ -856,27 +856,27 @@ export function InterviewsClient({
       {tab === "schedule" && (
         <form
           onSubmit={handleScheduleInterview}
-          className="elevation-1 mx-auto max-w-3xl rounded-[8px] border border-[#E2E8F0] bg-[#FFFFFF] p-5 space-y-4 dark:border-slate-800 dark:bg-slate-900"
+          className="elevation-1 mx-auto max-w-3xl rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] p-5 space-y-4 dark:border-[#24332a] dark:bg-[#111a15]"
         >
           <div>
-            <h2 className="text-headline-sm text-[#0F172A] dark:text-slate-100">
+            <h2 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
               Schedule New Interview Session
             </h2>
-            <p className="text-[#64748B]">
+            <p className="text-[#3f674f]">
               Record interview schedule, meeting link, interviewer details, and preparation notes.
             </p>
           </div>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <label className="block font-semibold text-[#334155] dark:text-slate-300">
+              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
                 Application *
               </label>
               <select
                 required
                 value={newAppId}
                 onChange={(e) => setNewAppId(e.target.value)}
-                className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950"
+                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
               >
                 <option value="">Select application...</option>
                 {data.applications.map((a) => (
@@ -888,13 +888,13 @@ export function InterviewsClient({
             </div>
 
             <div>
-              <label className="block font-semibold text-[#334155] dark:text-slate-300">
+              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
                 Interview Type *
               </label>
               <select
                 value={newType}
                 onChange={(e) => setNewType(e.target.value as InterviewType)}
-                className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950"
+                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
               >
                 {INTERVIEW_TYPES.map((t) => (
                   <option key={t} value={t}>
@@ -907,7 +907,7 @@ export function InterviewsClient({
             <div>
               <label
                 htmlFor="schedule-starts-at"
-                className="block font-semibold text-[#334155] dark:text-slate-300"
+                className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]"
               >
                 Date & Time *
               </label>
@@ -917,12 +917,12 @@ export function InterviewsClient({
                 required
                 value={newStartsAt}
                 onChange={(e) => setNewStartsAt(e.target.value)}
-                className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] tabular-nums dark:border-slate-700 dark:bg-slate-950"
+                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] tabular-nums dark:border-[#2d3d33] dark:bg-[#17231c]"
               />
             </div>
 
             <div>
-              <label className="block font-semibold text-[#334155] dark:text-slate-300">
+              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
                 Duration (Minutes)
               </label>
               <input
@@ -931,12 +931,12 @@ export function InterviewsClient({
                 max={480}
                 value={newDuration}
                 onChange={(e) => setNewDuration(e.target.value)}
-                className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] tabular-nums dark:border-slate-700 dark:bg-slate-950"
+                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] tabular-nums dark:border-[#2d3d33] dark:bg-[#17231c]"
               />
             </div>
 
             <div>
-              <label className="block font-semibold text-[#334155] dark:text-slate-300">
+              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
                 Meeting Link (Google Meet / Zoom / Teams)
               </label>
               <input
@@ -944,12 +944,12 @@ export function InterviewsClient({
                 value={newMeetingUrl}
                 onChange={(e) => setNewMeetingUrl(e.target.value)}
                 placeholder="https://meet.google.com/..."
-                className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950"
+                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
               />
             </div>
 
             <div>
-              <label className="block font-semibold text-[#334155] dark:text-slate-300">
+              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
                 On-Site Location (If Applicable)
               </label>
               <input
@@ -957,12 +957,12 @@ export function InterviewsClient({
                 value={newLocation}
                 onChange={(e) => setNewLocation(e.target.value)}
                 placeholder="Office tower / floor"
-                className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950"
+                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
               />
             </div>
 
             <div>
-              <label className="block font-semibold text-[#334155] dark:text-slate-300">
+              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
                 Interviewer Name
               </label>
               <input
@@ -970,13 +970,13 @@ export function InterviewsClient({
                 value={newInterviewerName}
                 onChange={(e) => setNewInterviewerName(e.target.value)}
                 placeholder="Andi Prasetyo"
-                className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950"
+                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
               />
             </div>
 
             <div className="grid grid-cols-2 gap-2.5">
               <div>
-                <label className="block font-semibold text-[#334155] dark:text-slate-300">
+                <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
                   Interviewer Position
                 </label>
                 <input
@@ -984,11 +984,11 @@ export function InterviewsClient({
                   value={newInterviewerPosition}
                   onChange={(e) => setNewInterviewerPosition(e.target.value)}
                   placeholder="VP of Engineering"
-                  className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950"
+                  className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
                 />
               </div>
               <div>
-                <label className="block font-semibold text-[#334155] dark:text-slate-300">
+                <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
                   Interviewer Contact
                 </label>
                 <input
@@ -996,7 +996,7 @@ export function InterviewsClient({
                   value={newInterviewerContact}
                   onChange={(e) => setNewInterviewerContact(e.target.value)}
                   placeholder="email or LinkedIn"
-                  className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950"
+                  className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
                 />
               </div>
             </div>
@@ -1004,7 +1004,7 @@ export function InterviewsClient({
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <label className="block font-semibold text-[#334155] dark:text-slate-300">
+              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
                 Candidate Preparation Notes
               </label>
               <textarea
@@ -1012,12 +1012,12 @@ export function InterviewsClient({
                 value={newPrepNotes}
                 onChange={(e) => setNewPrepNotes(e.target.value)}
                 placeholder="Architecture topics, STAR examples, company research..."
-                className="mt-1 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] p-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950"
+                className="mt-1 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] p-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
               />
             </div>
 
             <div>
-              <label className="block font-semibold text-[#334155] dark:text-slate-300">
+              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
                 Interview Questions (Expected & To Ask)
               </label>
               <textarea
@@ -1025,7 +1025,7 @@ export function InterviewsClient({
                 value={newQuestions}
                 onChange={(e) => setNewQuestions(e.target.value)}
                 placeholder="Questions asked by interviewer or questions to ask..."
-                className="mt-1 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] p-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950"
+                className="mt-1 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] p-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
               />
             </div>
           </div>
@@ -1034,7 +1034,7 @@ export function InterviewsClient({
             <button
               type="submit"
               disabled={isPending}
-              className="btn-primary h-9 px-4 text-xs disabled:opacity-50"
+              className="btn-primary h-10 px-4 text-xs disabled:opacity-50"
             >
               {isPending ? "Scheduling..." : "Save Interview Schedule"}
             </button>
@@ -1129,26 +1129,26 @@ function InterviewInspectorEditor({
   return (
     <form
       onSubmit={handleSave}
-      className="elevation-1 rounded-[8px] border border-[#E2E8F0] bg-[#FFFFFF] p-5 space-y-3.5 text-xs dark:border-slate-800 dark:bg-slate-900"
+      className="elevation-1 rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] p-5 space-y-3.5 text-xs dark:border-[#24332a] dark:bg-[#111a15]"
     >
-      <div className="flex items-start justify-between gap-2 border-b border-[#E2E8F0] pb-3 dark:border-slate-800">
+      <div className="flex items-start justify-between gap-2 border-b border-[#bdcabf]/50 pb-3 dark:border-[#24332a]">
         <div>
           <div className="flex items-center gap-2">
-            <span className="rounded-full bg-[#EEF2FF] px-2.5 py-0.5 text-[11px] font-semibold text-[#1D4ED8]">
+            <span className="rounded-full bg-[#c0edcf]/60 px-2.5 py-0.5 text-[11px] font-semibold text-[#005232]">
               {INTERVIEW_TYPE_LABELS[interviewType]}
             </span>
             <Link
               href={`/applications/${interview.application.id}`}
-              className="font-mono font-semibold text-[#204CD3] hover:underline"
+              className="font-mono font-semibold text-[#006a42] hover:underline"
             >
               {interview.application.code}
             </Link>
           </div>
-          <h3 className="mt-1 text-headline-sm text-[#0F172A] dark:text-slate-100">
+          <h3 className="mt-1 text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
             {interview.application.jobTitle} at{" "}
             {interview.application.companyName}
           </h3>
-          <p className="text-[11px] text-[#64748B] tabular-nums">
+          <p className="text-[11px] text-[#3f674f] tabular-nums">
             Scheduled: {formatDateTime(interview.startsAt, timezone)}
           </p>
         </div>
@@ -1158,7 +1158,7 @@ function InterviewInspectorEditor({
           disabled={isPending}
           onClick={handleDelete}
           title="Delete interview"
-          className="rounded-[4px] p-1.5 text-[#64748B] hover:bg-[#FFF1F2] hover:text-[#BE123C]"
+          className="btn-destructive h-8 w-8 p-0"
         >
           <Trash2 className="h-4 w-4" />
         </button>
@@ -1166,13 +1166,13 @@ function InterviewInspectorEditor({
 
       <div className="grid grid-cols-2 gap-2.5">
         <div>
-          <label className="block font-semibold text-[#334155] dark:text-slate-300">
+          <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
             Interview Type
           </label>
           <select
             value={interviewType}
             onChange={(e) => setInterviewType(e.target.value as InterviewType)}
-            className="mt-1 h-9 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950"
+            className="mt-1 h-9 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
           >
             {INTERVIEW_TYPES.map((t) => (
               <option key={t} value={t}>
@@ -1183,25 +1183,25 @@ function InterviewInspectorEditor({
         </div>
 
         <div>
-          <label className="block font-semibold text-[#334155] dark:text-slate-300">
+          <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
             Duration (min)
           </label>
           <input
             type="number"
             value={durationMinutes}
             onChange={(e) => setDurationMinutes(e.target.value)}
-            className="mt-1 h-9 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2 text-xs text-[#0F172A] tabular-nums dark:border-slate-700 dark:bg-slate-950"
+            className="mt-1 h-9 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2 text-xs text-[#171d19] tabular-nums dark:border-[#2d3d33] dark:bg-[#17231c]"
           />
         </div>
 
         <div>
-          <label className="block font-semibold text-[#334155] dark:text-slate-300">
+          <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
             Status
           </label>
           <select
             value={status}
             onChange={(e) => setStatus(e.target.value as InterviewStatus)}
-            className="mt-1 h-9 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950"
+            className="mt-1 h-9 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
           >
             {INTERVIEW_STATUSES.map((s) => (
               <option key={s} value={s}>
@@ -1212,13 +1212,13 @@ function InterviewInspectorEditor({
         </div>
 
         <div>
-          <label className="block font-semibold text-[#334155] dark:text-slate-300">
+          <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
             Result
           </label>
           <select
             value={result}
             onChange={(e) => setResult(e.target.value as InterviewResult)}
-            className="mt-1 h-9 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950"
+            className="mt-1 h-9 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
           >
             {INTERVIEW_RESULTS.map((r) => (
               <option key={r} value={r}>
@@ -1231,103 +1231,103 @@ function InterviewInspectorEditor({
 
       <div className="grid grid-cols-2 gap-2.5">
         <div>
-          <label className="block font-semibold text-[#334155] dark:text-slate-300">
+          <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
             Date & Time (UTC)
           </label>
           <input
             type="datetime-local"
             value={startsAt}
             onChange={(e) => setStartsAt(e.target.value)}
-            className="mt-1 h-9 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2 text-xs text-[#0F172A] tabular-nums dark:border-slate-700 dark:bg-slate-950"
+            className="mt-1 h-9 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2 text-xs text-[#171d19] tabular-nums dark:border-[#2d3d33] dark:bg-[#17231c]"
           />
         </div>
         <div>
-          <label className="block font-semibold text-[#334155] dark:text-slate-300">
+          <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
             Location / Room
           </label>
           <input
             type="text"
             value={location}
             onChange={(e) => setLocation(e.target.value)}
-            className="mt-1 h-9 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950"
+            className="mt-1 h-9 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
           />
         </div>
       </div>
 
       <div>
-        <label className="block font-semibold text-[#334155] dark:text-slate-300">
+        <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
           Meeting Link
         </label>
         <input
           type="url"
           value={meetingUrl}
           onChange={(e) => setMeetingUrl(e.target.value)}
-          className="mt-1 h-9 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950"
+          className="mt-1 h-9 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
         />
       </div>
 
       <div className="grid grid-cols-3 gap-2">
         <div>
-          <label className="block font-semibold text-[#334155] dark:text-slate-300">
+          <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
             Interviewer Name
           </label>
           <input
             type="text"
             value={interviewerName}
             onChange={(e) => setInterviewerName(e.target.value)}
-            className="mt-1 h-9 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950"
+            className="mt-1 h-9 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
           />
         </div>
         <div>
-          <label className="block font-semibold text-[#334155] dark:text-slate-300">
+          <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
             Position
           </label>
           <input
             type="text"
             value={interviewerPosition}
             onChange={(e) => setInterviewerPosition(e.target.value)}
-            className="mt-1 h-9 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950"
+            className="mt-1 h-9 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
           />
         </div>
         <div>
-          <label className="block font-semibold text-[#334155] dark:text-slate-300">
+          <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
             Contact
           </label>
           <input
             type="text"
             value={interviewerContact}
             onChange={(e) => setInterviewerContact(e.target.value)}
-            className="mt-1 h-9 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950"
+            className="mt-1 h-9 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
           />
         </div>
       </div>
 
       <div>
-        <label className="block font-semibold text-[#334155] dark:text-slate-300">
+        <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
           Candidate Preparation Notes
         </label>
         <textarea
           rows={2}
           value={preparationNotes}
           onChange={(e) => setPreparationNotes(e.target.value)}
-          className="mt-1 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] p-2 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950"
+          className="mt-1 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] p-2 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
         />
       </div>
 
       <div>
-        <label className="block font-semibold text-[#334155] dark:text-slate-300">
+        <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
           Interview Questions
         </label>
         <textarea
           rows={2}
           value={questions}
           onChange={(e) => setQuestions(e.target.value)}
-          className="mt-1 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] p-2 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950"
+          className="mt-1 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] p-2 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
         />
       </div>
 
       <div>
-        <label className="block font-semibold text-[#334155] dark:text-slate-300">
+        <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
           Interview Notes
         </label>
         <textarea
@@ -1335,12 +1335,12 @@ function InterviewInspectorEditor({
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
           placeholder="Notes taken during the interview..."
-          className="mt-1 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] p-2 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950"
+          className="mt-1 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] p-2 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
         />
       </div>
 
       <div>
-        <label className="block font-semibold text-[#334155] dark:text-slate-300">
+        <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
           Post-Interview Feedback
         </label>
         <textarea
@@ -1348,14 +1348,14 @@ function InterviewInspectorEditor({
           value={feedback}
           onChange={(e) => setFeedback(e.target.value)}
           placeholder="Summary of feedback, strengths, and areas discussed..."
-          className="mt-1 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] p-2 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950"
+          className="mt-1 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] p-2 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
         />
       </div>
 
       <button
         type="submit"
         disabled={isPending}
-        className="btn-primary h-9 w-full text-xs disabled:opacity-50"
+        className="btn-primary h-10 w-full px-4 text-xs disabled:opacity-50"
       >
         {isPending ? "Saving..." : "Save Interview Details"}
       </button>

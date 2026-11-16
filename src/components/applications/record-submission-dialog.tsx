@@ -145,14 +145,14 @@ export function RecordSubmissionDialog({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0B1C30]/20 p-4 backdrop-blur-[1px]">
-      <div className="elevation-4 max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-[8px] border border-[#E2E8F0] bg-[#FFFFFF] p-6 dark:border-slate-800 dark:bg-slate-900">
-        <div className="mb-4 flex items-center justify-between border-b border-[#E2E8F0] pb-3 dark:border-slate-800">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#171d19]/35 p-4 backdrop-blur-[3px]">
+      <div className="elevation-4 max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-[#bdcabf]/60 bg-[#ffffff] p-6 dark:border-[#24332a] dark:bg-[#111a15]">
+        <div className="mb-4 flex items-center justify-between border-b border-[#e3eae3] pb-3 dark:border-[#24332a]">
           <div>
-            <h2 className="text-headline-sm text-[#0F172A] dark:text-slate-100">
+            <h2 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
               Record Submitted Job Application
             </h2>
-            <p className="text-xs text-[#64748B]">
+            <p className="text-xs text-[#3f674f] dark:text-[#a5d1b4]">
               Creates a unique Application ID, records initial status history,
               and schedules your first follow-up.
             </p>
@@ -160,7 +160,7 @@ export function RecordSubmissionDialog({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-[4px] p-1 text-[#64748B] hover:bg-[#EEF2FF] hover:text-[#204CD3] dark:hover:bg-slate-800"
+            className="rounded-lg p-1 text-[#3e4a41] hover:bg-[#eff5ee] hover:text-[#006a42] dark:text-[#b7c6ba] dark:hover:bg-[#17231c]"
           >
             <X className="h-4 w-4" />
           </button>
@@ -168,30 +168,30 @@ export function RecordSubmissionDialog({
 
         <form onSubmit={handleSubmit} className="space-y-4 text-xs">
           {error && (
-            <div className="rounded-[4px] border border-[#F43F5E]/40 bg-[#FFF1F2] px-3 py-2 text-xs text-[#BE123C] dark:border-rose-900 dark:bg-rose-950/60 dark:text-rose-300">
+            <div className="rounded-xl border border-[#ba1a1a]/30 bg-[#ffdad6] px-3 py-2 text-xs text-[#93000a] dark:border-rose-900 dark:bg-rose-950/60 dark:text-rose-300">
               {error}
             </div>
           )}
 
           {preselectedVacancy ? (
-            <div className="rounded-[8px] border border-[#204CD3]/25 bg-[#EEF2FF] p-3.5 dark:border-[#204CD3]/40 dark:bg-[#204CD3]/15">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#1D4ED8] tabular-nums dark:text-[#B7C4FF]">
+            <div className="rounded-xl border border-[#a5d1b4] bg-[#c0edcf]/50 p-3.5 dark:border-[#006a42]/40 dark:bg-[#006a42]/15">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#005232] tabular-nums dark:text-[#86f9ba]">
                 Selected Vacancy ({preselectedVacancy.code})
               </p>
-              <p className="mt-0.5 font-display text-sm font-semibold text-[#0F172A] dark:text-slate-100">
+              <p className="mt-0.5 font-display text-sm font-semibold text-[#171d19] dark:text-[#ecf3eb]">
                 {preselectedVacancy.title} at {preselectedVacancy.companyName}
               </p>
             </div>
           ) : (
-            <div className="space-y-3 rounded-[8px] border border-[#E2E8F0] bg-[#F8FAFC] p-3.5 dark:border-slate-800 dark:bg-slate-950">
+            <div className="space-y-3 rounded-xl bg-[#eff5ee] p-3.5 dark:bg-[#17231c]">
               <div className="flex gap-2">
                 <button
                   type="button"
                   onClick={() => setMode("existing")}
-                  className={`rounded-[4px] px-3 py-1.5 text-xs font-semibold transition-colors ${
+                  className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors ${
                     mode === "existing"
-                      ? "bg-[#204CD3] text-white"
-                      : "border border-[#CBD5E1] bg-[#FFFFFF] text-[#334155] hover:bg-[#EEF2FF] hover:text-[#1D4ED8] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
+                      ? "bg-[#006a42] text-white"
+                      : "bg-[#ffffff] text-[#3e4a41] hover:bg-[#e3eae3] dark:bg-[#111a15] dark:text-[#b7c6ba]"
                   }`}
                 >
                   From saved vacancy
@@ -199,10 +199,10 @@ export function RecordSubmissionDialog({
                 <button
                   type="button"
                   onClick={() => setMode("new")}
-                  className={`rounded-[4px] px-3 py-1.5 text-xs font-semibold transition-colors ${
+                  className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors ${
                     mode === "new"
-                      ? "bg-[#204CD3] text-white"
-                      : "border border-[#CBD5E1] bg-[#FFFFFF] text-[#334155] hover:bg-[#EEF2FF] hover:text-[#1D4ED8] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
+                      ? "bg-[#006a42] text-white"
+                      : "bg-[#ffffff] text-[#3e4a41] hover:bg-[#e3eae3] dark:bg-[#111a15] dark:text-[#b7c6ba]"
                   }`}
                 >
                   Enter new position directly
@@ -211,14 +211,14 @@ export function RecordSubmissionDialog({
 
               {mode === "existing" ? (
                 <div>
-                  <label className="block font-semibold text-[#334155] dark:text-slate-300">
+                  <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
                     Saved Job Vacancy
                   </label>
                   <select
                     required
                     value={vacancyId}
                     onChange={(e) => setVacancyId(e.target.value)}
-                    className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                    className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
                   >
                     <option value="">Select a vacancy...</option>
                     {vacancyOptions.map((v) => (
@@ -236,7 +236,7 @@ export function RecordSubmissionDialog({
               ) : (
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                   <div>
-                    <label className="block font-semibold text-[#334155] dark:text-slate-300">
+                    <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
                       Company Name *
                     </label>
                     <input
@@ -245,11 +245,11 @@ export function RecordSubmissionDialog({
                       value={companyName}
                       onChange={(e) => setCompanyName(e.target.value)}
                       placeholder="PT Tokopedia"
-                      className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                      className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
                     />
                   </div>
                   <div>
-                    <label className="block font-semibold text-[#334155] dark:text-slate-300">
+                    <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
                       Job Position *
                     </label>
                     <input
@@ -258,11 +258,11 @@ export function RecordSubmissionDialog({
                       value={title}
                       onChange={(e) => setTitle(e.target.value)}
                       placeholder="Senior Backend Engineer"
-                      className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                      className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
                     />
                   </div>
                   <div>
-                    <label className="block font-semibold text-[#334155] dark:text-slate-300">
+                    <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
                       Location
                     </label>
                     <input
@@ -270,11 +270,11 @@ export function RecordSubmissionDialog({
                       value={location}
                       onChange={(e) => setLocation(e.target.value)}
                       placeholder="Jakarta / Hybrid"
-                      className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                      className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
                     />
                   </div>
                   <div>
-                    <label className="block font-semibold text-[#334155] dark:text-slate-300">
+                    <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
                       Job URL
                     </label>
                     <input
@@ -282,7 +282,7 @@ export function RecordSubmissionDialog({
                       value={jobUrl}
                       onChange={(e) => setJobUrl(e.target.value)}
                       placeholder="https://www.linkedin.com/jobs/view/..."
-                      className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                      className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
                     />
                   </div>
                 </div>
@@ -291,8 +291,8 @@ export function RecordSubmissionDialog({
           )}
 
           {activeVacancy?.hasClosedApp && (
-            <div className="space-y-2 rounded-[8px] border border-[#F59E0B]/40 bg-[#FFFBEB] p-3 dark:border-amber-800 dark:bg-amber-950/40">
-              <label className="flex items-center gap-2 font-semibold text-[#B45309] dark:text-amber-200">
+            <div className="space-y-2 rounded-2xl border border-[#e8c084]/40 bg-[#ffdead]/60 p-3 dark:border-amber-800 dark:bg-amber-950/40">
+              <label className="flex items-center gap-2 font-semibold text-[#5d4211] dark:text-amber-200">
                 <input
                   type="checkbox"
                   checked={isIntentionalReapply}
@@ -308,7 +308,7 @@ export function RecordSubmissionDialog({
                   value={reapplyReason}
                   onChange={(e) => setReapplyReason(e.target.value)}
                   placeholder="Reason for re-applying (e.g., Recruiter invited me for new opening)"
-                  className="h-10 w-full rounded-[4px] border border-[#F59E0B]/40 bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-amber-800 dark:bg-slate-950"
+                  className="h-10 w-full rounded-xl border border-[#e8c084]/40 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-amber-800 dark:bg-[#17231c]"
                 />
               )}
             </div>
@@ -316,7 +316,7 @@ export function RecordSubmissionDialog({
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             <div>
-              <label className="block font-semibold text-[#334155] dark:text-slate-300">
+              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
                 Application Date *
               </label>
               <input
@@ -324,18 +324,18 @@ export function RecordSubmissionDialog({
                 required
                 value={submittedOn}
                 onChange={(e) => setSubmittedOn(e.target.value)}
-                className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] tabular-nums dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] tabular-nums dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
               />
             </div>
 
             <div>
-              <label className="block font-semibold text-[#334155] dark:text-slate-300">
+              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
                 Application Platform
               </label>
               <select
                 value={platformSourceId}
                 onChange={(e) => setPlatformSourceId(e.target.value)}
-                className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
               >
                 <option value="">Auto-detect / Unspecified</option>
                 {sources.map((s) => (
@@ -347,7 +347,7 @@ export function RecordSubmissionDialog({
             </div>
 
             <div>
-              <label className="block font-semibold text-[#334155] dark:text-slate-300">
+              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
                 Submission Method *
               </label>
               <select
@@ -355,7 +355,7 @@ export function RecordSubmissionDialog({
                 onChange={(e) =>
                   setSubmissionMethod(e.target.value as SubmissionMethod)
                 }
-                className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
               >
                 {SUBMISSION_METHODS.map((m) => (
                   <option key={m} value={m}>
@@ -368,7 +368,7 @@ export function RecordSubmissionDialog({
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
-              <label className="block font-semibold text-[#334155] dark:text-slate-300">
+              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
                 CV Version Used
               </label>
               <input
@@ -376,12 +376,12 @@ export function RecordSubmissionDialog({
                 value={cvVersionLabel}
                 onChange={(e) => setCvVersionLabel(e.target.value)}
                 placeholder="e.g., CV_Backend_v3.pdf"
-                className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
               />
             </div>
 
             <div>
-              <label className="block font-semibold text-[#334155] dark:text-slate-300">
+              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
                 Cover Letter Version
               </label>
               <input
@@ -389,14 +389,14 @@ export function RecordSubmissionDialog({
                 value={coverLetterVersionLabel}
                 onChange={(e) => setCoverLetterVersionLabel(e.target.value)}
                 placeholder="Optional cover letter version"
-                className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             <div>
-              <label className="block font-semibold text-[#334155] dark:text-slate-300">
+              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
                 Expected Salary
               </label>
               <input
@@ -405,17 +405,17 @@ export function RecordSubmissionDialog({
                 value={expectedSalary}
                 onChange={(e) => setExpectedSalary(e.target.value)}
                 placeholder="25000000"
-                className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] tabular-nums dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] tabular-nums dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
               />
             </div>
             <div>
-              <label className="block font-semibold text-[#334155] dark:text-slate-300">
+              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
                 Currency
               </label>
               <select
                 value={currency}
                 onChange={(e) => setCurrency(e.target.value as Currency)}
-                className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
               >
                 {CURRENCIES.map((c) => (
                   <option key={c} value={c}>
@@ -425,7 +425,7 @@ export function RecordSubmissionDialog({
               </select>
             </div>
             <div>
-              <label className="block font-semibold text-[#334155] dark:text-slate-300">
+              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
                 Job Category / Dept
               </label>
               <input
@@ -433,14 +433,14 @@ export function RecordSubmissionDialog({
                 value={jobCategory}
                 onChange={(e) => setJobCategory(e.target.value)}
                 placeholder="Engineering"
-                className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             <div>
-              <label className="block font-semibold text-[#334155] dark:text-slate-300">
+              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
                 External Application Ref ID
               </label>
               <input
@@ -448,11 +448,11 @@ export function RecordSubmissionDialog({
                 value={externalReferenceId}
                 onChange={(e) => setExternalReferenceId(e.target.value)}
                 placeholder="Workday / LinkedIn ref ID"
-                className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
               />
             </div>
             <div>
-              <label className="block font-semibold text-[#334155] dark:text-slate-300">
+              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
                 Confirmation Reference
               </label>
               <input
@@ -460,11 +460,11 @@ export function RecordSubmissionDialog({
                 value={confirmationReference}
                 onChange={(e) => setConfirmationReference(e.target.value)}
                 placeholder="Email confirmation code"
-                className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
               />
             </div>
             <div>
-              <label className="block font-semibold text-[#334155] dark:text-slate-300">
+              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
                 Application Portal URL
               </label>
               <input
@@ -472,14 +472,14 @@ export function RecordSubmissionDialog({
                 value={applicationUrl}
                 onChange={(e) => setApplicationUrl(e.target.value)}
                 placeholder="https://..."
-                className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             <div>
-              <label className="block font-semibold text-[#334155] dark:text-slate-300">
+              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
                 Recruiter Name
               </label>
               <input
@@ -487,11 +487,11 @@ export function RecordSubmissionDialog({
                 value={recruiterName}
                 onChange={(e) => setRecruiterName(e.target.value)}
                 placeholder="Recruiter / TA name"
-                className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
               />
             </div>
             <div>
-              <label className="block font-semibold text-[#334155] dark:text-slate-300">
+              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
                 Recruiter Email
               </label>
               <input
@@ -499,11 +499,11 @@ export function RecordSubmissionDialog({
                 value={recruiterEmail}
                 onChange={(e) => setRecruiterEmail(e.target.value)}
                 placeholder="recruiter@company.com"
-                className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
               />
             </div>
             <div>
-              <label className="block font-semibold text-[#334155] dark:text-slate-300">
+              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
                 Recruiter Phone / LinkedIn
               </label>
               <input
@@ -511,13 +511,13 @@ export function RecordSubmissionDialog({
                 value={recruiterContact}
                 onChange={(e) => setRecruiterContact(e.target.value)}
                 placeholder="+62..."
-                className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
               />
             </div>
           </div>
 
           <div>
-            <label className="block font-semibold text-[#334155] dark:text-slate-300">
+            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
               Notes
             </label>
             <textarea
@@ -525,22 +525,22 @@ export function RecordSubmissionDialog({
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Referral context, key talking points, or application notes..."
-              className="mt-1 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 py-2 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              className="mt-1 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 py-2 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
             />
           </div>
 
-          <div className="flex justify-end gap-2 border-t border-[#E2E8F0] pt-3 dark:border-slate-800">
+          <div className="flex justify-end gap-2 border-t border-[#e3eae3] pt-3 dark:border-[#24332a]">
             <button
               type="button"
               onClick={onClose}
-              className="rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-3 py-1.5 text-xs font-semibold text-[#0F172A] hover:border-[#94A3B8] hover:bg-[#F8FAFC] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
+              className="btn-secondary h-10 px-4 text-xs"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isPending}
-              className="rounded-[4px] bg-[#204CD3] px-4 py-1.5 text-xs font-semibold text-white transition-all hover:bg-[#1D4ED8] active:scale-[0.98] disabled:opacity-50"
+              className="btn-primary h-10 px-4 text-xs disabled:opacity-50"
             >
               {isPending ? "Recording..." : "Record Application"}
             </button>

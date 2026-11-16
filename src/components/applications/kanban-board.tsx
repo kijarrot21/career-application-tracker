@@ -174,15 +174,15 @@ export function KanbanBoard({
   return (
     <>
       {/* Mobile (<768px) Segmented-Control Lane Selector */}
-      <div className="flex gap-1.5 overflow-x-auto rounded-[8px] border border-[#E2E8F0] bg-[#F1F5F9] p-1 md:hidden dark:border-slate-800 dark:bg-slate-900">
+      <div className="flex gap-1.5 overflow-x-auto rounded-xl bg-[#eff5ee] p-1 md:hidden dark:bg-[#17231c]">
         <button
           type="button"
           onClick={() => setMobileLaneId("all")}
           className={cn(
-            "shrink-0 rounded-[4px] px-2.5 py-1 text-[11px] font-semibold transition-colors",
+            "shrink-0 rounded-lg px-3 py-1 text-[11px] font-semibold transition-all",
             mobileLaneId === "all"
-              ? "bg-[#204CD3] text-white"
-              : "text-[#64748B] hover:text-[#0F172A]",
+              ? "bg-[#006a42] text-white shadow-sm"
+              : "text-[#3f674f] hover:text-[#171d19]",
           )}
         >
           All Lanes
@@ -193,10 +193,10 @@ export function KanbanBoard({
             type="button"
             onClick={() => setMobileLaneId(st.id)}
             className={cn(
-              "shrink-0 rounded-[4px] px-2.5 py-1 text-[11px] font-semibold transition-colors",
+              "shrink-0 rounded-lg px-3 py-1 text-[11px] font-semibold transition-all",
               mobileLaneId === st.id
-                ? "bg-[#204CD3] text-white"
-                : "text-[#64748B] hover:text-[#0F172A]",
+                ? "bg-[#006a42] text-white shadow-sm"
+                : "text-[#3f674f] hover:text-[#171d19]",
             )}
           >
             {st.name}
@@ -340,26 +340,28 @@ function KanbanColumn({
       ref={setNodeRef}
       data-testid={`kanban-col-${stage.stageType}-${stage.name}`}
       className={cn(
-        "elevation-1 flex min-w-[280px] max-w-[340px] w-[300px] shrink-0 snap-start flex-col rounded-[8px] border p-3 transition-colors",
+        "flex w-[312px] min-w-[290px] max-w-[340px] shrink-0 snap-start flex-col rounded-2xl p-3 transition-colors",
         hiddenOnMobile && "hidden md:flex",
         isOver
-          ? "border-[#204CD3] bg-[#EEF2FF]/60 dark:border-[#204CD3] dark:bg-[#204CD3]/15"
-          : "border-[#E2E8F0] bg-[#F1F5F9] dark:border-slate-800 dark:bg-slate-900/60",
+          ? "bg-[#c0edcf]/45 ring-2 ring-[#006a42]/40 dark:bg-[#006a42]/20"
+          : "bg-[#eff5ee] dark:bg-[#17231c]/80",
       )}
     >
-      <div className="mb-3 flex items-center justify-between px-0.5">
+      <div className="mb-3 flex items-center justify-between px-1 py-1">
         <div className="min-w-0">
           <div className="flex items-center gap-2">
-            <span className={`h-2 w-2 shrink-0 rounded-full ${dotClass}`} />
-            <h3 className="truncate font-display text-[13px] font-semibold tracking-[-0.01em] text-[#0F172A] dark:text-slate-100">
+            <span className={`h-2.5 w-2.5 shrink-0 rounded-full ${dotClass}`} />
+            <h3 className="truncate font-display text-[15px] font-semibold tracking-[-0.01em] text-[#171d19] dark:text-[#ecf3eb]">
               {stage.name}
             </h3>
-            <span className="rounded-full bg-[#E2E8F0] px-2 py-0.5 font-mono text-[11px] font-semibold text-[#334155] tabular-nums dark:bg-slate-800 dark:text-slate-300">
+            <span className="rounded-full bg-[#dde4dd] px-2 py-0.5 font-mono text-[11px] font-bold text-[#171d19] tabular-nums dark:bg-[#23342a] dark:text-[#ecf3eb]">
               {count}
             </span>
           </div>
           {subtitle && (
-            <p className="mt-0.5 text-[10px] text-[#64748B]">{subtitle}</p>
+            <p className="mt-0.5 text-[11px] text-[#3f674f] dark:text-[#a5d1b4]">
+              {subtitle}
+            </p>
           )}
         </div>
 
@@ -369,9 +371,9 @@ function KanbanColumn({
             onClick={onQuickAdd}
             title={`Quick add to ${stage.name}`}
             aria-label={`Quick add to ${stage.name}`}
-            className="rounded-[4px] p-1 text-[#64748B] transition-colors hover:bg-[#EEF2FF] hover:text-[#204CD3]"
+            className="rounded-lg p-1 text-[#3f674f] transition-colors hover:bg-[#e3eae3] hover:text-[#171d19] dark:text-[#a5d1b4] dark:hover:bg-[#23342a]"
           >
-            <Plus className="h-3.5 w-3.5" />
+            <Plus className="h-4 w-4" />
           </button>
         )}
       </div>
@@ -405,46 +407,46 @@ function DraggableVacancyCard({
       ref={setNodeRef}
       style={style}
       className={cn(
-        "rounded-[8px] border border-[#E2E8F0] bg-[#FFFFFF] p-[14px] text-[13px] leading-[18px] dark:border-slate-800 dark:bg-slate-900",
+        "group rounded-xl border border-[#bdcabf]/40 bg-[#ffffff] p-4 text-[13px] leading-[18px] transition-all hover:-translate-y-0.5 dark:border-[#24332a] dark:bg-[#111a15]",
         isDragging ? "elevation-3 z-20" : "elevation-2",
       )}
     >
-      {/* Top row: Company avatar (24x24px rounded-sm) + Company Name (body-sm, bold) + Date Added */}
-      <div className="flex items-center justify-between gap-2">
-        <div className="flex min-w-0 items-center gap-2">
-          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-[4px] bg-[#EEF2FF] font-display text-[10px] font-bold text-[#1D4ED8] dark:bg-[#204CD3]/20 dark:text-[#B7C4FF]">
+      {/* Top row: Company avatar + Company Name + Date Added */}
+      <div className="flex items-start justify-between gap-2">
+        <div className="flex min-w-0 items-center gap-2.5">
+          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#2b322d] font-display text-[12px] font-bold text-[#ecf3eb] dark:bg-[#23342a]">
             {getCompanyInitials(vacancy.company.name)}
           </span>
-          <span className="truncate text-[13px] font-semibold text-[#0F172A] dark:text-slate-100">
-            {vacancy.company.name}
-          </span>
+          <div className="min-w-0">
+            <span className="block truncate text-[13px] font-semibold text-[#171d19] dark:text-[#ecf3eb]">
+              {vacancy.company.name}
+            </span>
+            <span className="font-mono text-[11px] text-[#3f674f] tabular-nums dark:text-[#a5d1b4]">
+              {formatDate(vacancy.discoveredOn)}
+            </span>
+          </div>
         </div>
-        <div className="flex shrink-0 items-center gap-1">
-          <span className="font-mono text-[11px] text-[#64748B] tabular-nums">
-            {formatDate(vacancy.discoveredOn)}
-          </span>
-          <button
-            type="button"
-            {...listeners}
-            {...attributes}
-            aria-label={`Drag ${vacancy.title}`}
-            className="cursor-grab rounded-[4px] p-0.5 text-[#64748B] hover:bg-[#EEF2FF] hover:text-[#204CD3]"
-          >
-            <GripVertical className="h-3.5 w-3.5" />
-          </button>
-        </div>
+        <button
+          type="button"
+          {...listeners}
+          {...attributes}
+          aria-label={`Drag ${vacancy.title}`}
+          className="cursor-grab rounded-lg p-1 text-[#6e7a71] opacity-70 transition-opacity hover:bg-[#eff5ee] hover:text-[#006a42] group-hover:opacity-100"
+        >
+          <GripVertical className="h-3.5 w-3.5" />
+        </button>
       </div>
 
-      {/* Middle row: Target Role (headline-sm, 1-line truncation) + Code / Fit */}
-      <div className="mt-2">
+      {/* Middle row: Target Role + Code */}
+      <div className="mt-3">
         <Link
           href={`/jobs/${vacancy.id}`}
-          className="text-headline-sm block truncate text-[#0F172A] hover:text-[#204CD3] dark:text-slate-100"
+          className="block truncate font-display text-[15px] font-semibold text-[#171d19] transition-colors group-hover:text-[#006a42] dark:text-[#ecf3eb] dark:group-hover:text-[#69dca0]"
         >
           {vacancy.title}
         </Link>
-        <div className="mt-1 flex flex-wrap items-center gap-1.5">
-          <span className="font-mono text-[11px] text-[#64748B] tabular-nums">
+        <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
+          <span className="font-mono text-[11px] text-[#3f674f] tabular-nums dark:text-[#a5d1b4]">
             {vacancy.code}
           </span>
           {vacancy.isSample && <SampleBadge />}
@@ -452,12 +454,12 @@ function DraggableVacancyCard({
       </div>
 
       {/* Bottom row: Suitability Pill Badge + Apply action */}
-      <div className="mt-3 flex items-center justify-between border-t border-[#E2E8F0] pt-2.5 dark:border-slate-800">
+      <div className="mt-3 flex items-center justify-between pt-2">
         <SuitabilityBadge score={vacancy.suitabilityScore} />
         <button
           type="button"
           onClick={onRecordApply}
-          className="inline-flex items-center gap-1 rounded-[4px] bg-[#EEF2FF] px-2.5 py-1 text-[11px] font-semibold text-[#1D4ED8] transition-colors hover:bg-[#204CD3] hover:text-white dark:bg-[#204CD3]/20 dark:text-[#B7C4FF]"
+          className="inline-flex items-center gap-1 rounded-lg bg-[#c0edcf] px-2.5 py-1 text-[11px] font-semibold text-[#005232] transition-colors hover:bg-[#006a42] hover:text-white dark:bg-[#005232] dark:text-[#86f9ba]"
         >
           <Send className="h-3 w-3" />
           Apply
@@ -498,41 +500,41 @@ function DraggableApplicationCard({
       style={style}
       data-testid={`app-card-${app.code}`}
       className={cn(
-        "rounded-[8px] border border-[#E2E8F0] bg-[#FFFFFF] p-[14px] text-[13px] leading-[18px] dark:border-slate-800 dark:bg-slate-900",
+        "group rounded-xl border border-[#bdcabf]/40 bg-[#ffffff] p-4 text-[13px] leading-[18px] transition-all hover:-translate-y-0.5 dark:border-[#24332a] dark:bg-[#111a15]",
         isDragging ? "elevation-3 z-20" : "elevation-2",
       )}
     >
-      {/* Top row: Company avatar (24x24px rounded-sm) + Company Name (body-sm, bold) + Date Added */}
-      <div className="flex items-center justify-between gap-2">
-        <div className="flex min-w-0 items-center gap-2">
-          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-[4px] bg-[#EEF2FF] font-display text-[10px] font-bold text-[#1D4ED8] dark:bg-[#204CD3]/20 dark:text-[#B7C4FF]">
+      {/* Top row: Company avatar + Company Name + Date Added */}
+      <div className="flex items-start justify-between gap-2">
+        <div className="flex min-w-0 items-center gap-2.5">
+          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#006a42] font-display text-[12px] font-bold text-white">
             {getCompanyInitials(app.company.name)}
           </span>
-          <span className="truncate text-[13px] font-semibold text-[#0F172A] dark:text-slate-100">
-            {app.company.name}
-          </span>
+          <div className="min-w-0">
+            <span className="block truncate text-[13px] font-semibold text-[#171d19] dark:text-[#ecf3eb]">
+              {app.company.name}
+            </span>
+            <span className="font-mono text-[11px] text-[#3f674f] tabular-nums dark:text-[#a5d1b4]">
+              {formatDate(app.submittedOn)}
+            </span>
+          </div>
         </div>
-        <div className="flex shrink-0 items-center gap-1">
-          <span className="font-mono text-[11px] text-[#64748B] tabular-nums">
-            {formatDate(app.submittedOn)}
-          </span>
-          <button
-            type="button"
-            {...listeners}
-            {...attributes}
-            aria-label={`Drag ${app.code}`}
-            className="cursor-grab rounded-[4px] p-0.5 text-[#64748B] hover:bg-[#EEF2FF] hover:text-[#204CD3]"
-          >
-            <GripVertical className="h-3.5 w-3.5" />
-          </button>
-        </div>
+        <button
+          type="button"
+          {...listeners}
+          {...attributes}
+          aria-label={`Drag ${app.code}`}
+          className="cursor-grab rounded-lg p-1 text-[#6e7a71] opacity-70 transition-opacity hover:bg-[#eff5ee] hover:text-[#006a42] group-hover:opacity-100"
+        >
+          <GripVertical className="h-3.5 w-3.5" />
+        </button>
       </div>
 
-      {/* Middle row: Target Role (headline-sm, 1-line truncation) + Compensation label (tabular text) */}
-      <div className="mt-2">
+      {/* Middle row: Target Role + Code + Compensation pill */}
+      <div className="mt-3">
         <Link
           href={`/applications/${app.id}`}
-          className="text-headline-sm block truncate text-[#0F172A] hover:text-[#204CD3] dark:text-slate-100"
+          className="block truncate font-display text-[15px] font-semibold text-[#171d19] transition-colors group-hover:text-[#006a42] dark:text-[#ecf3eb] dark:group-hover:text-[#69dca0]"
         >
           {app.vacancy.title}
         </Link>
@@ -541,7 +543,7 @@ function DraggableApplicationCard({
           <div className="flex items-center gap-1.5">
             <Link
               href={`/applications/${app.id}`}
-              className="font-mono text-[11px] font-semibold text-[#204CD3] tabular-nums hover:underline dark:text-[#B7C4FF]"
+              className="font-mono text-[11px] font-semibold text-[#006a42] tabular-nums hover:underline dark:text-[#69dca0]"
             >
               {app.code}
             </Link>
@@ -549,19 +551,19 @@ function DraggableApplicationCard({
           </div>
 
           {app.expectedSalary != null && (
-            <span className="rounded-full bg-[#F1F5F9] px-2 py-0.5 font-mono text-[11px] font-semibold text-[#334155] tabular-nums dark:bg-slate-800 dark:text-slate-300">
+            <span className="rounded-full bg-[#e3eae3] px-2.5 py-0.5 font-mono text-[11px] font-semibold text-[#3e4a41] tabular-nums dark:bg-[#1d2b23] dark:text-[#b7c6ba]">
               {formatMoney(app.expectedSalary, app.currency, true)}
             </span>
           )}
         </div>
       </div>
 
-      {/* Bottom row: Status Pill Badge (left-aligned) + Interview step pill or follow-up indicator (right-aligned) */}
-      <div className="mt-2.5 flex flex-wrap items-center justify-between gap-1.5">
+      {/* Bottom row: Status Pill Badge + Interview step pill */}
+      <div className="mt-3 flex flex-wrap items-center justify-between gap-1.5">
         <StageBadge name={app.stage.name} color={app.stage.color} />
 
         {app.nextInterview ? (
-          <span className="inline-flex items-center gap-1 rounded-full bg-[#ECFDF5] px-2 py-0.5 text-[11px] font-semibold text-[#047857] tabular-nums dark:bg-emerald-950/60 dark:text-emerald-300">
+          <span className="inline-flex items-center gap-1 rounded-full bg-[#86f9ba]/70 px-2.5 py-0.5 text-[11px] font-semibold text-[#002111] tabular-nums dark:bg-emerald-950/60 dark:text-emerald-300">
             <Calendar className="h-3 w-3" />
             {formatDate(app.nextInterview.startsAt)}
           </span>
@@ -571,16 +573,16 @@ function DraggableApplicationCard({
       </div>
 
       {app.nextFollowUpOn && app.outcome === "active" && (
-        <p className="mt-2 text-[11px] text-[#64748B] tabular-nums">
+        <p className="mt-2.5 text-[11px] text-[#3f674f] tabular-nums dark:text-[#a5d1b4]">
           Next follow-up:{" "}
-          <span className="font-mono font-medium text-[#334155] dark:text-slate-300">
+          <span className="font-mono font-semibold text-[#171d19] dark:text-[#ecf3eb]">
             {formatDate(app.nextFollowUpOn)}
           </span>
         </p>
       )}
 
       {app.noResponseSuggestion.shouldSuggest && noResponseStage && (
-        <div className="mt-2 rounded-[4px] border border-[#F59E0B]/40 bg-[#FFFBEB] p-2 text-[11px] text-[#B45309] dark:border-amber-900/60 dark:bg-amber-950/40 dark:text-amber-200">
+        <div className="mt-2.5 rounded-xl border border-[#e8c084] bg-[#ffdead]/60 p-2.5 text-[11px] text-[#5d4211] dark:border-amber-900/60 dark:bg-amber-950/40 dark:text-amber-200">
           <div className="flex items-center gap-1 font-semibold tabular-nums">
             <Clock className="h-3 w-3 shrink-0" />
             <span>No response for {app.noResponseSuggestion.silentDays}d</span>
@@ -595,11 +597,11 @@ function DraggableApplicationCard({
         </div>
       )}
 
-      {/* Accessible Move Stage Selector (works on touch, mobile, and keyboard) */}
-      <div className="mt-2.5 flex items-center justify-between gap-2 border-t border-[#E2E8F0] pt-2 dark:border-slate-800">
+      {/* Accessible Move Stage Selector */}
+      <div className="mt-3 flex items-center justify-between gap-2 border-t border-[#e3eae3] pt-2.5 dark:border-[#24332a]">
         <label
           htmlFor={`move-${app.id}`}
-          className="text-[11px] font-semibold text-[#64748B]"
+          className="text-[11px] font-semibold text-[#3f674f] dark:text-[#a5d1b4]"
         >
           Move stage:
         </label>
@@ -609,7 +611,7 @@ function DraggableApplicationCard({
           disabled={disabled}
           value={app.currentStageId}
           onChange={(e) => onMoveTo(e.target.value)}
-          className="max-w-[155px] truncate rounded-[4px] border border-[#CBD5E1] bg-[#F8FAFC] px-2 py-0.5 text-[11px] font-semibold text-[#334155] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
+          className="max-w-[155px] truncate rounded-lg border border-[#bdcabf]/60 bg-[#eff5ee] px-2 py-1 text-[11px] font-semibold text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
         >
           {appStages.map((st) => (
             <option key={st.id} value={st.id}>

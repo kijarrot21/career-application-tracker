@@ -37,9 +37,9 @@ export function SampleDataBanner({
   }
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#F59E0B]/30 bg-[#FFFBEB] px-4 py-2 text-xs text-[#B45309] xl:px-8 dark:border-amber-900/60 dark:bg-amber-950/40 dark:text-amber-200">
+    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#e8c084]/60 bg-[#ffdead]/45 px-4 py-2 text-xs text-[#5d4211] xl:px-8 dark:border-amber-900/60 dark:bg-amber-950/40 dark:text-amber-200">
       <div className="flex items-center gap-2">
-        <AlertCircle className="h-4 w-4 shrink-0 text-[#F59E0B]" />
+        <AlertCircle className="h-4 w-4 shrink-0 text-[#745725] dark:text-amber-400" />
         <span className="tabular-nums">
           <strong>Sample data is loaded</strong> ({sampleJobsCount} sample jobs,{" "}
           {sampleAppsCount} sample applications, marked with a{" "}
@@ -53,7 +53,7 @@ export function SampleDataBanner({
         type="button"
         disabled={isPending}
         onClick={handleRemove}
-        className="inline-flex items-center gap-1.5 rounded-[4px] border border-[#F59E0B]/40 bg-[#FFFFFF] px-2.5 py-1 text-xs font-semibold text-[#B45309] hover:bg-[#FFFBEB] disabled:opacity-50 dark:border-amber-800 dark:bg-slate-900 dark:text-amber-200"
+        className="inline-flex items-center gap-1.5 rounded-xl border border-[#e8c084] bg-[#ffffff] px-3 py-1 text-xs font-semibold text-[#5d4211] shadow-2xs transition-colors hover:bg-[#ffdead]/40 disabled:opacity-50 dark:border-amber-800 dark:bg-[#111a15] dark:text-amber-200"
       >
         <Trash2 className="h-3.5 w-3.5" />
         {isPending ? "Removing..." : "Remove sample data"}

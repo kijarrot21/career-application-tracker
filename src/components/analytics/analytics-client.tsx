@@ -30,20 +30,28 @@ import type { getAnalyticsData } from "@/server/queries/analytics";
 type AnalyticsData = Awaited<ReturnType<typeof getAnalyticsData>>;
 
 const OUTCOME_COLORS: Record<string, string> = {
-  active: "#204CD3",
-  successful: "#10B981",
-  unsuccessful: "#F43F5E",
-  withdrawn: "#64748B",
-  no_response: "#F59E0B",
+  active: "#006a42",
+  successful: "#008655",
+  unsuccessful: "#ba1a1a",
+  withdrawn: "#6e7a71",
+  no_response: "#8f6f3b",
 };
 
 const PLATFORM_PALETTE = [
-  "#204CD3",
-  "#10B981",
-  "#F59E0B",
-  "#485AA2",
-  "#F43F5E",
-  "#64748B",
+  "#006a42",
+  "#008655",
+  "#3f674f",
+  "#745725",
+  "#8f6f3b",
+  "#6e7a71",
+];
+
+const FUNNEL_BAR_COLORS = [
+  "bg-[#006a42]",
+  "bg-[#008655]",
+  "bg-[#3f674f]",
+  "bg-[#8f6f3b]",
+  "bg-[#745725]",
 ];
 
 export function AnalyticsClient({ data }: { data: AnalyticsData }) {
@@ -98,15 +106,19 @@ export function AnalyticsClient({ data }: { data: AnalyticsData }) {
       {/* Header & Report Actions */}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
+          <div className="mb-1 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-[#3f674f] dark:text-[#a5d1b4]">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#006a42] dark:bg-[#69dca0]" />
+            <span>Analytics Engine · Performance Velocity</span>
+          </div>
           <div className="flex flex-wrap items-center gap-2.5">
-            <h1 className="text-headline-md text-[#0F172A] dark:text-slate-100">
+            <h1 className="text-headline-md text-[#171d19] dark:text-[#ecf3eb]">
               Result & Career Performance Analytics
             </h1>
             <span
-              className={`rounded-full border px-2.5 py-[2px] text-[11px] font-semibold ${
+              className={`rounded-full border px-3 py-0.5 text-[11px] font-semibold ${
                 data.includeSample
-                  ? "border-[#F59E0B]/40 bg-[#FFFBEB] text-[#B45309]"
-                  : "border-[#A7F3D0] bg-[#ECFDF5] text-[#047857]"
+                  ? "border-[#e8c084] bg-[#ffdead]/80 text-[#5d4211]"
+                  : "border-[#a5d1b4] bg-[#c0edcf] text-[#005232]"
               }`}
             >
               {data.includeSample
@@ -114,8 +126,10 @@ export function AnalyticsClient({ data }: { data: AnalyticsData }) {
                 : "Dataset: Actual User Records Only"}
             </span>
           </div>
-          <p className="mt-0.5 text-body-sm text-[#64748B]">
-            Conversion rates, recruitment cycle durations, and company/platform/industry performance calculated strictly from database records.
+          <p className="mt-1 text-body-sm text-[#3f674f] dark:text-[#a5d1b4]">
+            Conversion rates, recruitment cycle durations, and
+            company/platform/industry performance calculated strictly from
+            database records.
           </p>
         </div>
 
@@ -123,7 +137,7 @@ export function AnalyticsClient({ data }: { data: AnalyticsData }) {
           <a
             href={exportCsvHref}
             download
-            className="btn-secondary h-9 px-3 text-xs dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
+            className="btn-secondary h-10 px-4 text-xs"
           >
             <Download className="h-3.5 w-3.5" />
             Export Activity Report (CSV)
@@ -132,7 +146,7 @@ export function AnalyticsClient({ data }: { data: AnalyticsData }) {
           <button
             type="button"
             onClick={() => window.print()}
-            className="btn-primary h-9 px-3.5 text-xs"
+            className="btn-primary h-10 px-4 text-xs"
           >
             <Printer className="h-3.5 w-3.5" />
             Print / Save PDF Report
@@ -143,12 +157,12 @@ export function AnalyticsClient({ data }: { data: AnalyticsData }) {
       {/* Filters Bar */}
       <form
         onSubmit={applyFilters}
-        className="no-print elevation-1 flex flex-wrap items-end gap-3 rounded-[8px] border border-[#E2E8F0] bg-[#FFFFFF] p-4 dark:border-slate-800 dark:bg-slate-900"
+        className="no-print elevation-1 flex flex-wrap items-end gap-3 rounded-2xl border border-[#bdcabf]/40 bg-[#ffffff] p-4 dark:border-[#24332a] dark:bg-[#111a15]"
       >
         <div>
           <label
             htmlFor="analytics-from-date"
-            className="block font-semibold text-[#334155] dark:text-slate-300"
+            className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]"
           >
             From Date
           </label>
@@ -157,14 +171,14 @@ export function AnalyticsClient({ data }: { data: AnalyticsData }) {
             type="date"
             value={fromDate}
             onChange={(e) => setFromDate(e.target.value)}
-            className="mt-1 h-9 rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] tabular-nums dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+            className="mt-1 h-10 rounded-xl border border-transparent bg-[#eff5ee] px-3 text-xs text-[#171d19] tabular-nums focus:border-[#006a42] focus:bg-[#ffffff] dark:bg-[#17231c] dark:text-[#ecf3eb]"
           />
         </div>
 
         <div>
           <label
             htmlFor="analytics-to-date"
-            className="block font-semibold text-[#334155] dark:text-slate-300"
+            className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]"
           >
             To Date
           </label>
@@ -173,14 +187,14 @@ export function AnalyticsClient({ data }: { data: AnalyticsData }) {
             type="date"
             value={toDate}
             onChange={(e) => setToDate(e.target.value)}
-            className="mt-1 h-9 rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] tabular-nums dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+            className="mt-1 h-10 rounded-xl border border-transparent bg-[#eff5ee] px-3 text-xs text-[#171d19] tabular-nums focus:border-[#006a42] focus:bg-[#ffffff] dark:bg-[#17231c] dark:text-[#ecf3eb]"
           />
         </div>
 
         <div>
           <label
             htmlFor="analytics-sample-mode"
-            className="block font-semibold text-[#334155] dark:text-slate-300"
+            className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]"
           >
             Sample Records
           </label>
@@ -190,7 +204,7 @@ export function AnalyticsClient({ data }: { data: AnalyticsData }) {
             onChange={(e) =>
               setSampleMode(e.target.value as "auto" | "include" | "exclude")
             }
-            className="mt-1 h-9 rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+            className="mt-1 h-10 rounded-xl border border-transparent bg-[#eff5ee] px-3 text-xs text-[#171d19] dark:bg-[#17231c] dark:text-[#ecf3eb]"
           >
             <option value="auto">
               Auto (Exclude once real applications exist)
@@ -200,7 +214,7 @@ export function AnalyticsClient({ data }: { data: AnalyticsData }) {
           </select>
         </div>
 
-        <button type="submit" className="btn-primary h-9 px-3.5 text-xs">
+        <button type="submit" className="btn-primary h-10 px-4 text-xs">
           <Filter className="h-3.5 w-3.5" />
           Apply Filters
         </button>
@@ -209,7 +223,7 @@ export function AnalyticsClient({ data }: { data: AnalyticsData }) {
           <button
             type="button"
             onClick={resetFilters}
-            className="btn-secondary h-9 px-3 text-xs"
+            className="btn-secondary h-10 px-3.5 text-xs"
           >
             <RotateCcw className="h-3.5 w-3.5" />
             Reset
@@ -228,12 +242,12 @@ export function AnalyticsClient({ data }: { data: AnalyticsData }) {
           <KpiTile
             label="2. Apps Submitted"
             value={kpi.totalApplicationsSubmitted}
-            accent="blue"
+            accent="emerald"
           />
           <KpiTile
             label="3. Active Applications"
             value={kpi.activeApplications}
-            accent="blue"
+            accent="emerald"
           />
           <KpiTile
             label="4. Under Screening"
@@ -251,7 +265,7 @@ export function AnalyticsClient({ data }: { data: AnalyticsData }) {
           <KpiTile
             label="6. Offers Received"
             value={kpi.offersReceived}
-            accent="emerald"
+            accent="amber"
           />
           <KpiTile
             label="7. Successful (Hired)"
@@ -276,7 +290,7 @@ export function AnalyticsClient({ data }: { data: AnalyticsData }) {
         </div>
       </section>
 
-      {/* Conversion Rates & Cycle Duration Metrics (with explicit denominators) */}
+      {/* Conversion Rates & Cycle Duration Metrics */}
       <section aria-label="Conversion and Cycle Speed Metrics">
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-7">
           <MetricShell
@@ -346,62 +360,79 @@ export function AnalyticsClient({ data }: { data: AnalyticsData }) {
       </section>
 
       {kpi.totalApplicationsSubmitted === 0 ? (
-        <div className="elevation-1 flex flex-col items-center justify-center rounded-[8px] border border-[#E2E8F0] bg-[#FFFFFF] py-14 text-center dark:border-slate-800 dark:bg-slate-900">
-          <BarChart3 className="h-8 w-8 text-[#64748B]" />
-          <p className="mt-2 text-title-md text-[#0F172A] dark:text-slate-100">
+        <div className="elevation-1 flex flex-col items-center justify-center rounded-2xl border border-[#bdcabf]/40 bg-[#ffffff] py-14 text-center dark:border-[#24332a] dark:bg-[#111a15]">
+          <BarChart3 className="h-8 w-8 text-[#3f674f]" />
+          <p className="mt-2 text-title-md text-[#171d19] dark:text-[#ecf3eb]">
             No submitted applications in this dataset yet
           </p>
-          <p className="mt-1 text-xs text-[#64748B]">
-            Record applications or adjust the date/sample filter to inspect recruitment funnel and conversion charts.
+          <p className="mt-1 text-xs text-[#3f674f]">
+            Record applications or adjust the date/sample filter to inspect
+            recruitment funnel and conversion charts.
           </p>
         </div>
       ) : (
         <>
-          {/* Charts Row 1: Pipeline Funnel, Applications by Stage, Application Outcomes */}
+          {/* Charts Row 1: Pipeline Funnel (HTML 2 bar style), Applications by Stage, Application Outcomes */}
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
             {/* Chart 1: Application Pipeline Funnel */}
-            <div className="elevation-1 rounded-[8px] border border-[#E2E8F0] bg-[#FFFFFF] p-5 dark:border-slate-800 dark:bg-slate-900">
-              <h2 className="text-headline-sm text-[#0F172A] dark:text-slate-100">
-                Application Pipeline Funnel
-              </h2>
-              <p className="mb-4 text-[11px] text-[#64748B]">
-                Cumulative progression across recruitment stages
-              </p>
-              <div className="space-y-3">
-                {data.funnel.map((step) => (
-                  <div key={step.key} className="space-y-1">
-                    <div className="flex justify-between">
-                      <span className="font-semibold text-[#334155] dark:text-slate-300">
-                        {step.label}
-                      </span>
-                      <span className="font-mono text-[#64748B] tabular-nums">
-                        {step.count} (
-                        {step.percentageOfSubmitted != null
-                          ? `${step.percentageOfSubmitted}%`
-                          : "0%"}
-                        )
-                      </span>
+            <div className="elevation-1 rounded-2xl border border-[#bdcabf]/40 bg-[#ffffff] p-6 dark:border-[#24332a] dark:bg-[#111a15]">
+              <div className="mb-4 flex items-center justify-between">
+                <div>
+                  <h2 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
+                    Application Pipeline Funnel
+                  </h2>
+                  <p className="text-[11px] text-[#3f674f] dark:text-[#a5d1b4]">
+                    Cumulative progression across recruitment stages
+                  </p>
+                </div>
+                <span className="rounded-full bg-[#eff5ee] px-2.5 py-1 text-[11px] font-semibold text-[#3f674f] dark:bg-[#17231c] dark:text-[#a5d1b4]">
+                  {kpi.totalApplicationsSubmitted} leads
+                </span>
+              </div>
+              <div className="space-y-3.5">
+                {data.funnel.map((step, idx) => {
+                  const pct = step.percentageOfSubmitted ?? 0;
+                  const barColor =
+                    FUNNEL_BAR_COLORS[idx % FUNNEL_BAR_COLORS.length];
+                  return (
+                    <div key={step.key} className="space-y-1">
+                      <div className="flex justify-between">
+                        <span className="font-semibold text-[#171d19] dark:text-[#ecf3eb]">
+                          {step.label}
+                        </span>
+                        <span className="font-mono text-[#3f674f] tabular-nums dark:text-[#a5d1b4]">
+                          {step.count}{" "}
+                          <span className="font-bold text-[#171d19] dark:text-[#ecf3eb]">
+                            ({pct}%)
+                          </span>
+                        </span>
+                      </div>
+                      <div className="flex h-6 w-full overflow-hidden rounded-lg bg-[#eff5ee] dark:bg-[#17231c]">
+                        <div
+                          className={`flex h-full items-center justify-end rounded-lg px-2 font-mono text-[10px] font-bold text-white transition-all duration-500 ${barColor}`}
+                          style={{
+                            width: `${pct}%`,
+                            minWidth: step.count > 0 ? "26px" : "0px",
+                          }}
+                        >
+                          {step.count > 0 ? step.count : ""}
+                        </div>
+                      </div>
                     </div>
-                    <div className="h-2.5 w-full overflow-hidden rounded-full bg-[#F1F5F9] dark:bg-slate-800">
-                      <div
-                        className="h-full rounded-full bg-[#204CD3]"
-                        style={{ width: `${step.percentageOfSubmitted ?? 0}%` }}
-                      />
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
 
             {/* Chart 2: Applications by Recruitment Stage */}
-            <div className="elevation-1 rounded-[8px] border border-[#E2E8F0] bg-[#FFFFFF] p-5 dark:border-slate-800 dark:bg-slate-900">
-              <h2 className="text-headline-sm text-[#0F172A] dark:text-slate-100">
+            <div className="elevation-1 rounded-2xl border border-[#bdcabf]/40 bg-[#ffffff] p-6 dark:border-[#24332a] dark:bg-[#111a15]">
+              <h2 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
                 Applications by Recruitment Stage
               </h2>
-              <p className="mb-4 text-[11px] text-[#64748B]">
+              <p className="mb-4 text-[11px] text-[#3f674f] dark:text-[#a5d1b4]">
                 Current snapshot across active and terminal stages
               </p>
-              <div className="space-y-2">
+              <div className="space-y-2.5">
                 {data.applicationsByStage.map((st) => {
                   const style = getStageColorStyle(st.color, st.name);
                   const widthPct = Math.max(
@@ -413,16 +444,16 @@ export function AnalyticsClient({ data }: { data: AnalyticsData }) {
                       key={st.id}
                       className="flex items-center gap-2.5 text-[11px]"
                     >
-                      <span className="w-36 truncate font-medium text-[#334155] dark:text-slate-300">
+                      <span className="w-36 truncate font-medium text-[#171d19] dark:text-[#ecf3eb]">
                         {st.name}
                       </span>
-                      <div className="h-2 flex-1 overflow-hidden rounded-full bg-[#F1F5F9] dark:bg-slate-800">
+                      <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-[#eff5ee] dark:bg-[#17231c]">
                         <div
                           className={`h-full rounded-full ${style.dot}`}
                           style={{ width: `${widthPct}%` }}
                         />
                       </div>
-                      <span className="w-6 text-right font-mono font-semibold text-[#0F172A] tabular-nums dark:text-slate-200">
+                      <span className="w-6 text-right font-mono font-bold text-[#171d19] tabular-nums dark:text-[#ecf3eb]">
                         {st.count}
                       </span>
                     </div>
@@ -432,11 +463,11 @@ export function AnalyticsClient({ data }: { data: AnalyticsData }) {
             </div>
 
             {/* Chart 3: Application Outcomes */}
-            <div className="elevation-1 rounded-[8px] border border-[#E2E8F0] bg-[#FFFFFF] p-5 dark:border-slate-800 dark:bg-slate-900">
-              <h2 className="text-headline-sm text-[#0F172A] dark:text-slate-100">
+            <div className="elevation-1 rounded-2xl border border-[#bdcabf]/40 bg-[#ffffff] p-6 dark:border-[#24332a] dark:bg-[#111a15]">
+              <h2 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
                 Application Outcomes
               </h2>
-              <p className="mb-4 text-[11px] text-[#64748B]">
+              <p className="mb-4 text-[11px] text-[#3f674f] dark:text-[#a5d1b4]">
                 Active vs closed recruitment outcomes
               </p>
               <div className="flex items-center gap-4">
@@ -455,7 +486,7 @@ export function AnalyticsClient({ data }: { data: AnalyticsData }) {
                         {data.outcomeDistribution.map((entry) => (
                           <Cell
                             key={entry.key}
-                            fill={OUTCOME_COLORS[entry.key] ?? "#204CD3"}
+                            fill={OUTCOME_COLORS[entry.key] ?? "#006a42"}
                           />
                         ))}
                       </Pie>
@@ -470,13 +501,13 @@ export function AnalyticsClient({ data }: { data: AnalyticsData }) {
                         className="h-2.5 w-2.5 shrink-0 rounded-full"
                         style={{
                           backgroundColor:
-                            OUTCOME_COLORS[item.key] ?? "#204CD3",
+                            OUTCOME_COLORS[item.key] ?? "#006a42",
                         }}
                       />
-                      <span className="text-[#334155] dark:text-slate-300">
+                      <span className="text-[#3e4a41] dark:text-[#b7c6ba]">
                         {item.name}:
                       </span>
-                      <span className="font-mono font-semibold text-[#0F172A] tabular-nums dark:text-slate-100">
+                      <span className="font-mono font-bold text-[#171d19] tabular-nums dark:text-[#ecf3eb]">
                         {item.value}
                       </span>
                     </div>
@@ -488,12 +519,12 @@ export function AnalyticsClient({ data }: { data: AnalyticsData }) {
 
           {/* Charts Row 2: Application Activity Over Time + Monthly Recruitment Performance */}
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-            {/* Chart 4: Application Activity Over Time */}
-            <div className="elevation-1 rounded-[8px] border border-[#E2E8F0] bg-[#FFFFFF] p-5 dark:border-slate-800 dark:bg-slate-900">
-              <h2 className="text-headline-sm text-[#0F172A] dark:text-slate-100">
+            {/* Chart 4 */}
+            <div className="elevation-1 rounded-2xl border border-[#bdcabf]/40 bg-[#ffffff] p-6 dark:border-[#24332a] dark:bg-[#111a15]">
+              <h2 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
                 Application Activity Over Time
               </h2>
-              <p className="mb-4 text-[11px] text-[#64748B]">
+              <p className="mb-4 text-[11px] text-[#3f674f] dark:text-[#a5d1b4]">
                 Monthly volume of submitted job applications
               </p>
               <div className="h-60 w-full">
@@ -506,8 +537,8 @@ export function AnalyticsClient({ data }: { data: AnalyticsData }) {
                     <Bar
                       dataKey="submitted"
                       name="Submitted Applications"
-                      fill="#204CD3"
-                      radius={[4, 4, 0, 0]}
+                      fill="#006a42"
+                      radius={[6, 6, 0, 0]}
                       isAnimationActive={false}
                     />
                   </BarChart>
@@ -515,12 +546,12 @@ export function AnalyticsClient({ data }: { data: AnalyticsData }) {
               </div>
             </div>
 
-            {/* Chart 5: Monthly Recruitment Performance */}
-            <div className="elevation-1 rounded-[8px] border border-[#E2E8F0] bg-[#FFFFFF] p-5 dark:border-slate-800 dark:bg-slate-900">
-              <h2 className="text-headline-sm text-[#0F172A] dark:text-slate-100">
+            {/* Chart 5 */}
+            <div className="elevation-1 rounded-2xl border border-[#bdcabf]/40 bg-[#ffffff] p-6 dark:border-[#24332a] dark:bg-[#111a15]">
+              <h2 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
                 Monthly Recruitment Performance
               </h2>
-              <p className="mb-4 text-[11px] text-[#64748B]">
+              <p className="mb-4 text-[11px] text-[#3f674f] dark:text-[#a5d1b4]">
                 Submissions compared with interviews reached, offers, and hires
               </p>
               <div className="h-60 w-full">
@@ -534,29 +565,29 @@ export function AnalyticsClient({ data }: { data: AnalyticsData }) {
                     <Bar
                       dataKey="submitted"
                       name="Submitted"
-                      fill="#204CD3"
-                      radius={[4, 4, 0, 0]}
+                      fill="#006a42"
+                      radius={[6, 6, 0, 0]}
                       isAnimationActive={false}
                     />
                     <Bar
                       dataKey="interviewsReached"
                       name="Interviews"
-                      fill="#10B981"
-                      radius={[4, 4, 0, 0]}
+                      fill="#008655"
+                      radius={[6, 6, 0, 0]}
                       isAnimationActive={false}
                     />
                     <Bar
                       dataKey="offersReached"
                       name="Offers"
-                      fill="#F59E0B"
-                      radius={[4, 4, 0, 0]}
+                      fill="#8f6f3b"
+                      radius={[6, 6, 0, 0]}
                       isAnimationActive={false}
                     />
                     <Bar
                       dataKey="hired"
                       name="Hired"
-                      fill="#047857"
-                      radius={[4, 4, 0, 0]}
+                      fill="#005232"
+                      radius={[6, 6, 0, 0]}
                       isAnimationActive={false}
                     />
                   </BarChart>
@@ -567,13 +598,14 @@ export function AnalyticsClient({ data }: { data: AnalyticsData }) {
 
           {/* Charts Row 3: Interview Conversion Rate + Applications by Job Platform */}
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-            {/* Chart 6: Interview Conversion Rate */}
-            <div className="elevation-1 rounded-[8px] border border-[#E2E8F0] bg-[#FFFFFF] p-5 dark:border-slate-800 dark:bg-slate-900">
-              <h2 className="text-headline-sm text-[#0F172A] dark:text-slate-100">
+            {/* Chart 6 */}
+            <div className="elevation-1 rounded-2xl border border-[#bdcabf]/40 bg-[#ffffff] p-6 dark:border-[#24332a] dark:bg-[#111a15]">
+              <h2 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
                 Interview Conversion Rate Trend (%)
               </h2>
-              <p className="mb-4 text-[11px] text-[#64748B]">
-                Share of eligible applications reaching interview or assessment per month
+              <p className="mb-4 text-[11px] text-[#3f674f] dark:text-[#a5d1b4]">
+                Share of eligible applications reaching interview or assessment
+                per month
               </p>
               <div className="h-60 w-full">
                 <ResponsiveContainer width="100%" height="100%">
@@ -586,9 +618,9 @@ export function AnalyticsClient({ data }: { data: AnalyticsData }) {
                       type="monotone"
                       dataKey="interviewRate"
                       name="Interview Conversion (%)"
-                      stroke="#10B981"
+                      stroke="#006a42"
                       strokeWidth={2.5}
-                      dot={{ r: 4, fill: "#10B981" }}
+                      dot={{ r: 4, fill: "#006a42" }}
                       isAnimationActive={false}
                     />
                   </LineChart>
@@ -596,12 +628,12 @@ export function AnalyticsClient({ data }: { data: AnalyticsData }) {
               </div>
             </div>
 
-            {/* Chart 7: Applications by Job Platform */}
-            <div className="elevation-1 rounded-[8px] border border-[#E2E8F0] bg-[#FFFFFF] p-5 dark:border-slate-800 dark:bg-slate-900">
-              <h2 className="text-headline-sm text-[#0F172A] dark:text-slate-100">
+            {/* Chart 7 */}
+            <div className="elevation-1 rounded-2xl border border-[#bdcabf]/40 bg-[#ffffff] p-6 dark:border-[#24332a] dark:bg-[#111a15]">
+              <h2 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
                 Applications by Job Platform
               </h2>
-              <p className="mb-4 text-[11px] text-[#64748B]">
+              <p className="mb-4 text-[11px] text-[#3f674f] dark:text-[#a5d1b4]">
                 Application distribution and interview yield across channels
               </p>
               <div className="h-60 w-full">
@@ -612,7 +644,11 @@ export function AnalyticsClient({ data }: { data: AnalyticsData }) {
                     margin={{ left: 20 }}
                   >
                     <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
-                    <XAxis type="number" allowDecimals={false} tick={{ fontSize: 11 }} />
+                    <XAxis
+                      type="number"
+                      allowDecimals={false}
+                      tick={{ fontSize: 11 }}
+                    />
                     <YAxis
                       type="category"
                       dataKey="platformName"
@@ -623,7 +659,7 @@ export function AnalyticsClient({ data }: { data: AnalyticsData }) {
                     <Bar
                       dataKey="applicationsCount"
                       name="Applications"
-                      radius={[0, 4, 4, 0]}
+                      radius={[0, 6, 6, 0]}
                       isAnimationActive={false}
                     >
                       {data.platformDistribution.map((entry, idx) => (
@@ -642,50 +678,55 @@ export function AnalyticsClient({ data }: { data: AnalyticsData }) {
           {/* Breakdown Tables: Response Rate by Company, Platform & Industry */}
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
             {/* Response Rate by Company */}
-            <div className="elevation-1 overflow-hidden rounded-[8px] border border-[#E2E8F0] bg-[#FFFFFF] lg:col-span-7 dark:border-slate-800 dark:bg-slate-900">
-              <div className="border-b border-[#E2E8F0] px-5 py-3.5 dark:border-slate-800">
-                <h2 className="text-headline-sm text-[#0F172A] dark:text-slate-100">
+            <div className="elevation-1 overflow-hidden rounded-2xl border border-[#bdcabf]/40 bg-[#ffffff] p-6 lg:col-span-7 dark:border-[#24332a] dark:bg-[#111a15]">
+              <div className="mb-4">
+                <h2 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
                   Response Rate by Company
                 </h2>
-                <p className="text-[11px] text-[#64748B]">
+                <p className="text-[11px] text-[#3f674f] dark:text-[#a5d1b4]">
                   Employer responsiveness and average days to first reply
                 </p>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full border-collapse text-left text-xs">
                   <thead>
-                    <tr className="border-b border-[#E2E8F0] bg-[#F8FAFC] text-[11px] font-semibold uppercase tracking-[0.04em] text-[#64748B] dark:border-slate-800 dark:bg-slate-950">
-                      <th className="px-4 py-2.5">Company</th>
-                      <th className="px-4 py-2.5 text-right">Submitted</th>
-                      <th className="px-4 py-2.5 text-right">Responded</th>
-                      <th className="px-4 py-2.5 text-right">Response Rate</th>
-                      <th className="px-4 py-2.5 text-right">Avg Reply</th>
-                      <th className="px-4 py-2.5 text-right">Interviews</th>
+                    <tr className="rounded-xl bg-[#eff5ee]/80 text-[11px] font-semibold uppercase tracking-wider text-[#3f674f] dark:bg-[#17231c] dark:text-[#a5d1b4]">
+                      <th className="rounded-l-xl px-4 py-3">Company</th>
+                      <th className="px-4 py-3 text-right">Submitted</th>
+                      <th className="px-4 py-3 text-right">Responded</th>
+                      <th className="px-4 py-3 text-right">Response Rate</th>
+                      <th className="px-4 py-3 text-right">Avg Reply</th>
+                      <th className="rounded-r-xl px-4 py-3 text-right">
+                        Interviews
+                      </th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#E2E8F0] dark:divide-slate-800">
+                  <tbody className="divide-y divide-[#e3eae3]/70 dark:divide-[#24332a]">
                     {data.companyResponseRates.map((row) => (
-                      <tr key={row.companyName}>
-                        <td className="px-4 py-2.5 font-semibold text-[#0F172A] dark:text-slate-100">
+                      <tr
+                        key={row.companyName}
+                        className="transition-colors hover:bg-[#eff5ee]/50 dark:hover:bg-[#17231c]/50"
+                      >
+                        <td className="px-4 py-3 font-semibold text-[#171d19] dark:text-[#ecf3eb]">
                           {row.companyName}
                         </td>
-                        <td className="px-4 py-2.5 text-right font-mono tabular-nums">
+                        <td className="px-4 py-3 text-right font-mono tabular-nums">
                           {row.submittedCount}
                         </td>
-                        <td className="px-4 py-2.5 text-right font-mono tabular-nums">
+                        <td className="px-4 py-3 text-right font-mono tabular-nums">
                           {row.respondedCount}
                         </td>
-                        <td className="px-4 py-2.5 text-right font-mono font-semibold text-[#204CD3] tabular-nums dark:text-[#B7C4FF]">
+                        <td className="px-4 py-3 text-right font-mono font-bold text-[#006a42] tabular-nums dark:text-[#69dca0]">
                           {row.responseRate != null
                             ? `${row.responseRate}%`
                             : "N/A"}
                         </td>
-                        <td className="px-4 py-2.5 text-right font-mono text-[#64748B] tabular-nums">
+                        <td className="px-4 py-3 text-right font-mono text-[#3f674f] tabular-nums dark:text-[#a5d1b4]">
                           {row.averageResponseDays != null
                             ? `${row.averageResponseDays}d`
                             : "-"}
                         </td>
-                        <td className="px-4 py-2.5 text-right font-mono text-[#047857] tabular-nums dark:text-emerald-400">
+                        <td className="px-4 py-3 text-right font-mono font-semibold text-[#008655] tabular-nums dark:text-[#86f9ba]">
                           {row.interviewCount}
                         </td>
                       </tr>
@@ -697,59 +738,63 @@ export function AnalyticsClient({ data }: { data: AnalyticsData }) {
 
             {/* Platform & Industry Distributions */}
             <div className="space-y-6 lg:col-span-5">
-              <div className="elevation-1 overflow-hidden rounded-[8px] border border-[#E2E8F0] bg-[#FFFFFF] dark:border-slate-800 dark:bg-slate-900">
-                <div className="border-b border-[#E2E8F0] px-5 py-3 dark:border-slate-800">
-                  <h2 className="text-headline-sm text-[#0F172A] dark:text-slate-100">
-                    Application Distribution by Platform
-                  </h2>
-                </div>
-                <div className="divide-y divide-[#E2E8F0] px-5 dark:divide-slate-800">
+              <div className="elevation-1 overflow-hidden rounded-2xl border border-[#bdcabf]/40 bg-[#ffffff] p-6 dark:border-[#24332a] dark:bg-[#111a15]">
+                <h2 className="mb-3 text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
+                  Application Distribution by Platform
+                </h2>
+                <div className="space-y-2.5">
                   {data.platformDistribution.map((p) => (
                     <div
                       key={p.platformName}
-                      className="flex items-center justify-between py-2.5"
+                      className="flex flex-col gap-1.5 rounded-xl bg-[#eff5ee] p-3 dark:bg-[#17231c]"
                     >
-                      <div>
-                        <p className="font-semibold text-[#0F172A] dark:text-slate-100">
-                          {p.platformName}
-                        </p>
-                        <p className="text-[11px] text-[#64748B] tabular-nums">
-                          {p.interviewsReached} interview(s) ·{" "}
-                          {p.interviewConversionRate != null
-                            ? `${p.interviewConversionRate}% conversion`
-                            : "N/A"}
-                        </p>
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="font-semibold text-[#171d19] dark:text-[#ecf3eb]">
+                            {p.platformName}
+                          </p>
+                          <p className="text-[11px] text-[#3f674f] tabular-nums dark:text-[#a5d1b4]">
+                            {p.interviewsReached} interview(s) ·{" "}
+                            {p.interviewConversionRate != null
+                              ? `${p.interviewConversionRate}% conversion`
+                              : "N/A"}
+                          </p>
+                        </div>
+                        <span className="rounded-full bg-[#c0edcf] px-2.5 py-0.5 font-mono text-[11px] font-bold text-[#005232] tabular-nums dark:bg-[#005232] dark:text-[#86f9ba]">
+                          {p.applicationsCount} ({p.sharePercent ?? 0}%)
+                        </span>
                       </div>
-                      <span className="rounded-full bg-[#EEF2FF] px-2.5 py-0.5 font-mono text-[11px] font-semibold text-[#1D4ED8] tabular-nums">
-                        {p.applicationsCount} ({p.sharePercent ?? 0}%)
-                      </span>
+                      <div className="h-1.5 w-full overflow-hidden rounded-full bg-[#dde4dd] dark:bg-[#23342a]">
+                        <div
+                          className="h-full rounded-full bg-[#006a42] dark:bg-[#69dca0]"
+                          style={{ width: `${p.sharePercent ?? 0}%` }}
+                        />
+                      </div>
                     </div>
                   ))}
                 </div>
               </div>
 
-              <div className="elevation-1 overflow-hidden rounded-[8px] border border-[#E2E8F0] bg-[#FFFFFF] dark:border-slate-800 dark:bg-slate-900">
-                <div className="border-b border-[#E2E8F0] px-5 py-3 dark:border-slate-800">
-                  <h2 className="text-headline-sm text-[#0F172A] dark:text-slate-100">
-                    Application Distribution by Industry
-                  </h2>
-                </div>
-                <div className="divide-y divide-[#E2E8F0] px-5 dark:divide-slate-800">
+              <div className="elevation-1 overflow-hidden rounded-2xl border border-[#bdcabf]/40 bg-[#ffffff] p-6 dark:border-[#24332a] dark:bg-[#111a15]">
+                <h2 className="mb-3 text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
+                  Application Distribution by Industry
+                </h2>
+                <div className="space-y-2">
                   {data.industryDistribution.map((ind) => (
                     <div
                       key={ind.industry}
-                      className="flex items-center justify-between py-2.5"
+                      className="flex items-center justify-between rounded-xl bg-[#eff5ee] p-3 dark:bg-[#17231c]"
                     >
                       <div>
-                        <p className="font-semibold text-[#0F172A] dark:text-slate-100">
+                        <p className="font-semibold text-[#171d19] dark:text-[#ecf3eb]">
                           {ind.industry}
                         </p>
-                        <p className="text-[11px] text-[#64748B] tabular-nums">
-                          {ind.interviewsReached} interview(s) · {ind.hiredCount}{" "}
-                          hired
+                        <p className="text-[11px] text-[#3f674f] tabular-nums dark:text-[#a5d1b4]">
+                          {ind.interviewsReached} interview(s) ·{" "}
+                          {ind.hiredCount} hired
                         </p>
                       </div>
-                      <span className="rounded-full bg-[#F1F5F9] px-2.5 py-0.5 font-mono text-[11px] font-semibold text-[#334155] tabular-nums dark:bg-slate-800 dark:text-slate-300">
+                      <span className="rounded-full bg-[#dde4dd] px-2.5 py-0.5 font-mono text-[11px] font-bold text-[#171d19] tabular-nums dark:bg-[#23342a] dark:text-[#ecf3eb]">
                         {ind.applicationsCount} ({ind.sharePercent ?? 0}%)
                       </span>
                     </div>
@@ -774,19 +819,19 @@ function KpiTile({
   accent: "neutral" | "blue" | "emerald" | "amber" | "rose";
 }) {
   const valueColor =
-    accent === "blue"
-      ? "text-[#204CD3] dark:text-[#B7C4FF]"
-      : accent === "emerald"
-        ? "text-[#047857] dark:text-emerald-400"
-        : accent === "amber"
-          ? "text-[#B45309] dark:text-amber-300"
-          : accent === "rose"
-            ? "text-[#BE123C] dark:text-rose-400"
-            : "text-[#0F172A] dark:text-slate-100";
+    accent === "blue" || accent === "emerald"
+      ? "text-[#006a42] dark:text-[#69dca0]"
+      : accent === "amber"
+        ? "text-[#745725] dark:text-[#e8c084]"
+        : accent === "rose"
+          ? "text-[#ba1a1a] dark:text-rose-400"
+          : "text-[#171d19] dark:text-[#ecf3eb]";
 
   return (
-    <div className="elevation-1 rounded-[8px] border border-[#E2E8F0] bg-[#FFFFFF] p-4 dark:border-slate-800 dark:bg-slate-900">
-      <p className="text-label-sm uppercase text-[#64748B]">{label}</p>
+    <div className="elevation-1 rounded-2xl border border-[#bdcabf]/40 bg-[#ffffff] p-5 transition-shadow hover:shadow-md dark:border-[#24332a] dark:bg-[#111a15]">
+      <p className="text-label-xs uppercase text-[#3f674f] dark:text-[#a5d1b4]">
+        {label}
+      </p>
       <p className={`mt-2 text-metric-num ${valueColor}`}>{value}</p>
     </div>
   );
@@ -802,12 +847,16 @@ function MetricShell({
   sub: string;
 }) {
   return (
-    <div className="elevation-1 rounded-[8px] border border-[#E2E8F0] bg-[#FFFFFF] p-3.5 dark:border-slate-800 dark:bg-slate-900">
-      <p className="text-label-sm uppercase text-[#64748B]">{label}</p>
-      <p className="mt-1.5 font-display text-lg font-bold text-[#0F172A] tabular-nums dark:text-slate-100">
+    <div className="elevation-1 rounded-2xl border border-[#bdcabf]/40 bg-[#ffffff] p-4 dark:border-[#24332a] dark:bg-[#111a15]">
+      <p className="text-label-xs uppercase text-[#3f674f] dark:text-[#a5d1b4]">
+        {label}
+      </p>
+      <p className="mt-1.5 font-display text-lg font-bold text-[#171d19] tabular-nums dark:text-[#ecf3eb]">
         {value}
       </p>
-      <p className="mt-0.5 text-[11px] text-[#64748B] tabular-nums">{sub}</p>
+      <p className="mt-0.5 text-[11px] text-[#3f674f] tabular-nums dark:text-[#a5d1b4]">
+        {sub}
+      </p>
     </div>
   );
 }

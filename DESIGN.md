@@ -1,257 +1,269 @@
 ---
-name: Executive Precision
+name: Executive Precision ATS
 colors:
-  surface: '#fbf8ff'
-  surface-dim: '#d9d9e6'
-  surface-bright: '#fbf8ff'
+  surface: '#f4fbf4'
+  surface-dim: '#d5dcd5'
+  surface-bright: '#f4fbf4'
   surface-container-lowest: '#ffffff'
-  surface-container-low: '#f3f2ff'
-  surface-container: '#ededfb'
-  surface-container-high: '#e7e7f5'
-  surface-container-highest: '#e1e1ef'
-  on-surface: '#191b25'
-  on-surface-variant: '#444654'
-  inverse-surface: '#2e303a'
-  inverse-on-surface: '#f0effd'
-  outline: '#747686'
-  outline-variant: '#c4c5d7'
-  surface-tint: '#2751d8'
-  primary: '#0034ae'
+  surface-container-low: '#eff5ee'
+  surface-container: '#e9f0e8'
+  surface-container-high: '#e3eae3'
+  surface-container-highest: '#dde4dd'
+  on-surface: '#171d19'
+  on-surface-variant: '#3e4a41'
+  inverse-surface: '#2b322d'
+  inverse-on-surface: '#ecf3eb'
+  outline: '#6e7a71'
+  outline-variant: '#bdcabf'
+  surface-tint: '#006d44'
+  primary: '#006a42'
   on-primary: '#ffffff'
-  primary-container: '#204cd3'
-  on-primary-container: '#c6cfff'
-  inverse-primary: '#b7c4ff'
-  secondary: '#485aa2'
+  primary-container: '#008655'
+  on-primary-container: '#f6fff6'
+  inverse-primary: '#69dca0'
+  secondary: '#3f674f'
   on-secondary: '#ffffff'
-  secondary-container: '#9daffe'
-  on-secondary-container: '#2d4087'
-  tertiary: '#7a2500'
+  secondary-container: '#c0edcf'
+  on-secondary-container: '#446d55'
+  tertiary: '#745725'
   on-tertiary: '#ffffff'
-  tertiary-container: '#a23400'
-  on-tertiary-container: '#ffc4b0'
+  tertiary-container: '#8f6f3b'
+  on-tertiary-container: '#fffbff'
   error: '#ba1a1a'
   on-error: '#ffffff'
   error-container: '#ffdad6'
   on-error-container: '#93000a'
-  primary-fixed: '#dde1ff'
-  primary-fixed-dim: '#b7c4ff'
-  on-primary-fixed: '#001453'
-  on-primary-fixed-variant: '#0038b8'
-  secondary-fixed: '#dde1ff'
-  secondary-fixed-dim: '#b7c4ff'
-  on-secondary-fixed: '#001453'
-  on-secondary-fixed-variant: '#2f4288'
-  tertiary-fixed: '#ffdbcf'
-  tertiary-fixed-dim: '#ffb59c'
-  on-tertiary-fixed: '#380c00'
-  on-tertiary-fixed-variant: '#822800'
-  background: '#fbf8ff'
-  on-background: '#191b25'
-  surface-variant: '#e1e1ef'
+  primary-fixed: '#86f9ba'
+  primary-fixed-dim: '#69dca0'
+  on-primary-fixed: '#002111'
+  on-primary-fixed-variant: '#005232'
+  secondary-fixed: '#c0edcf'
+  secondary-fixed-dim: '#a5d1b4'
+  on-secondary-fixed: '#002111'
+  on-secondary-fixed-variant: '#274f39'
+  tertiary-fixed: '#ffdead'
+  tertiary-fixed-dim: '#e8c084'
+  on-tertiary-fixed: '#281900'
+  on-tertiary-fixed-variant: '#5d4211'
+  background: '#f4fbf4'
+  on-background: '#171d19'
+  surface-variant: '#dde4dd'
 typography:
-  display-lg:
+  display:
     fontFamily: Plus Jakarta Sans
-    fontSize: 36px
+    fontSize: 3rem
     fontWeight: '700'
-    lineHeight: 44px
+    lineHeight: 3.5rem
     letterSpacing: -0.03em
-  display-lg-mobile:
+  display-mobile:
     fontFamily: Plus Jakarta Sans
-    fontSize: 28px
+    fontSize: 2.25rem
     fontWeight: '700'
-    lineHeight: 36px
-    letterSpacing: -0.02em
+    lineHeight: 2.75rem
+    letterSpacing: -0.025em
   headline-lg:
     fontFamily: Plus Jakarta Sans
-    fontSize: 24px
+    fontSize: 2rem
+    fontWeight: '700'
+    lineHeight: 2.5rem
+    letterSpacing: -0.025em
+  headline-lg-mobile:
+    fontFamily: Plus Jakarta Sans
+    fontSize: 1.5rem
     fontWeight: '600'
-    lineHeight: 32px
+    lineHeight: 2rem
     letterSpacing: -0.02em
   headline-md:
     fontFamily: Plus Jakarta Sans
-    fontSize: 20px
+    fontSize: 1.5rem
     fontWeight: '600'
-    lineHeight: 28px
-    letterSpacing: -0.015em
+    lineHeight: 2rem
+    letterSpacing: -0.02em
   headline-sm:
     fontFamily: Plus Jakarta Sans
-    fontSize: 16px
+    fontSize: 1.25rem
     fontWeight: '600'
-    lineHeight: 24px
+    lineHeight: 1.75rem
+    letterSpacing: -0.015em
+  title-lg:
+    fontFamily: Plus Jakarta Sans
+    fontSize: 1.125rem
+    fontWeight: '600'
+    lineHeight: 1.625rem
     letterSpacing: -0.01em
   title-md:
-    fontFamily: Inter
-    fontSize: 15px
-    fontWeight: '600'
-    lineHeight: 22px
-    letterSpacing: -0.01em
-  body-lg:
-    fontFamily: Inter
-    fontSize: 16px
-    fontWeight: '400'
-    lineHeight: 24px
-  body-md:
-    fontFamily: Inter
-    fontSize: 14px
-    fontWeight: '400'
-    lineHeight: 20px
-  body-sm:
-    fontFamily: Inter
-    fontSize: 13px
-    fontWeight: '400'
-    lineHeight: 18px
-  label-md:
-    fontFamily: Inter
-    fontSize: 12px
-    fontWeight: '600'
-    lineHeight: 16px
-    letterSpacing: 0.02em
-  label-sm:
-    fontFamily: Inter
-    fontSize: 11px
-    fontWeight: '600'
-    lineHeight: 14px
-    letterSpacing: 0.04em
-  metric-num:
     fontFamily: Plus Jakarta Sans
-    fontSize: 28px
-    fontWeight: '700'
-    lineHeight: 32px
-    letterSpacing: -0.02em
+    fontSize: 1rem
+    fontWeight: '600'
+    lineHeight: 1.5rem
+    letterSpacing: -0.01em
+  title-sm:
+    fontFamily: Plus Jakarta Sans
+    fontSize: 0.875rem
+    fontWeight: '600'
+    lineHeight: 1.25rem
+    letterSpacing: 0em
+  body-lg:
+    fontFamily: Plus Jakarta Sans
+    fontSize: 1rem
+    fontWeight: '400'
+    lineHeight: 1.625rem
+    letterSpacing: -0.005em
+  body-md:
+    fontFamily: Plus Jakarta Sans
+    fontSize: 0.875rem
+    fontWeight: '400'
+    lineHeight: 1.375rem
+    letterSpacing: 0em
+  body-sm:
+    fontFamily: Plus Jakarta Sans
+    fontSize: 0.75rem
+    fontWeight: '400'
+    lineHeight: 1.125rem
+    letterSpacing: 0.01em
+  label-md:
+    fontFamily: Plus Jakarta Sans
+    fontSize: 0.875rem
+    fontWeight: '500'
+    lineHeight: 1.25rem
+    letterSpacing: 0.01em
+  label-sm:
+    fontFamily: Plus Jakarta Sans
+    fontSize: 0.75rem
+    fontWeight: '600'
+    lineHeight: 1rem
+    letterSpacing: 0.04em
+  label-xs:
+    fontFamily: Plus Jakarta Sans
+    fontSize: 0.6875rem
+    fontWeight: '600'
+    lineHeight: 0.875rem
+    letterSpacing: 0.06em
 rounded:
-  sm: 0.125rem
-  DEFAULT: 0.25rem
-  md: 0.375rem
-  lg: 0.5rem
-  xl: 0.75rem
+  sm: 0.25rem
+  DEFAULT: 0.5rem
+  md: 0.75rem
+  lg: 1rem
+  xl: 1.5rem
   full: 9999px
 spacing:
-  gutter: 1rem
-  gutter-desktop: 1.5rem
-  margin: 1rem
-  margin-desktop: 2rem
+  gutter: 1.5rem
+  gutter-sm: 1rem
+  margin: 2rem
+  margin-mobile: 1rem
   space-xs: 0.25rem
   space-sm: 0.5rem
-  space-md: 0.75rem
-  space-lg: 1.25rem
+  space-md: 1rem
+  space-lg: 1.5rem
   space-xl: 2rem
+  space-2xl: 3rem
 ---
-
-# Executive Precision Design System
 
 ## Brand & Style
 
-This design system delivers an executive-grade personal career command center. It balances the analytical rigor of an enterprise CRM with the calm clarity and tactile efficiency of an elite personal productivity tool.
+The design system projects authority, deliberate clarity, and operational momentum. Tailored for enterprise talent executives, recruiters, and elite candidates navigating high-stakes career placement, the atmosphere eliminates noise in favor of analytical clarity and confident visual weight.
 
-- **Brand Personality**: Disciplined, forward-thinking, empowering, and organized. It avoids frivolous gamification in favor of structural clarity, quiet confidence, and tactile responsiveness.
-- **Target Audience**: Mid-to-senior knowledge workers, engineering leads, product directors, and domain specialists navigating multi-stage hiring funnels who require commanding control over pipeline stages, correspondence, offer models, and technical cycles.
-- **Emotional Response**: Grounded control, reduced cognitive fatigue during high-stakes job transitions, steady momentum, and acute professional agency.
-- **Design Style**: Modern Precision SaaS. High-density information architecture balanced by crisp neutral surfaces, deliberate 1px structural borders, muted tonal badges, and high-impact accents powered by electric royal blue (`#204CD3`) for decisive primary actions and active navigation states.
+The aesthetic fuses **Modern Executive Precision** with high-clarity enterprise SaaS ergonomics:
+- **Tone:** Methodical, high-trust, and decisive. Interfaces mirror the precision of high-tier financial terminals while preserving the friction-free ergonomics of modern consumer software.
+- **Structural Integrity:** Crisp hairline architecture, calibrated whitespace, and micro-elevation replace decorative flourishes. Visual priority is dictated by status semantics, match metrics, and actionable workflow pipelines.
+- **Duality:** Seamless cohesion across public executive onboarding portals (clean, spacious split-shell layouts) and data-intensive workspaces (dense kanban boards, live telemetry, and split-pane resume audit suites).
 
 ## Colors
 
-The color palette centers on a crisp slate neutral foundation paired with an electric royal blue (`#204CD3`) primary anchor and clear semantic status beacons.
+The palette leverages a calibrated Emerald Green core paired with precise semantic indicators for real-time ATS status updates and match evaluations.
 
-- **Primary Interactive Anchor**:
-  - Primary Accent (`#204CD3`): Primary CTAs, active tab underlines, key action buttons, and focused component halos.
-  - Primary Container / Soft Surface (`#EEF2FF`): Selected navigation states, applied stage pills, and highlighted data rows.
-  - Primary Text On-Soft (`#1D4ED8`): Text and iconography rendered on electric blue tinted backgrounds.
-- **Foundational Neutral Surfaces**:
-  - Main Canvas (`#F8FAFC`): Provides clean, glare-free baseline contrast against intense data densities.
-  - Surface Containers & Cards (`#FFFFFF`): Elevated panels, data tables, and kanban lane backgrounds.
-  - Surface Subdued (`#F1F5F9`): Kanban column tracks, search field resting surfaces, and inactive hover states.
-- **Structural Ink & Typography**:
-  - Ink Primary (`#0F172A`): Primary headings, metrics, and high-emphasis text.
-  - Ink Secondary (`#334155`): Secondary body, table headers, and breadcrumbs.
-  - Ink Muted (`#64748B`): Timestamps, inactive tabs, and field labels.
-  - Borders & Dividers (`#E2E8F0`): Crisp 1px separations; active borders shift to `#CBD5E1`.
-- **Accents & Semantics**:
-  - Stage: Applied / Initial Contact (`#204CD3`): Uses `#EEF2FF` background with `#1D4ED8` text and a solid `#204CD3` indicator dot.
-  - Stage: Active Interview / Offer (`#10B981`): Emerald green applied on `#ECFDF5` background with `#047857` text.
-  - Stage: In Review / Lead (`#F59E0B`): Amber applied on `#FFFBEB` background with `#B45309` text.
-  - Stage: Archived / Rejection (`#F43F5E`): Rose applied on `#FFF1F2` background with `#BE123C` text.
+### Palette Architecture
+- **Primary (`#08945F`):** The operational driver used for high-emphasis CTAs, active application pipelines, key indicators, and navigational active states.
+  - Hover: `#06764C`
+  - Active / Pressed: `#055C3C`
+  - Surface Wash / Tint: `#E8F8F2`
+- **Secondary (`#578067`):** Reserved for secondary analytical drivers, talent intelligence workflows, skill match accents, and executive-level features.
+- **Tertiary (`#FFD698`):** Grounded warm accent for structural icons, secondary metadata, column headers, and highlights.
+- **Neutral Core:**
+  - Ink Primary (`#727973`): Deep neutral slate for high-priority headings, names, and metrics.
+  - Ink Secondary (`#578067`): Supporting text, pipeline counts, and timestamps.
+  - Ink Muted (`#94A3B8`): Field placeholders, subtle dividers, and inactive icons.
+  - Canvas Ground (`#F8FAFC`): Base interface canvas providing zero-glare contrast.
+  - Surface Pristine (`#FFFFFF`): Elevated cards, modals, dropdown panels, and sticky table heads.
+  - Hairline Rule (`#E2E8F0`): Subtle 1px structural framing.
+
+### Functional Semantics
+- **Success (`#10B981` / Tint `#ECFDF5`):** Optimal ATS match scores (85%+), confirmed interview rounds, active requisitions.
+- **Warning (`#F59E0B` / Tint `#FFFBEB`):** Review pending, upcoming deadline within 24h, portfolio gap flags.
+- **Critical / Danger (`#EF4444` / Tint `#FEF2F2`):** Missing core prerequisites, rejected status, canceled interviews.
+- **Information (`#0EA5E9` / Tint `#F0F9FF`):** System notifications, stage notes, integration alerts.
 
 ## Typography
 
-The typographic hierarchy balances the structural poise of **Plus Jakarta Sans** for headlines and high-value numerical metrics with the pragmatic, utilitarian readability of **Inter** for dense UI data, metadata, forms, and table rows.
+The typography uses Plus Jakarta Sans exclusively, delivering contemporary geometric proportions paired with functional legibility under high information density.
 
-- **Tabular Figures**: All metric cards, salary values, dates, time markers, and interview counters must enforce `font-variant-numeric: tabular-nums` to maintain precise vertical baseline alignment across dense cards and lists.
-- **Letter Spacing**: Display and large headlines carry subtle negative tracking (`-0.015em` to `-0.03em`) for a disciplined editorial posture. Micro-labels and status badges use deliberate positive tracking (`+0.02em` to `+0.04em`) with semibold weights to ensure crisp legibility at small sizes.
-- **Hierarchy Rules**: Primary headers do not exceed 36px on desktop to maintain SaaS information density. Interactive cards lean on 14px and 13px body text to preserve compact vertical rhythms.
+- **Numerics & Data Density:** All numeric figures across pipeline throughputs, match percentages, salary bands, and interview timestamps must render with tabular figures (`tnum`) enabled via OpenType feature settings to ensure aligned metric columns.
+- **Scale Usage:**
+  - `display`: Reserved for executive portal hero titles and score counters.
+  - `headline-lg` through `headline-sm`: View containers, section titles, and modal headers.
+  - `title-md` / `title-sm`: Candidate names inside pipeline cards, sidebar section heads, and table row groupings.
+  - `body-md` / `body-sm`: Executive notes, ATS parse summaries, candidate correspondence, and input descriptions.
+  - `label-sm` / `label-xs`: Uppercase section tags, stage badges, and ATS keyword chips.
 
 ## Layout & Spacing
 
-The dashboard employs a fluid, multi-pane SaaS framework configured with a fixed collapsible global navigation sidebar (64px collapsed, 240px expanded) and a responsive fluid content stage.
+The interface employs a hybrid layout approach:
+1. **Public Portals (Sign In / Register / Access Request):** Centered card or 50/50 split-canvas layout. Left pane accommodates immersive enterprise credentials, security indicators, and key metrics; right pane houses clean, floating input forms.
+2. **Dashboard & Workspaces:** Multi-pane fluid application shell featuring a fixed 240px navigation rail (collapsible to 72px icon rail), a sticky top command bar (height 64px), and a responsive content viewport.
 
-- **Grid Systems**:
-  - **Metrics Tier**: 4-column fluid auto-fit grid (`minmax(220px, 1fr)`) separated by `gutter-desktop` (1.5rem / 24px).
-  - **Pipeline Stage / Kanban View**: Horizontal swipe-scroll or multi-column flex grid with fixed column widths (`280px` minimum to `340px` maximum) with `1rem` (16px) gutters.
-  - **Split Details View**: 60/40 split pane when inspecting an applicant item (primary kanban/list on the left, full contextual profile drawer on the right).
-- **Responsive Adaptations**:
-  - **Desktop (1280px+)**: Multi-lane board fully visible; expanded sidebar; sticky action bars with `margin-desktop` (2rem / 32px) page gutters.
-  - **Tablet (768px - 1279px)**: Horizontal snap-scrolling Kanban columns; metrics collapse into a 2x2 grid; collapsed icon-only sidebar.
-  - **Mobile (<768px)**: Kanban lanes convert to a segmented-control single-lane view; metrics collapse to a horizontal scroll deck; canvas margins compress to `margin` (1rem / 16px).
+### Breakpoint Strategy
+- **Desktop (>= 1280px):** 12-column grid or horizontal fluid multi-column boards (e.g., 5-stage kanban view without horizontal canvas scrolling, minimum stage column width of 280px).
+- **Tablet (768px - 1279px):** Sidebar converts to an overlay drawer; kanban board transitions to swipeable columns or segment-filtered single-lane cards.
+- **Mobile (< 768px):** Single-column stack, sticky bottom action bars for applicant evaluations, and bottom-sheet drawers for filtering and resume inspectors.
 
 ## Elevation & Depth
 
-Visual hierarchy uses a refined blend of **1px structural borders** and **whisper-light ambient shadows** to keep the interface crisp, lightweight, and performant.
+Visual hierarchy relies on crisp surface layering, low-contrast ghost outlines, and ultra-soft, daylight-calibrated ambient shadows. Deep, murky shadows are prohibited to maintain a clean, enterprise-grade feel.
 
-- **Base Layer (Elevation 0)**:
-  - Canvas background (`#F8FAFC`). No shadow, no outline.
-- **Board Lanes & Metric Shells (Elevation 1)**:
-  - Surface white (`#FFFFFF`) with a 1px solid border in `#E2E8F0`. Shadow: `0 1px 2px 0 rgba(11, 28, 48, 0.04)`.
-- **Interactive Job Cards (Elevation 2)**:
-  - Surface white (`#FFFFFF`) with 1px border in `#E2E8F0`.
-  - Resting shadow: `0 1px 3px 0 rgba(11, 28, 48, 0.05), 0 1px 2px -1px rgba(11, 28, 48, 0.05)`.
-  - Hover shadow: `0 4px 6px -1px rgba(11, 28, 48, 0.08), 0 2px 4px -2px rgba(11, 28, 48, 0.04)`; border shifts to `#CBD5E1`.
-- **Drag-and-Drop Active State (Elevation 3)**:
-  - When dragging cards across kanban columns: card scales to 1.02x, shadow deepens to `0 12px 24px -4px rgba(32, 76, 211, 0.16), 0 4px 6px -2px rgba(11, 28, 48, 0.04)`, border shifts directly to electric royal blue (`#204CD3`).
-- **Flyout Drawers & Modals (Elevation 4)**:
-  - Side panel candidate drawers: `0 20px 25px -5px rgba(11, 28, 48, 0.12), 0 8px 10px -6px rgba(11, 28, 48, 0.06)`, flanked by a subtle `#0B1C30` backdrop mask at 20% opacity.
+- **Level 0 (Flat / Canvas):** `#F8FAFC`. Background canvas, recessed input wells, and disabled kanban lanes.
+- **Level 1 (Card & Board Tile):** `#FFFFFF` with `border: 1px solid #E2E8F0` and `box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.04), 0 1px 2px -1px rgba(15, 23, 42, 0.02)`. Used for candidate cards, table wrappers, and metrics blocks.
+- **Level 2 (Hover & Active Drag):** `#FFFFFF` with `border: 1px solid #CBD5E1` and `box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.06), 0 4px 6px -4px rgba(15, 23, 42, 0.03)`. Applied when lifting candidate cards in the pipeline or hovering interactive rows.
+- **Level 3 (Flyouts, Menus & Command Palette):** `#FFFFFF` with `border: 1px solid #E2E8F0` and `box-shadow: 0 20px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.04)`.
+- **Level 4 (Modals & Resume Vault Viewer):** `#FFFFFF` over an ambient backdrop scrim (`rgba(15, 23, 42, 0.45)` with `backdrop-filter: blur(4px)`).
 
 ## Shapes
 
-The design system maintains geometric precision with clean, compact curvature (`roundedness: 1`).
+The design system establishes a consistent `0.5rem` (8px) base radius for structural and functional interface modules, stepping up to `1rem` (16px) for major floating sheets and dialogue containers.
 
-- **Controls & Micro Elements**: Buttons, text inputs, search fields, and metric cards use `rounded-sm` (0.25rem / 4px).
-- **Surface Containers & Cards**: Job cards, kanban track columns, and flyout containers adopt `rounded` (0.5rem / 8px).
-- **Status Tags & Pill Badges**: Stage pills, salary tags, and counter chips use complete circular pills (`rounded-full` / 9999px) to contrast against rectangular cards.
-- **Nested Inner Geometry**: Containers with inner padding host elements whose radii inherit a proportionate reduction (`inner radius = outer radius - padding`) to ensure visual cohesion across borders.
+- **Base Radius (`0.5rem` / 8px):** Form fields, standard buttons, kanban candidate cards, table action triggers, and filter chips.
+- **Extended Radius (`1rem` / 16px):** Portal access cards, application metrics containers, and modal dialog frames.
+- **Pill Radius (`9999px`):** Status indicator tags, match score pill meters, and user avatar badges.
+- **Dividers & Strokes:** 1px hairline width across all structural borders. No heavy outlines.
 
 ## Components
 
-### Buttons
-- **Primary**: Solid electric royal blue (`#204CD3`), white text, 4px radius (`rounded-sm`), semibold weight. Subtle active scale (`0.98`). Hover: `#1D4ED8`. Focus-visible: 2px ring in `#204CD3` with 2px canvas offset.
-- **Secondary**: Surface `#FFFFFF`, border 1px solid `#CBD5E1`, text `#0F172A`. Hover: `#F8FAFC`, border `#94A3B8`.
-- **Ghost / Icon**: Transparent background, text `#64748B`. Hover: `#EEF2FF`, text `#204CD3`.
+### Buttons & Interactive Controls
+- **Primary Action:** Solid `#08945F` background, `#FFFFFF` text, `font-weight: 600`, 8px corner radius. Hover shifts to `#06764C`; focus ring displays an offset 2px glow of `#08945F/40`.
+- **Secondary / Ghost:** Transparent background with 1px `#E2E8F0` border, `#727973` text. Hover transitions to `#F8FAFC` surface with `#CBD5E1` border.
+- **Destructive:** Light tint `#FEF2F2` background, `#EF4444` text, 1px border `#FEE2E2`. Shifts to solid `#EF4444` with `#FFFFFF` text on confirmation states.
+- **Height Dimensions:** Small (32px) for compact table actions, Regular (40px) for standard workflow actions, Large (48px) for executive portal CTAs.
 
-### Stage Pill Badges
-- Compact pill-shaped containers (`padding: 2px 10px`, `label-sm` font, `rounded-full`).
-- **Applied**: `#EEF2FF` fill, `#1D4ED8` text, dot accent `#204CD3`.
-- **Interviewing**: `#ECFDF5` fill, `#047857` text, dot accent `#10B981`.
-- **Review**: `#FFFBEB` fill, `#B45309` text, dot accent `#F59E0B`.
-- **Rejected**: `#FFF1F2` fill, `#BE123C` text, dot accent `#F43F5E`.
+### Form Inputs & Selectors
+- **Input Fields:** Pristine white background, 1px `#CBD5E1` border, 8px border-radius, 12px horizontal padding, 10px vertical padding. Inactive placeholders use `#94A3B8`.
+- **Focus State:** 1px `#08945F` border with a 3px ambient shadow ring (`rgba(8, 148, 95, 0.15)`).
+- **Validation Messages:** Positioned 4px below input in `label-sm` sizing. Uses `#EF4444` for error strings and `#10B981` for verified unique inputs.
 
-### Kanban Column
-- Track shell: Background `#F1F5F9`, border 1px solid `#E2E8F0`, 8px border-radius (`rounded`), `padding: 12px`.
-- Column Header: Features stage name, total item count chip (`#E2E8F0` badge), and quick-add ghost button with electric blue hover.
+### Candidate & Application Cards (Kanban)
+- **Container:** White surface, Level 1 elevation, 8px radius, 14px padding.
+- **Header:** Candidate name (`title-sm`), target role, and an ATS score pill indicator.
+- **Body:** Current company, years of experience, and compact skill chips.
+- **Footer:** Last updated timestamp, pending action badge (e.g., "Schedule Rd 2"), and assignee avatar (24px circle).
 
-### Job Card Component
-- Container: `#FFFFFF` fill, 1px `#E2E8F0` border, 8px border-radius, `padding: 14px`.
-- Structure:
-  - Top row: Company avatar/favicon (24x24px rounded-sm) + Company Name (`body-sm`, bold) + Date Added.
-  - Middle row: Target Role (`headline-sm`, 1-line truncation) + Compensation label (`$160k - $185k`, tabular text).
-  - Bottom row: Status Pill Badge (left-aligned) + Interview step pill or pending task icon (right-aligned).
-- Active / Drag State: Electric royal blue border (`#204CD3`) with elevated halo shadow.
+### ATS Score Gauges & Badges
+- **Pill Badges:** 22px height, `label-xs` uppercase typography, rounded full, 8px horizontal padding.
+  - High Fit (85-100%): Text `#047857`, Background `#ECFDF5`, Border `#A7F3D0`.
+  - Moderate Fit (65-84%): Text `#B45309`, Background `#FFFBEB`, Border `#FDE68A`.
+  - Low Fit (<65%): Text `#B91C1C`, Background `#FEF2F2`, Border `#FECACA`.
 
-### Metric / KPI Tile
-- Surface: `#FFFFFF`, 1px `#E2E8F0` border, 8px border-radius, `padding: 16px`.
-- Layout: Top subtitle label (`label-md`, uppercase `#64748B`), middle metric counter (`metric-num`, `#0F172A`), bottom trend indicator (`+12% this week` in `#10B981` or active milestone counter in `#204CD3`).
+### Pipeline Analytics & Milestone Timelines
+- **Metrics Tiles:** Single metric display featuring a muted descriptive label (`label-sm`), high-contrast primary number (`headline-lg`, tabular figures), and comparative delta badge (+/- percentage in green/red pill).
+- **Milestone Stepper:** Horizontal chain connected via 2px `#E2E8F0` track. Completed nodes render with solid `#08945F` checkmarks, current stage glows with a primary border ring, and future nodes stay muted in slate.
 
-### Input Fields & Search
-- Container: Surface `#FFFFFF` or `#F8FAFC` at rest, border 1px `#CBD5E1`, height 40px, 4px radius.
-- Leading icon slot (16px magnifier or filter icon in `#94A3B8`). Focus state smoothly transitions border to `#204CD3` with a 3px soft tint ring (`rgba(32, 76, 211, 0.15)`).
-
-### Checkboxes & Radio Buttons
-- Selected State: Solid `#204CD3` fill with white checkmark/radio dot. Focus state displays a 2px offset ring in `#204CD3`.
-- Unselected State: 1px border `#CBD5E1` on `#FFFFFF` background.
+### Resume Vault & Tailoring Inspector
+- **Split View Layout:** Left pane hosts raw/parsed text highlights, right pane displays job description keyword parity.
+- **Match Diff Chips:** Inline highlight markers (`#ECFDF5` for present qualifications, `#FEF2F2` with strike-through for missing requirements).

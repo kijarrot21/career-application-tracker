@@ -274,10 +274,10 @@ export function SettingsClient({
   return (
     <div className="mx-auto max-w-5xl space-y-6 text-xs">
       <div>
-        <h1 className="text-headline-md text-[#0F172A] dark:text-slate-100">
+        <h1 className="text-headline-md text-[#171d19] dark:text-[#ecf3eb]">
           Settings, Pipeline Customization & Data Privacy
         </h1>
-        <p className="text-[13px] text-[#64748B]">
+        <p className="text-[13px] text-[#3f674f]">
           Configure your candidate profile, recruitment stages, follow-up rules,
           suitability weights, and privacy controls.
         </p>
@@ -286,24 +286,24 @@ export function SettingsClient({
       {/* 1. Candidate Profile & Locale */}
       <form
         onSubmit={handleSaveProfile}
-        className="elevation-1 space-y-4 rounded-[8px] border border-[#E2E8F0] bg-[#FFFFFF] p-5 dark:border-slate-800 dark:bg-slate-900"
+        className="elevation-1 space-y-4 rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] p-5 dark:border-[#24332a] dark:bg-[#111a15]"
       >
-        <h2 className="text-headline-sm text-[#0F172A] dark:text-slate-100">
+        <h2 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
           1. Candidate Profile & Preferences
         </h2>
-        <p className="text-[#64748B]">
+        <p className="text-[#3f674f]">
           Used to auto-suggest suitability scores when evaluating job vacancies.
         </p>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           <div>
-            <label className="block font-semibold text-[#334155] dark:text-slate-300">
+            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
               Timezone
             </label>
             <select
               value={timezone}
               onChange={(e) => setTimezone(e.target.value)}
-              className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950"
+              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
             >
               {TIMEZONES.map((tz) => (
                 <option key={tz} value={tz}>
@@ -314,13 +314,13 @@ export function SettingsClient({
           </div>
 
           <div>
-            <label className="block font-semibold text-[#334155] dark:text-slate-300">
+            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
               Default Currency
             </label>
             <select
               value={currency}
               onChange={(e) => setCurrency(e.target.value as Currency)}
-              className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950"
+              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
             >
               {CURRENCIES.map((c) => (
                 <option key={c} value={c}>
@@ -331,13 +331,13 @@ export function SettingsClient({
           </div>
 
           <div>
-            <label className="block font-semibold text-[#334155] dark:text-slate-300">
+            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
               Job Search Status
             </label>
             <select
               value={searchStatus}
               onChange={(e) => setSearchStatus(e.target.value as SearchStatus)}
-              className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950"
+              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
             >
               {SEARCH_STATUSES.map((s) => (
                 <option key={s} value={s}>
@@ -350,7 +350,7 @@ export function SettingsClient({
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           <div>
-            <label className="block font-semibold text-[#334155] dark:text-slate-300">
+            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
               Target Headline / Role
             </label>
             <input
@@ -358,12 +358,12 @@ export function SettingsClient({
               value={headline}
               onChange={(e) => setHeadline(e.target.value)}
               placeholder="Full-Stack Software Engineer"
-              className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950"
+              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
             />
           </div>
 
           <div>
-            <label className="block font-semibold text-[#334155] dark:text-slate-300">
+            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
               Years of Experience
             </label>
             <input
@@ -372,12 +372,12 @@ export function SettingsClient({
               max={50}
               value={yearsExperience}
               onChange={(e) => setYearsExperience(e.target.value)}
-              className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] tabular-nums dark:border-slate-700 dark:bg-slate-950"
+              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] tabular-nums dark:border-[#2d3d33] dark:bg-[#17231c]"
             />
           </div>
 
           <div>
-            <label className="block font-semibold text-[#334155] dark:text-slate-300">
+            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
               Highest Education Level
             </label>
             <select
@@ -385,7 +385,7 @@ export function SettingsClient({
               onChange={(e) =>
                 setEducationLevel(e.target.value as EducationLevel)
               }
-              className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950"
+              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
             >
               {EDUCATION_LEVELS.map((lvl) => (
                 <option key={lvl} value={lvl}>
@@ -397,7 +397,7 @@ export function SettingsClient({
         </div>
 
         <div>
-          <label className="block font-semibold text-[#334155] dark:text-slate-300">
+          <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
             Your Skills (comma-separated)
           </label>
           <input
@@ -405,13 +405,13 @@ export function SettingsClient({
             value={skillsText}
             onChange={(e) => setSkillsText(e.target.value)}
             placeholder="TypeScript, React, Next.js, Node.js, PostgreSQL, Tailwind CSS"
-            className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950"
+            className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
           />
         </div>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           <div>
-            <label className="block font-semibold text-[#334155] dark:text-slate-300">
+            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
               Expected Monthly Salary Min ({currency})
             </label>
             <input
@@ -420,11 +420,11 @@ export function SettingsClient({
               value={expectedSalaryMin}
               onChange={(e) => setExpectedSalaryMin(e.target.value)}
               placeholder="22000000"
-              className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] tabular-nums dark:border-slate-700 dark:bg-slate-950"
+              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] tabular-nums dark:border-[#2d3d33] dark:bg-[#17231c]"
             />
           </div>
           <div>
-            <label className="block font-semibold text-[#334155] dark:text-slate-300">
+            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
               Expected Monthly Salary Max ({currency})
             </label>
             <input
@@ -433,11 +433,11 @@ export function SettingsClient({
               value={expectedSalaryMax}
               onChange={(e) => setExpectedSalaryMax(e.target.value)}
               placeholder="32000000"
-              className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] tabular-nums dark:border-slate-700 dark:bg-slate-950"
+              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] tabular-nums dark:border-[#2d3d33] dark:bg-[#17231c]"
             />
           </div>
           <div>
-            <label className="block font-semibold text-[#334155] dark:text-slate-300">
+            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
               Preferred Locations (comma-separated)
             </label>
             <input
@@ -445,19 +445,19 @@ export function SettingsClient({
               value={preferredLocationsText}
               onChange={(e) => setPreferredLocationsText(e.target.value)}
               placeholder="Jakarta, Bandung, Remote"
-              className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950"
+              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
             />
           </div>
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
-          <span className="font-semibold text-[#334155] dark:text-slate-300">
+          <span className="font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
             Preferred Work Arrangements:
           </span>
           {WORK_ARRANGEMENTS.map((arr) => (
             <label
               key={arr}
-              className="inline-flex items-center gap-1.5 font-medium text-[#0F172A] dark:text-slate-200"
+              className="inline-flex items-center gap-1.5 font-medium text-[#171d19] dark:text-[#ecf3eb]"
             >
               <input
                 type="checkbox"
@@ -473,7 +473,7 @@ export function SettingsClient({
           <button
             type="submit"
             disabled={isPending}
-            className="h-9 rounded-[4px] bg-[#204CD3] px-4 text-xs font-semibold text-white transition-all hover:bg-[#1D4ED8] active:scale-[0.98] disabled:opacity-50"
+            className="btn-primary h-10 px-4 text-xs disabled:opacity-50"
           >
             Save Profile & Preferences
           </button>
@@ -481,18 +481,18 @@ export function SettingsClient({
       </form>
 
       {/* 2. Recruitment Pipeline Stages */}
-      <div className="elevation-1 space-y-4 rounded-[8px] border border-[#E2E8F0] bg-[#FFFFFF] p-5 dark:border-slate-800 dark:bg-slate-900">
+      <div className="elevation-1 space-y-4 rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] p-5 dark:border-[#24332a] dark:bg-[#111a15]">
         <div>
-          <h2 className="text-headline-sm text-[#0F172A] dark:text-slate-100">
+          <h2 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
             2. Recruitment Pipeline Stages
           </h2>
-          <p className="text-[#64748B]">
+          <p className="text-[#3f674f]">
             Reorder, hide, or add custom recruitment stages while preserving
             standard HR stage classifications.
           </p>
         </div>
 
-        <div className="divide-y divide-[#E2E8F0] rounded-[8px] border border-[#E2E8F0] dark:divide-slate-800 dark:border-slate-800">
+        <div className="divide-y divide-[#dde4dd]/70 rounded-2xl border border-[#bdcabf]/50 dark:divide-[#24332a] dark:border-[#24332a]">
           {stages.map((st, idx) => (
             <div
               key={st.id}
@@ -500,11 +500,11 @@ export function SettingsClient({
             >
               <div className="flex items-center gap-2.5">
                 <StageBadge name={st.name} color={st.color} />
-                <span className="font-mono text-[11px] text-[#64748B]">
+                <span className="font-mono text-[11px] text-[#3f674f]">
                   type: {st.stageType}
                 </span>
                 {st.isHidden && (
-                  <span className="rounded-full bg-[#F1F5F9] px-2 py-0.5 text-[10px] font-semibold text-[#64748B] dark:bg-slate-800">
+                  <span className="rounded-full bg-[#eff5ee] px-2 py-0.5 text-[10px] font-semibold text-[#3f674f] dark:bg-[#1d2b23]">
                     Hidden
                   </span>
                 )}
@@ -516,7 +516,7 @@ export function SettingsClient({
                   disabled={isPending || idx === 0}
                   onClick={() => handleMoveStageOrder(idx, -1)}
                   title="Move stage earlier"
-                  className="rounded-[4px] p-1 text-[#64748B] hover:bg-[#EEF2FF] hover:text-[#204CD3] disabled:opacity-30 dark:hover:bg-slate-800"
+                  className="rounded-xl p-1 text-[#3f674f] hover:bg-[#c0edcf]/60 hover:text-[#006a42] disabled:opacity-30 dark:hover:bg-slate-800"
                 >
                   <ArrowUp className="h-3.5 w-3.5" />
                 </button>
@@ -525,7 +525,7 @@ export function SettingsClient({
                   disabled={isPending || idx === stages.length - 1}
                   onClick={() => handleMoveStageOrder(idx, 1)}
                   title="Move stage later"
-                  className="rounded-[4px] p-1 text-[#64748B] hover:bg-[#EEF2FF] hover:text-[#204CD3] disabled:opacity-30 dark:hover:bg-slate-800"
+                  className="rounded-xl p-1 text-[#3f674f] hover:bg-[#c0edcf]/60 hover:text-[#006a42] disabled:opacity-30 dark:hover:bg-slate-800"
                 >
                   <ArrowDown className="h-3.5 w-3.5" />
                 </button>
@@ -546,7 +546,7 @@ export function SettingsClient({
                       }
                     })
                   }
-                  className="inline-flex items-center gap-1 rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 py-0.5 text-[11px] font-semibold text-[#334155] hover:border-[#94A3B8] hover:bg-[#F8FAFC] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
+                  className="inline-flex items-center gap-1 rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 py-0.5 text-[11px] font-semibold text-[#3e4a41] hover:border-[#6e7a71] hover:bg-[#eff5ee] dark:border-[#2d3d33] dark:bg-[#1d2b23] dark:text-[#b7c6ba]"
                 >
                   {st.isHidden ? (
                     <>
@@ -568,7 +568,7 @@ export function SettingsClient({
           className="flex flex-wrap items-end gap-2.5 pt-2"
         >
           <div className="flex-1">
-            <label className="block font-semibold text-[#334155] dark:text-slate-300">
+            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
               Add Custom Stage Name
             </label>
             <input
@@ -576,18 +576,18 @@ export function SettingsClient({
               value={newStageName}
               onChange={(e) => setNewStageName(e.target.value)}
               placeholder="e.g., Live Coding Pair Session"
-              className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950"
+              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
             />
           </div>
 
           <div>
-            <label className="block font-semibold text-[#334155] dark:text-slate-300">
+            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
               Stage Classification
             </label>
             <select
               value={newStageType}
               onChange={(e) => setNewStageType(e.target.value)}
-              className="mt-1 h-10 rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950"
+              className="mt-1 h-10 rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
             >
               {CUSTOM_STAGE_TYPES.map((t) => (
                 <option key={t} value={t}>
@@ -598,13 +598,13 @@ export function SettingsClient({
           </div>
 
           <div>
-            <label className="block font-semibold text-[#334155] dark:text-slate-300">
+            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
               Badge Color
             </label>
             <select
               value={newStageColor}
               onChange={(e) => setNewStageColor(e.target.value as StageColor)}
-              className="mt-1 h-10 rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950"
+              className="mt-1 h-10 rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
             >
               {STAGE_COLORS.map((c) => (
                 <option key={c} value={c}>
@@ -617,7 +617,7 @@ export function SettingsClient({
           <button
             type="submit"
             disabled={isPending}
-            className="inline-flex h-10 items-center gap-1 rounded-[4px] bg-[#204CD3] px-3.5 text-xs font-semibold text-white transition-all hover:bg-[#1D4ED8] active:scale-[0.98]"
+            className="btn-primary h-10 px-4 text-xs"
           >
             <Plus className="h-3.5 w-3.5" />
             Add Stage
@@ -628,12 +628,12 @@ export function SettingsClient({
       {/* 3. Follow-up & No Response Rules */}
       <form
         onSubmit={handleSaveFollowUp}
-        className="elevation-1 space-y-4 rounded-[8px] border border-[#E2E8F0] bg-[#FFFFFF] p-5 dark:border-slate-800 dark:bg-slate-900"
+        className="elevation-1 space-y-4 rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] p-5 dark:border-[#24332a] dark:bg-[#111a15]"
       >
-        <h2 className="text-headline-sm text-[#0F172A] dark:text-slate-100">
+        <h2 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
           3. Follow-up & &ldquo;No Response&rdquo; Intervals
         </h2>
-        <p className="text-[#64748B]">
+        <p className="text-[#3f674f]">
           Operational defaults for follow-up task scheduling. Applications are
           never automatically marked as Rejected or No Response without your
           confirmation.
@@ -641,7 +641,7 @@ export function SettingsClient({
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">
           <div>
-            <label className="block font-semibold text-[#334155] dark:text-slate-300">
+            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
               1st Follow-up (Business Days)
             </label>
             <input
@@ -650,12 +650,12 @@ export function SettingsClient({
               max={60}
               value={followUpFirstDays}
               onChange={(e) => setFollowUpFirstDays(e.target.value)}
-              className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] tabular-nums dark:border-slate-700 dark:bg-slate-950"
+              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] tabular-nums dark:border-[#2d3d33] dark:bg-[#17231c]"
             />
           </div>
 
           <div>
-            <label className="block font-semibold text-[#334155] dark:text-slate-300">
+            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
               2nd Follow-up (Business Days)
             </label>
             <input
@@ -664,12 +664,12 @@ export function SettingsClient({
               max={60}
               value={followUpSecondDays}
               onChange={(e) => setFollowUpSecondDays(e.target.value)}
-              className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] tabular-nums dark:border-slate-700 dark:bg-slate-950"
+              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] tabular-nums dark:border-[#2d3d33] dark:bg-[#17231c]"
             />
           </div>
 
           <div>
-            <label className="block font-semibold text-[#334155] dark:text-slate-300">
+            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
               Final Follow-up (Business Days)
             </label>
             <input
@@ -678,12 +678,12 @@ export function SettingsClient({
               max={90}
               value={followUpFinalDays}
               onChange={(e) => setFollowUpFinalDays(e.target.value)}
-              className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] tabular-nums dark:border-slate-700 dark:bg-slate-950"
+              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] tabular-nums dark:border-[#2d3d33] dark:bg-[#17231c]"
             />
           </div>
 
           <div>
-            <label className="block font-semibold text-[#334155] dark:text-slate-300">
+            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
               No Response Suggestion (Days)
             </label>
             <input
@@ -692,14 +692,14 @@ export function SettingsClient({
               max={365}
               value={noResponseDays}
               onChange={(e) => setNoResponseDays(e.target.value)}
-              className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] tabular-nums dark:border-slate-700 dark:bg-slate-950"
+              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] tabular-nums dark:border-[#2d3d33] dark:bg-[#17231c]"
             />
           </div>
         </div>
 
         <div className="space-y-1.5">
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <label className="font-semibold text-[#334155] dark:text-slate-300">
+            <label className="font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
               Public Holidays Excluded from Business-Day Follow-up Calculations (YYYY-MM-DD, comma-separated)
             </label>
             <button
@@ -707,7 +707,7 @@ export function SettingsClient({
               onClick={() =>
                 setHolidaysText(INDONESIAN_HOLIDAY_PRESETS.join(", "))
               }
-              className="rounded-[4px] border border-[#C7D2FE] bg-[#EEF2FF] px-2.5 py-1 text-[11px] font-semibold text-[#1D4ED8] hover:bg-[#DDE1FF]"
+              className="rounded-xl border border-[#a5d1b4] bg-[#c0edcf]/60 px-2.5 py-1 text-[11px] font-semibold text-[#005232] hover:bg-[#c0edcf]"
             >
               Load Indonesian Public Holidays (2026-2027)
             </button>
@@ -717,7 +717,7 @@ export function SettingsClient({
             value={holidaysText}
             onChange={(e) => setHolidaysText(e.target.value)}
             placeholder="2026-01-01, 2026-03-20, 2026-08-17, 2026-12-25"
-            className="h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 font-mono text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950"
+            className="h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 font-mono text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
           />
         </div>
 
@@ -725,7 +725,7 @@ export function SettingsClient({
           <button
             type="submit"
             disabled={isPending}
-            className="h-9 rounded-[4px] bg-[#204CD3] px-4 text-xs font-semibold text-white transition-all hover:bg-[#1D4ED8] active:scale-[0.98]"
+            className="btn-primary h-10 px-4 text-xs"
           >
             Save Follow-up Rules
           </button>
@@ -735,15 +735,15 @@ export function SettingsClient({
       {/* 4. Suitability Weights */}
       <form
         onSubmit={handleSaveWeights}
-        className="elevation-1 space-y-4 rounded-[8px] border border-[#E2E8F0] bg-[#FFFFFF] p-5 dark:border-slate-800 dark:bg-slate-900"
+        className="elevation-1 space-y-4 rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] p-5 dark:border-[#24332a] dark:bg-[#111a15]"
       >
-        <h2 className="text-headline-sm text-[#0F172A] dark:text-slate-100">
+        <h2 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
           4. Job Suitability Evaluation Weights
         </h2>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
           {CRITERIA.map((c) => (
             <div key={c}>
-              <label className="block truncate font-semibold text-[#334155] dark:text-slate-300">
+              <label className="block truncate font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
                 {CRITERION_LABELS[c]}
               </label>
               <input
@@ -757,7 +757,7 @@ export function SettingsClient({
                     [c]: Number(e.target.value) || 0,
                   }))
                 }
-                className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] tabular-nums dark:border-slate-700 dark:bg-slate-950"
+                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] tabular-nums dark:border-[#2d3d33] dark:bg-[#17231c]"
               />
             </div>
           ))}
@@ -766,7 +766,7 @@ export function SettingsClient({
           <button
             type="submit"
             disabled={isPending}
-            className="h-9 rounded-[4px] bg-[#204CD3] px-4 text-xs font-semibold text-white transition-all hover:bg-[#1D4ED8] active:scale-[0.98]"
+            className="btn-primary h-10 px-4 text-xs"
           >
             Save Suitability Weights
           </button>
@@ -774,14 +774,14 @@ export function SettingsClient({
       </form>
 
       {/* 5. Sample Demonstration Data */}
-      <div className="elevation-1 space-y-3 rounded-[8px] border border-[#E2E8F0] bg-[#FFFFFF] p-5 dark:border-slate-800 dark:bg-slate-900">
+      <div className="elevation-1 space-y-3 rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] p-5 dark:border-[#24332a] dark:bg-[#111a15]">
         <div className="flex items-center gap-2">
-          <Database className="h-4 w-4 text-[#F59E0B]" />
-          <h2 className="text-headline-sm text-[#0F172A] dark:text-slate-100">
+          <Database className="h-4 w-4 text-[#8f6f3b]" />
+          <h2 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
             5. Sample Demonstration Records
           </h2>
         </div>
-        <p className="text-[#64748B]">
+        <p className="text-[#3f674f]">
           Sample records are clearly labeled with a SAMPLE badge and kept
           strictly separate from your real applications.
         </p>
@@ -798,7 +798,7 @@ export function SettingsClient({
                   router.refresh();
                 })
               }
-              className="inline-flex h-9 items-center gap-1.5 rounded-[4px] border border-[#F59E0B]/40 bg-[#FFFBEB] px-3 text-xs font-semibold text-[#B45309] hover:bg-[#FEF3C7] dark:border-amber-800 dark:bg-amber-950/60 dark:text-amber-200"
+              className="inline-flex h-10 items-center gap-1.5 rounded-lg border border-[#e8c084]/60 bg-[#ffdead]/60 px-4 text-xs font-semibold text-[#5d4211] hover:bg-[#ffdead] dark:border-amber-800 dark:bg-amber-950/60 dark:text-amber-200"
             >
               <Database className="h-3.5 w-3.5" />
               Load Sample Data
@@ -814,7 +814,7 @@ export function SettingsClient({
                   router.refresh();
                 })
               }
-              className="inline-flex h-9 items-center gap-1.5 rounded-[4px] border border-[#F59E0B]/40 bg-[#FFFFFF] px-3 text-xs font-semibold text-[#B45309] tabular-nums hover:bg-[#FFFBEB] dark:border-amber-800 dark:bg-slate-950 dark:text-amber-200"
+              className="btn-secondary h-10 px-4 text-xs tabular-nums"
             >
               <Trash2 className="h-3.5 w-3.5" />
               Remove Sample Data ({sampleStatus.sampleJobsCount} jobs,{" "}
@@ -825,10 +825,10 @@ export function SettingsClient({
       </div>
 
       {/* 6. Data Export & Account Deletion (UU PDP) */}
-      <div className="elevation-1 space-y-4 rounded-[8px] border border-[#E2E8F0] bg-[#FFFFFF] p-5 dark:border-slate-800 dark:bg-slate-900">
+      <div className="elevation-1 space-y-4 rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] p-5 dark:border-[#24332a] dark:bg-[#111a15]">
         <div className="flex items-center gap-2">
-          <ShieldAlert className="h-4 w-4 text-[#204CD3]" />
-          <h2 className="text-headline-sm text-[#0F172A] dark:text-slate-100">
+          <ShieldAlert className="h-4 w-4 text-[#006a42]" />
+          <h2 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
             6. Data Portability & Account Deletion (Privacy / UU PDP)
           </h2>
         </div>
@@ -837,7 +837,7 @@ export function SettingsClient({
           <a
             href="/api/export/account"
             download
-            className="inline-flex h-9 items-center gap-1.5 rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-3 text-xs font-semibold text-[#0F172A] hover:border-[#94A3B8] hover:bg-[#F8FAFC] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
+            className="btn-secondary h-10 px-4 text-xs"
           >
             <Download className="h-3.5 w-3.5" />
             Export All Account Data (JSON)
@@ -846,7 +846,7 @@ export function SettingsClient({
           <a
             href="/api/export/applications"
             download
-            className="inline-flex h-9 items-center gap-1.5 rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-3 text-xs font-semibold text-[#0F172A] hover:border-[#94A3B8] hover:bg-[#F8FAFC] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
+            className="btn-secondary h-10 px-4 text-xs"
           >
             <Download className="h-3.5 w-3.5" />
             Export Applications (CSV)
@@ -855,10 +855,10 @@ export function SettingsClient({
 
         <form
           onSubmit={handleDeleteAccount}
-          className="mt-4 flex flex-wrap items-end gap-3 border-t border-[#F43F5E]/20 pt-4 dark:border-rose-950"
+          className="mt-4 flex flex-wrap items-end gap-3 border-t border-[#ba1a1a]/20 pt-4 dark:border-rose-950"
         >
           <div className="flex-1">
-            <label className="block font-semibold text-[#BE123C] dark:text-rose-400">
+            <label className="block font-semibold text-[#93000a] dark:text-rose-400">
               Confirm Password to Permanently Delete Account & All Data
             </label>
             <input
@@ -867,14 +867,14 @@ export function SettingsClient({
               value={deletePassword}
               onChange={(e) => setDeletePassword(e.target.value)}
               placeholder="Enter your password"
-              className="mt-1 h-10 w-full rounded-[4px] border border-[#F43F5E]/40 bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-rose-900 dark:bg-slate-950"
+              className="mt-1 h-10 w-full rounded-xl border border-[#ba1a1a]/40 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-rose-900 dark:bg-[#17231c]"
             />
           </div>
 
           <button
             type="submit"
             disabled={isPending || !deletePassword}
-            className="inline-flex h-10 items-center gap-1.5 rounded-[4px] bg-[#F43F5E] px-3.5 text-xs font-semibold text-white hover:bg-[#E11D48] disabled:opacity-50"
+            className="btn-destructive h-10 px-4 text-xs disabled:opacity-50"
           >
             <Trash2 className="h-3.5 w-3.5" />
             Delete Account Permanently

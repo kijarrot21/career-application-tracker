@@ -73,35 +73,39 @@ export function ShortlistClient({
     <div className="mx-auto max-w-7xl space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-headline-md text-[#0F172A] dark:text-slate-100">
+          <div className="mb-1 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-[#3f674f] dark:text-[#a5d1b4]">
+            <span>Career Assets</span>
+            <span>/</span>
+            <span className="text-[#006a42] dark:text-[#69dca0]">
+              Shortlist & Comparison
+            </span>
+          </div>
+          <h1 className="text-headline-md text-[#171d19] dark:text-[#ecf3eb]">
             Job Shortlist & Suitability Comparison
           </h1>
-          <p className="text-[13px] text-[#64748B]">
+          <p className="mt-0.5 text-[13px] text-[#3f674f] dark:text-[#a5d1b4]">
             Interested and Shortlisted opportunities ranked by overall
             suitability score and upcoming deadlines.
           </p>
         </div>
 
-        <Link
-          href="/jobs"
-          className="inline-flex h-9 items-center rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-3 text-xs font-semibold text-[#0F172A] hover:border-[#94A3B8] hover:bg-[#F8FAFC] dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300"
-        >
+        <Link href="/jobs" className="btn-secondary h-10 px-4 text-xs">
           Browse All Vacancies
         </Link>
       </div>
 
       {/* Side-by-side comparison tray */}
       {compared.length > 0 && (
-        <div className="elevation-1 space-y-3 rounded-[8px] border border-[#204CD3]/30 bg-[#FFFFFF] p-4 dark:border-[#204CD3]/40 dark:bg-slate-900">
+        <div className="elevation-1 space-y-3 rounded-2xl border border-[#a5d1b4] bg-[#ffffff] p-5 dark:border-[#006a42]/40 dark:bg-[#111a15]">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-xs font-semibold text-[#1D4ED8] tabular-nums dark:text-[#B7C4FF]">
+            <div className="flex items-center gap-2 text-xs font-semibold text-[#006a42] tabular-nums dark:text-[#69dca0]">
               <Columns3 className="h-4 w-4" />
               Side-by-Side Comparison ({compared.length} of 3 selected)
             </div>
             <button
               type="button"
               onClick={() => setCompareIds([])}
-              className="text-xs font-semibold text-[#64748B] hover:text-[#204CD3] hover:underline"
+              className="text-xs font-semibold text-[#3f674f] hover:text-[#006a42] hover:underline"
             >
               Clear comparison
             </button>
@@ -111,16 +115,18 @@ export function ShortlistClient({
             {compared.map((v) => (
               <div
                 key={v.id}
-                className="space-y-1.5 rounded-[8px] border border-[#E2E8F0] bg-[#F8FAFC] p-3.5 text-xs tabular-nums dark:border-slate-800 dark:bg-slate-950"
+                className="space-y-1.5 rounded-xl bg-[#eff5ee] p-4 text-xs tabular-nums dark:bg-[#17231c]"
               >
                 <div className="flex items-center justify-between">
-                  <span className="font-mono text-[#64748B]">{v.code}</span>
+                  <span className="font-mono text-[#3f674f] dark:text-[#a5d1b4]">
+                    {v.code}
+                  </span>
                   <SuitabilityBadge score={v.suitabilityScore} />
                 </div>
-                <p className="text-headline-sm text-[#0F172A] dark:text-slate-100">
+                <p className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
                   {v.title}
                 </p>
-                <p className="font-medium text-[#334155] dark:text-slate-300">
+                <p className="font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
                   {v.company.name}
                 </p>
                 <p>
@@ -154,12 +160,12 @@ export function ShortlistClient({
       )}
 
       {vacancies.length === 0 ? (
-        <div className="elevation-1 flex flex-col items-center justify-center rounded-[8px] border border-[#E2E8F0] bg-[#FFFFFF] py-14 text-center dark:border-slate-800 dark:bg-slate-900">
-          <BookmarkCheck className="h-7 w-7 text-[#64748B]" />
-          <p className="mt-2 font-display text-sm font-semibold text-[#0F172A] dark:text-slate-100">
+        <div className="elevation-1 flex flex-col items-center justify-center rounded-2xl border border-[#bdcabf]/40 bg-[#ffffff] py-14 text-center dark:border-[#24332a] dark:bg-[#111a15]">
+          <BookmarkCheck className="h-7 w-7 text-[#3f674f]" />
+          <p className="mt-2 font-display text-sm font-semibold text-[#171d19] dark:text-[#ecf3eb]">
             Your shortlist is empty
           </p>
-          <p className="mt-1 text-xs text-[#64748B]">
+          <p className="mt-1 text-xs text-[#3f674f]">
             Mark vacancies as Interested or Shortlisted in Find Jobs to evaluate
             and compare them here.
           </p>
@@ -177,23 +183,23 @@ export function ShortlistClient({
             return (
               <div
                 key={v.id}
-                className="elevation-2 flex flex-col justify-between gap-3 rounded-[8px] border border-[#E2E8F0] bg-[#FFFFFF] p-4 sm:flex-row sm:items-center dark:border-slate-800 dark:bg-slate-900"
+                className="elevation-2 flex flex-col justify-between gap-3 rounded-2xl border border-[#bdcabf]/40 bg-[#ffffff] p-5 sm:flex-row sm:items-center dark:border-[#24332a] dark:bg-[#111a15]"
               >
-                <div className="space-y-1">
+                <div className="space-y-1.5">
                   <div className="flex flex-wrap items-center gap-2">
                     <input
                       type="checkbox"
                       aria-label={`Compare ${v.title}`}
                       checked={compareIds.includes(v.id)}
                       onChange={() => toggleCompare(v.id)}
-                      className="h-4 w-4 rounded-[4px] border-[#CBD5E1] accent-[#204CD3]"
+                      className="h-4 w-4 rounded border-[#bdcabf] accent-[#006a42]"
                     />
-                    <span className="font-mono text-xs text-[#64748B] tabular-nums">
+                    <span className="font-mono text-xs text-[#3f674f] tabular-nums dark:text-[#a5d1b4]">
                       {v.code}
                     </span>
                     <Link
                       href={`/jobs/${v.id}`}
-                      className="text-headline-sm text-[#0F172A] hover:text-[#204CD3] dark:text-slate-100"
+                      className="text-headline-sm text-[#171d19] hover:text-[#006a42] dark:text-[#ecf3eb] dark:hover:text-[#69dca0]"
                     >
                       {v.title}
                     </Link>
@@ -203,8 +209,8 @@ export function ShortlistClient({
                     {v.isSample && <SampleBadge />}
                   </div>
 
-                  <p className="text-[13px] text-[#64748B] tabular-nums dark:text-slate-400">
-                    <strong className="font-semibold text-[#0F172A] dark:text-slate-200">
+                  <p className="text-[13px] text-[#3f674f] tabular-nums dark:text-[#a5d1b4]">
+                    <strong className="font-semibold text-[#171d19] dark:text-[#ecf3eb]">
                       {v.company.name}
                     </strong>
                     {v.location ? ` · ${v.location}` : ""}
@@ -212,7 +218,7 @@ export function ShortlistClient({
                       ? ` (${WORK_ARRANGEMENT_LABELS[v.workArrangement]})`
                       : ""}
                     {" · "}
-                    <span className="font-mono font-semibold text-[#334155] dark:text-slate-300">
+                    <span className="font-mono font-semibold text-[#171d19] dark:text-[#ecf3eb]">
                       {formatSalaryRange(
                         v.salaryMin,
                         v.salaryMax,
@@ -228,7 +234,7 @@ export function ShortlistClient({
                   {activeApp ? (
                     <Link
                       href={`/applications/${activeApp.id}`}
-                      className="inline-flex h-9 items-center gap-1.5 rounded-[4px] border border-[#204CD3]/30 bg-[#EEF2FF] px-2.5 text-xs font-semibold text-[#1D4ED8] tabular-nums dark:border-[#204CD3]/40 dark:bg-[#204CD3]/20 dark:text-[#B7C4FF]"
+                      className="inline-flex h-9 items-center gap-1.5 rounded-xl border border-[#a5d1b4] bg-[#c0edcf]/60 px-3 text-xs font-semibold text-[#005232] tabular-nums dark:border-[#006a42]/40 dark:bg-[#006a42]/20 dark:text-[#86f9ba]"
                     >
                       <span>{activeApp.code}:</span>
                       <StageBadge
@@ -252,7 +258,7 @@ export function ShortlistClient({
                           hasClosedApp: Boolean(closedApp),
                         })
                       }
-                      className="inline-flex h-9 items-center gap-1.5 rounded-[4px] bg-[#204CD3] px-3 text-xs font-semibold text-white transition-all hover:bg-[#1D4ED8] active:scale-[0.98]"
+                      className="btn-primary h-10 px-4 text-xs"
                     >
                       <Send className="h-3 w-3" />
                       Record Submission
@@ -264,7 +270,7 @@ export function ShortlistClient({
                     disabled={isPending}
                     onClick={() => handleTriage(v.id, "not_interested")}
                     title="Mark Not Interested"
-                    className="inline-flex h-9 items-center gap-1 rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs font-semibold text-[#334155] hover:border-[#94A3B8] hover:bg-[#F8FAFC] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
+                    className="btn-secondary h-10 px-3.5 text-xs"
                   >
                     <XCircle className="h-3.5 w-3.5" />
                     Not Interested
@@ -275,7 +281,7 @@ export function ShortlistClient({
                     disabled={isPending}
                     onClick={() => handleTriage(v.id, "archived")}
                     title="Archive"
-                    className="inline-flex h-9 items-center gap-1 rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs font-semibold text-[#334155] hover:border-[#94A3B8] hover:bg-[#F8FAFC] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
+                    className="btn-secondary h-10 px-3.5 text-xs"
                   >
                     <Archive className="h-3.5 w-3.5" />
                     Archive

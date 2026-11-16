@@ -93,21 +93,21 @@ export function JobDetailClient({
       <div>
         <Link
           href="/jobs"
-          className="text-xs font-semibold text-[#204CD3] hover:underline dark:text-[#B7C4FF]"
+          className="text-xs font-semibold text-[#006a42] hover:underline dark:text-[#86f9ba]"
         >
           &larr; Back to Find Jobs
         </Link>
       </div>
 
       {/* Header Card */}
-      <div className="elevation-1 rounded-[8px] border border-[#E2E8F0] bg-[#FFFFFF] p-5 dark:border-slate-800 dark:bg-slate-900">
+      <div className="elevation-1 rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] p-5 dark:border-[#24332a] dark:bg-[#111a15]">
         <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-start">
           <div className="space-y-1.5">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="font-mono text-xs text-[#64748B] tabular-nums">
+              <span className="font-mono text-xs text-[#3f674f] tabular-nums">
                 {vacancy.code}
               </span>
-              <h1 className="text-headline-md text-[#0F172A] dark:text-slate-100">
+              <h1 className="text-headline-md text-[#171d19] dark:text-[#ecf3eb]">
                 {vacancy.title}
               </h1>
               <SuitabilityBadge score={vacancy.suitabilityScore} />
@@ -116,8 +116,8 @@ export function JobDetailClient({
               {vacancy.isSample && <SampleBadge />}
             </div>
 
-            <p className="text-[14px] text-[#334155] dark:text-slate-300">
-              <strong className="font-semibold text-[#0F172A] dark:text-slate-100">
+            <p className="text-[14px] text-[#3e4a41] dark:text-[#b7c6ba]">
+              <strong className="font-semibold text-[#171d19] dark:text-[#ecf3eb]">
                 {vacancy.company.name}
               </strong>
               {vacancy.department ? ` · ${vacancy.department}` : ""}
@@ -128,10 +128,10 @@ export function JobDetailClient({
                 : ""}
             </p>
 
-            <div className="flex flex-wrap items-center gap-4 text-xs text-[#64748B] tabular-nums">
+            <div className="flex flex-wrap items-center gap-4 text-xs text-[#3f674f] tabular-nums">
               <span>
                 Salary:{" "}
-                <strong className="font-mono font-semibold text-[#0F172A] dark:text-slate-200">
+                <strong className="font-mono font-semibold text-[#171d19] dark:text-[#ecf3eb]">
                   {formatSalaryRange(
                     vacancy.salaryMin,
                     vacancy.salaryMax,
@@ -156,7 +156,7 @@ export function JobDetailClient({
                   href={vacancy.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 font-semibold text-[#204CD3] hover:underline dark:text-[#B7C4FF]"
+                  className="inline-flex items-center gap-1 font-semibold text-[#006a42] hover:underline dark:text-[#86f9ba]"
                 >
                   Open Job Posting
                   <ExternalLink className="h-3.5 w-3.5" />
@@ -171,7 +171,7 @@ export function JobDetailClient({
               disabled={isPending}
               value={vacancy.triageStatus}
               onChange={(e) => handleTriage(e.target.value as TriageStatus)}
-              className="h-9 rounded-[4px] border border-[#CBD5E1] bg-[#F8FAFC] px-2.5 text-xs font-semibold text-[#334155] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
+              className="h-9 rounded-xl border border-[#bdcabf]/70 bg-[#eff5ee] px-2.5 text-xs font-semibold text-[#3e4a41] dark:border-[#2d3d33] dark:bg-[#1d2b23] dark:text-[#ecf3eb]"
             >
               {TRIAGE_STATUSES.map((s) => (
                 <option key={s} value={s}>
@@ -183,7 +183,7 @@ export function JobDetailClient({
             {activeApp ? (
               <Link
                 href={`/applications/${activeApp.id}`}
-                className="inline-flex h-9 items-center gap-1.5 rounded-[4px] bg-[#204CD3] px-3.5 text-xs font-semibold text-white transition-all hover:bg-[#1D4ED8] active:scale-[0.98]"
+                className="btn-primary h-10 px-4 text-xs"
               >
                 View Application ({activeApp.code})
               </Link>
@@ -191,7 +191,7 @@ export function JobDetailClient({
               <button
                 type="button"
                 onClick={() => setApplyOpen(true)}
-                className="inline-flex h-9 items-center gap-1.5 rounded-[4px] bg-[#204CD3] px-3.5 text-xs font-semibold text-white transition-all hover:bg-[#1D4ED8] active:scale-[0.98]"
+                className="btn-primary h-10 px-4 text-xs"
               >
                 <Send className="h-3.5 w-3.5" />
                 {hasClosedApp ? "Re-apply to Position" : "Record Submission"}
@@ -201,7 +201,7 @@ export function JobDetailClient({
             <button
               type="button"
               onClick={() => setEditing(!editing)}
-              className="inline-flex h-9 items-center gap-1.5 rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-3 text-xs font-semibold text-[#0F172A] hover:border-[#94A3B8] hover:bg-[#F8FAFC] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
+              className="btn-secondary h-10 px-4 text-xs"
             >
               <Edit3 className="h-3.5 w-3.5" />
               {editing ? "Close Editor" : "Edit"}
@@ -211,7 +211,7 @@ export function JobDetailClient({
               type="button"
               disabled={isPending}
               onClick={handleDelete}
-              className="inline-flex h-9 items-center gap-1 rounded-[4px] border border-[#F43F5E]/40 bg-[#FFFFFF] px-3 text-xs font-semibold text-[#BE123C] hover:bg-[#FFF1F2] dark:border-rose-900 dark:bg-slate-900 dark:text-rose-400"
+              className="btn-destructive h-10 px-4 text-xs disabled:opacity-50"
             >
               <Trash2 className="h-3.5 w-3.5" />
               Delete
@@ -260,15 +260,15 @@ export function JobDetailClient({
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
           {/* Left (60%): Description, Qualifications, Skills, Linked Applications */}
           <div className="space-y-6 lg:col-span-7">
-            <div className="elevation-1 space-y-4 rounded-[8px] border border-[#E2E8F0] bg-[#FFFFFF] p-5 text-xs dark:border-slate-800 dark:bg-slate-900">
-              <h2 className="text-headline-sm text-[#0F172A] dark:text-slate-100">
+            <div className="elevation-1 space-y-4 rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] p-5 text-xs dark:border-[#24332a] dark:bg-[#111a15]">
+              <h2 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
                 Vacancy Details & Requirements
               </h2>
 
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                 <div>
-                  <span className="text-[#64748B]">Employment Type</span>
-                  <p className="mt-0.5 font-semibold text-[#0F172A] dark:text-slate-100">
+                  <span className="text-[#3f674f]">Employment Type</span>
+                  <p className="mt-0.5 font-semibold text-[#171d19] dark:text-[#ecf3eb]">
                     {vacancy.employmentType
                       ? EMPLOYMENT_TYPE_LABELS[
                           vacancy.employmentType as EmploymentType
@@ -277,16 +277,16 @@ export function JobDetailClient({
                   </p>
                 </div>
                 <div>
-                  <span className="text-[#64748B]">Required Experience</span>
-                  <p className="mt-0.5 font-semibold text-[#0F172A] tabular-nums dark:text-slate-100">
+                  <span className="text-[#3f674f]">Required Experience</span>
+                  <p className="mt-0.5 font-semibold text-[#171d19] tabular-nums dark:text-[#ecf3eb]">
                     {vacancy.requiredExperienceYears != null
                       ? `${vacancy.requiredExperienceYears} years`
                       : "Not specified"}
                   </p>
                 </div>
                 <div>
-                  <span className="text-[#64748B]">Required Education</span>
-                  <p className="mt-0.5 font-semibold text-[#0F172A] dark:text-slate-100">
+                  <span className="text-[#3f674f]">Required Education</span>
+                  <p className="mt-0.5 font-semibold text-[#171d19] dark:text-[#ecf3eb]">
                     {vacancy.requiredEducation
                       ? EDUCATION_LABELS[
                           vacancy.requiredEducation as EducationLevel
@@ -298,12 +298,12 @@ export function JobDetailClient({
 
               {vacancy.skills && vacancy.skills.length > 0 && (
                 <div>
-                  <span className="text-[#64748B]">Required Skills</span>
+                  <span className="text-[#3f674f]">Required Skills</span>
                   <div className="mt-1.5 flex flex-wrap gap-1.5">
                     {vacancy.skills.map((skill) => (
                       <span
                         key={skill}
-                        className="rounded-full bg-[#F1F5F9] px-2.5 py-0.5 text-xs font-medium text-[#0F172A] dark:bg-slate-800 dark:text-slate-200"
+                        className="rounded-full bg-[#eff5ee] px-2.5 py-0.5 text-xs font-medium text-[#171d19] dark:bg-[#1d2b23] dark:text-[#ecf3eb]"
                       >
                         {skill}
                       </span>
@@ -314,8 +314,8 @@ export function JobDetailClient({
 
               {vacancy.description && (
                 <div>
-                  <span className="text-[#64748B]">Job Description</span>
-                  <p className="mt-1 whitespace-pre-line leading-relaxed text-[#334155] dark:text-slate-300">
+                  <span className="text-[#3f674f]">Job Description</span>
+                  <p className="mt-1 whitespace-pre-line leading-relaxed text-[#3e4a41] dark:text-[#b7c6ba]">
                     {vacancy.description}
                   </p>
                 </div>
@@ -323,10 +323,10 @@ export function JobDetailClient({
 
               {vacancy.qualifications && (
                 <div>
-                  <span className="text-[#64748B]">
+                  <span className="text-[#3f674f]">
                     Required Qualifications
                   </span>
-                  <p className="mt-1 whitespace-pre-line leading-relaxed text-[#334155] dark:text-slate-300">
+                  <p className="mt-1 whitespace-pre-line leading-relaxed text-[#3e4a41] dark:text-[#b7c6ba]">
                     {vacancy.qualifications}
                   </p>
                 </div>
@@ -334,8 +334,8 @@ export function JobDetailClient({
 
               {vacancy.notes && (
                 <div>
-                  <span className="text-[#64748B]">Candidate Notes</span>
-                  <p className="mt-1 whitespace-pre-line text-[#334155] dark:text-slate-300">
+                  <span className="text-[#3f674f]">Candidate Notes</span>
+                  <p className="mt-1 whitespace-pre-line text-[#3e4a41] dark:text-[#b7c6ba]">
                     {vacancy.notes}
                   </p>
                 </div>
@@ -343,12 +343,12 @@ export function JobDetailClient({
             </div>
 
             {/* Linked Applications */}
-            <div className="elevation-1 space-y-3 rounded-[8px] border border-[#E2E8F0] bg-[#FFFFFF] p-5 text-xs dark:border-slate-800 dark:bg-slate-900">
-              <h2 className="text-headline-sm text-[#0F172A] dark:text-slate-100">
+            <div className="elevation-1 space-y-3 rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] p-5 text-xs dark:border-[#24332a] dark:bg-[#111a15]">
+              <h2 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
                 Submitted Applications for This Vacancy
               </h2>
               {vacancy.applications.length === 0 ? (
-                <p className="text-[#64748B]">
+                <p className="text-[#3f674f]">
                   You have not submitted an application for this vacancy yet.
                   Click &ldquo;Record Submission&rdquo; once you apply.
                 </p>
@@ -358,10 +358,10 @@ export function JobDetailClient({
                     <Link
                       key={app.id}
                       href={`/applications/${app.id}`}
-                      className="elevation-2 flex flex-wrap items-center justify-between gap-2 rounded-[8px] border border-[#E2E8F0] bg-[#FFFFFF] p-3 tabular-nums dark:border-slate-800 dark:bg-slate-950"
+                      className="elevation-2 flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] p-3 tabular-nums dark:border-[#24332a] dark:bg-[#17231c]"
                     >
                       <div className="flex items-center gap-2">
-                        <span className="font-mono font-semibold text-[#204CD3] dark:text-[#B7C4FF]">
+                        <span className="font-mono font-semibold text-[#006a42] dark:text-[#86f9ba]">
                           {app.code}
                         </span>
                         <span>Attempt #{app.attemptNumber}</span>

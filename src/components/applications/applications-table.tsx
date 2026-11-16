@@ -100,12 +100,14 @@ export function ApplicationsTable({
     <div className="space-y-3">
       <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
         <div className="flex items-center gap-2">
-          <label className="font-medium text-[#64748B]">Group rows by:</label>
+          <label className="font-semibold text-[#3f674f] dark:text-[#a5d1b4]">
+            Group rows by:
+          </label>
           <select
             aria-label="Group applications by"
             value={groupBy}
             onChange={(e) => setGroupBy(e.target.value as GroupBy)}
-            className="h-9 rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs font-medium text-[#0F172A] dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+            className="h-9 rounded-xl border border-[#bdcabf]/60 bg-[#ffffff] px-3 text-xs font-medium text-[#171d19] dark:border-[#2d3d33] dark:bg-[#111a15] dark:text-[#ecf3eb]"
           >
             <option value="none">No grouping</option>
             <option value="stage">Recruitment Stage</option>
@@ -118,7 +120,7 @@ export function ApplicationsTable({
         <a
           href={exportUrl}
           download
-          className="inline-flex h-9 items-center gap-1.5 rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-3 text-xs font-semibold text-[#0F172A] tabular-nums transition-colors hover:border-[#94A3B8] hover:bg-[#F8FAFC] dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200"
+          className="btn-secondary h-10 px-4 text-xs tabular-nums"
         >
           <Download className="h-3.5 w-3.5" />
           Export CSV ({applications.length})
@@ -128,10 +130,10 @@ export function ApplicationsTable({
       {groups.map((grp) => (
         <div
           key={grp.key}
-          className="elevation-1 overflow-hidden rounded-[8px] border border-[#E2E8F0] bg-[#FFFFFF] dark:border-slate-800 dark:bg-slate-900"
+          className="elevation-1 overflow-hidden rounded-2xl border border-[#bdcabf]/40 bg-[#ffffff] p-4 dark:border-[#24332a] dark:bg-[#111a15]"
         >
           {groupBy !== "none" && (
-            <div className="border-b border-[#E2E8F0] bg-[#F1F5F9] px-4 py-2 text-xs font-semibold text-[#0F172A] tabular-nums dark:border-slate-800 dark:bg-slate-950 dark:text-slate-200">
+            <div className="mb-3 rounded-xl bg-[#eff5ee] px-4 py-2 text-xs font-semibold text-[#171d19] tabular-nums dark:bg-[#17231c] dark:text-[#ecf3eb]">
               {grp.label} ({grp.rows.length})
             </div>
           )}
@@ -139,73 +141,73 @@ export function ApplicationsTable({
           <div className="overflow-x-auto">
             <table className="w-full border-collapse text-left text-[13px]">
               <thead>
-                <tr className="border-b border-[#E2E8F0] bg-[#F8FAFC] text-[11px] font-semibold uppercase tracking-[0.04em] text-[#334155] dark:border-slate-800 dark:bg-slate-950/50 dark:text-slate-400">
-                  <th className="px-3.5 py-2.5">
+                <tr className="rounded-xl bg-[#eff5ee]/80 text-[11px] font-semibold uppercase tracking-wider text-[#3f674f] dark:bg-[#17231c] dark:text-[#a5d1b4]">
+                  <th className="rounded-l-xl px-4 py-3">
                     <button
                       type="button"
                       onClick={() => toggleSort("code")}
-                      className="inline-flex items-center gap-1 hover:text-[#204CD3] dark:hover:text-slate-100"
+                      className="inline-flex items-center gap-1 hover:text-[#006a42] dark:hover:text-[#69dca0]"
                     >
                       App ID <ArrowUpDown className="h-3 w-3" />
                     </button>
                   </th>
-                  <th className="px-3.5 py-2.5">
+                  <th className="px-4 py-3">
                     <button
                       type="button"
                       onClick={() => toggleSort("company")}
-                      className="inline-flex items-center gap-1 hover:text-[#204CD3] dark:hover:text-slate-100"
+                      className="inline-flex items-center gap-1 hover:text-[#006a42] dark:hover:text-[#69dca0]"
                     >
                       Company <ArrowUpDown className="h-3 w-3" />
                     </button>
                   </th>
-                  <th className="px-3.5 py-2.5">
+                  <th className="px-4 py-3">
                     <button
                       type="button"
                       onClick={() => toggleSort("position")}
-                      className="inline-flex items-center gap-1 hover:text-[#204CD3] dark:hover:text-slate-100"
+                      className="inline-flex items-center gap-1 hover:text-[#006a42] dark:hover:text-[#69dca0]"
                     >
                       Position <ArrowUpDown className="h-3 w-3" />
                     </button>
                   </th>
-                  <th className="px-3.5 py-2.5">
+                  <th className="px-4 py-3">
                     <button
                       type="button"
                       onClick={() => toggleSort("stage")}
-                      className="inline-flex items-center gap-1 hover:text-[#204CD3] dark:hover:text-slate-100"
+                      className="inline-flex items-center gap-1 hover:text-[#006a42] dark:hover:text-[#69dca0]"
                     >
                       Stage <ArrowUpDown className="h-3 w-3" />
                     </button>
                   </th>
-                  <th className="px-3.5 py-2.5">Outcome</th>
-                  <th className="px-3.5 py-2.5">Platform & Method</th>
-                  <th className="px-3.5 py-2.5">
+                  <th className="px-4 py-3">Outcome</th>
+                  <th className="px-4 py-3">Platform & Method</th>
+                  <th className="px-4 py-3">
                     <button
                       type="button"
                       onClick={() => toggleSort("submittedOn")}
-                      className="inline-flex items-center gap-1 hover:text-[#204CD3] dark:hover:text-slate-100"
+                      className="inline-flex items-center gap-1 hover:text-[#006a42] dark:hover:text-[#69dca0]"
                     >
                       Applied On <ArrowUpDown className="h-3 w-3" />
                     </button>
                   </th>
-                  <th className="px-3.5 py-2.5">
+                  <th className="px-4 py-3">
                     <button
                       type="button"
                       onClick={() => toggleSort("expectedSalary")}
-                      className="inline-flex items-center gap-1 hover:text-[#204CD3] dark:hover:text-slate-100"
+                      className="inline-flex items-center gap-1 hover:text-[#006a42] dark:hover:text-[#69dca0]"
                     >
                       Expected Salary <ArrowUpDown className="h-3 w-3" />
                     </button>
                   </th>
-                  <th className="px-3.5 py-2.5">CV Used</th>
-                  <th className="px-3.5 py-2.5">Next Follow-up</th>
+                  <th className="px-4 py-3">CV Used</th>
+                  <th className="rounded-r-xl px-4 py-3">Next Follow-up</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#E2E8F0] dark:divide-slate-800">
+              <tbody className="divide-y divide-[#e3eae3]/70 dark:divide-[#24332a]">
                 {grp.rows.length === 0 ? (
                   <tr>
                     <td
                       colSpan={10}
-                      className="px-4 py-10 text-center text-[#64748B]"
+                      className="px-4 py-10 text-center text-[#3f674f] dark:text-[#a5d1b4]"
                     >
                       No applications match the active filters.
                     </td>
@@ -214,49 +216,49 @@ export function ApplicationsTable({
                   grp.rows.map((app) => (
                     <tr
                       key={app.id}
-                      className="transition-colors hover:bg-[#EEF2FF]/50 dark:hover:bg-slate-800/40"
+                      className="transition-colors hover:bg-[#eff5ee]/50 dark:hover:bg-[#17231c]/60"
                     >
-                      <td className="px-3.5 py-2.5 font-mono text-xs font-semibold tabular-nums">
+                      <td className="px-4 py-3.5 font-mono text-xs font-semibold tabular-nums">
                         <div className="flex items-center gap-1.5">
                           <Link
                             href={`/applications/${app.id}`}
-                            className="text-[#204CD3] hover:underline dark:text-[#B7C4FF]"
+                            className="text-[#006a42] hover:underline dark:text-[#69dca0]"
                           >
                             {app.code}
                           </Link>
                           {app.isSample && <SampleBadge />}
                         </div>
                       </td>
-                      <td className="px-3.5 py-2.5 font-semibold text-[#0F172A] dark:text-slate-100">
+                      <td className="px-4 py-3.5 font-semibold text-[#171d19] dark:text-[#ecf3eb]">
                         {app.company.name}
                       </td>
-                      <td className="px-3.5 py-2.5">
+                      <td className="px-4 py-3.5">
                         <Link
                           href={`/applications/${app.id}`}
-                          className="font-semibold text-[#0F172A] hover:text-[#204CD3] dark:text-slate-100"
+                          className="font-semibold text-[#171d19] hover:text-[#006a42] dark:text-[#ecf3eb] dark:hover:text-[#69dca0]"
                         >
                           {app.vacancy.title}
                         </Link>
                         {app.jobCategory && (
-                          <span className="block text-[11px] text-[#64748B]">
+                          <span className="block text-[11px] text-[#3f674f] dark:text-[#a5d1b4]">
                             {app.jobCategory}
                           </span>
                         )}
                       </td>
-                      <td className="px-3.5 py-2.5">
+                      <td className="px-4 py-3.5">
                         <StageBadge
                           name={app.stage.name}
                           color={app.stage.color}
                         />
                       </td>
-                      <td className="px-3.5 py-2.5">
+                      <td className="px-4 py-3.5">
                         <OutcomeBadge outcome={app.outcome} />
                       </td>
-                      <td className="px-3.5 py-2.5 text-[#334155] dark:text-slate-300">
+                      <td className="px-4 py-3.5 text-[#3e4a41] dark:text-[#b7c6ba]">
                         <div className="font-medium">
                           {app.platform?.name ?? "Direct"}
                         </div>
-                        <div className="text-[11px] text-[#64748B]">
+                        <div className="text-[11px] text-[#6e7a71]">
                           {
                             SUBMISSION_METHOD_LABELS[
                               app.submissionMethod as SubmissionMethod
@@ -264,16 +266,16 @@ export function ApplicationsTable({
                           }
                         </div>
                       </td>
-                      <td className="px-3.5 py-2.5 font-mono text-xs text-[#334155] tabular-nums dark:text-slate-300">
+                      <td className="px-4 py-3.5 font-mono text-xs text-[#3e4a41] tabular-nums dark:text-[#b7c6ba]">
                         {formatDate(app.submittedOn)}
                       </td>
-                      <td className="px-3.5 py-2.5 font-mono text-xs font-semibold text-[#0F172A] tabular-nums dark:text-slate-300">
+                      <td className="px-4 py-3.5 font-mono text-xs font-semibold text-[#171d19] tabular-nums dark:text-[#ecf3eb]">
                         {formatMoney(app.expectedSalary, app.currency, true)}
                       </td>
-                      <td className="px-3.5 py-2.5 text-xs text-[#64748B]">
+                      <td className="px-4 py-3.5 text-xs text-[#3f674f] dark:text-[#a5d1b4]">
                         {app.cvVersionLabel ?? "Not set"}
                       </td>
-                      <td className="px-3.5 py-2.5 font-mono text-xs text-[#64748B] tabular-nums">
+                      <td className="px-4 py-3.5 font-mono text-xs text-[#3f674f] tabular-nums dark:text-[#a5d1b4]">
                         {app.nextFollowUpOn
                           ? formatDate(app.nextFollowUpOn)
                           : "None"}

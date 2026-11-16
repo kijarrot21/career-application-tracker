@@ -59,61 +59,61 @@ export function CommandMenu({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center bg-[#0B1C30]/20 p-4 pt-20 backdrop-blur-[1px]">
-      <div className="elevation-4 w-full max-w-lg overflow-hidden rounded-[8px] border border-[#E2E8F0] bg-[#FFFFFF] dark:border-slate-800 dark:bg-slate-950">
-        <div className="flex items-center gap-2.5 border-b border-[#E2E8F0] px-3.5 py-2.5 dark:border-slate-800">
-          <Search className="h-4 w-4 text-[#94A3B8]" />
+    <div className="fixed inset-0 z-50 flex items-start justify-center bg-[#171d19]/35 p-4 pt-20 backdrop-blur-[3px]">
+      <div className="elevation-4 w-full max-w-lg overflow-hidden rounded-2xl border border-[#bdcabf]/60 bg-[#ffffff] dark:border-[#24332a] dark:bg-[#111a15]">
+        <div className="flex items-center gap-2.5 border-b border-[#e3eae3] px-4 py-3 dark:border-[#24332a]">
+          <Search className="h-4 w-4 text-[#3f674f] dark:text-[#a5d1b4]" />
           <input
             type="text"
             autoFocus
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search job vacancies, applications, companies, codes (JOB-0001, APP-0001)..."
-            className="w-full border-none bg-transparent text-sm text-[#0F172A] shadow-none outline-none placeholder:text-[#64748B] focus:ring-0 dark:text-slate-100"
+            className="w-full border-none bg-transparent text-sm text-[#171d19] shadow-none outline-none placeholder:text-[#6e7a71] focus:ring-0 dark:text-[#ecf3eb]"
           />
           <button
             type="button"
             onClick={() => onOpenChange(false)}
-            className="rounded-[4px] p-1 text-[#64748B] hover:bg-[#EEF2FF] hover:text-[#204CD3] dark:hover:bg-slate-900"
+            className="rounded-lg p-1 text-[#3e4a41] hover:bg-[#eff5ee] hover:text-[#006a42] dark:text-[#b7c6ba] dark:hover:bg-[#17231c]"
           >
             <X className="h-4 w-4" />
           </button>
         </div>
 
-        <div className="max-h-80 overflow-y-auto p-2 text-xs">
+        <div className="max-h-80 overflow-y-auto p-2.5 text-xs">
           {!query.trim() ? (
-            <div className="space-y-1 p-2">
-              <p className="px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.04em] text-[#64748B]">
+            <div className="space-y-1 p-1.5">
+              <p className="px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.04em] text-[#3f674f] dark:text-[#a5d1b4]">
                 Quick Navigation
               </p>
               <button
                 type="button"
                 onClick={() => goTo("/jobs/new")}
-                className="flex w-full items-center gap-2.5 rounded-[4px] px-2.5 py-2 text-left text-[13px] font-medium text-[#334155] hover:bg-[#EEF2FF] hover:text-[#1D4ED8] dark:text-slate-300 dark:hover:bg-slate-900"
+                className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-left text-[13px] font-medium text-[#171d19] hover:bg-[#eff5ee] hover:text-[#006a42] dark:text-[#ecf3eb] dark:hover:bg-[#17231c]"
               >
-                <Briefcase className="h-4 w-4 text-[#204CD3]" />
+                <Briefcase className="h-4 w-4 text-[#006a42] dark:text-[#69dca0]" />
                 Add new job vacancy
               </button>
               <button
                 type="button"
                 onClick={() => goTo("/applications?view=board")}
-                className="flex w-full items-center gap-2.5 rounded-[4px] px-2.5 py-2 text-left text-[13px] font-medium text-[#334155] hover:bg-[#EEF2FF] hover:text-[#1D4ED8] dark:text-slate-300 dark:hover:bg-slate-900"
+                className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-left text-[13px] font-medium text-[#171d19] hover:bg-[#eff5ee] hover:text-[#006a42] dark:text-[#ecf3eb] dark:hover:bg-[#17231c]"
               >
-                <Kanban className="h-4 w-4 text-[#204CD3]" />
+                <Kanban className="h-4 w-4 text-[#006a42] dark:text-[#69dca0]" />
                 Open recruitment Kanban board
               </button>
             </div>
           ) : isPending ? (
-            <p className="p-4 text-center text-[#64748B]">Searching...</p>
+            <p className="p-4 text-center text-[#3f674f]">Searching...</p>
           ) : results.applications.length === 0 && results.vacancies.length === 0 ? (
-            <p className="p-4 text-center text-[#64748B]">
+            <p className="p-4 text-center text-[#3f674f]">
               No matching applications or vacancies found.
             </p>
           ) : (
             <div className="space-y-3">
               {results.applications.length > 0 && (
                 <div>
-                  <p className="px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.04em] text-[#64748B]">
+                  <p className="px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.04em] text-[#3f674f]">
                     Applications
                   </p>
                   {results.applications.map((a) => (
@@ -121,18 +121,18 @@ export function CommandMenu({
                       key={a.id}
                       type="button"
                       onClick={() => goTo(`/applications/${a.id}`)}
-                      className="flex w-full items-center justify-between rounded-[4px] px-2.5 py-2 text-left hover:bg-[#EEF2FF] dark:hover:bg-slate-900"
+                      className="flex w-full items-center justify-between rounded-xl px-3 py-2 text-left hover:bg-[#eff5ee] dark:hover:bg-[#17231c]"
                     >
                       <span>
-                        <span className="font-mono font-semibold text-[#204CD3] tabular-nums dark:text-[#B7C4FF]">
+                        <span className="font-mono font-semibold text-[#006a42] tabular-nums dark:text-[#69dca0]">
                           {a.code}
                         </span>{" "}
-                        <span className="font-semibold text-[#0F172A] dark:text-slate-100">
+                        <span className="font-semibold text-[#171d19] dark:text-[#ecf3eb]">
                           {a.title}
                         </span>{" "}
-                        <span className="text-[#64748B]">at {a.companyName}</span>
+                        <span className="text-[#3f674f]">at {a.companyName}</span>
                       </span>
-                      <span className="rounded-full bg-[#EEF2FF] px-2 py-0.5 text-[11px] font-semibold text-[#1D4ED8]">
+                      <span className="rounded-full bg-[#c0edcf] px-2.5 py-0.5 text-[11px] font-semibold text-[#005232]">
                         {a.stageName}
                       </span>
                     </button>
@@ -141,7 +141,7 @@ export function CommandMenu({
               )}
               {results.vacancies.length > 0 && (
                 <div>
-                  <p className="px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.04em] text-[#64748B]">
+                  <p className="px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.04em] text-[#3f674f]">
                     Job Vacancies
                   </p>
                   {results.vacancies.map((v) => (
@@ -149,16 +149,16 @@ export function CommandMenu({
                       key={v.id}
                       type="button"
                       onClick={() => goTo(`/jobs/${v.id}`)}
-                      className="flex w-full items-center justify-between rounded-[4px] px-2.5 py-2 text-left hover:bg-[#EEF2FF] dark:hover:bg-slate-900"
+                      className="flex w-full items-center justify-between rounded-xl px-3 py-2 text-left hover:bg-[#eff5ee] dark:hover:bg-[#17231c]"
                     >
                       <span>
-                        <span className="font-mono text-[#64748B] tabular-nums">
+                        <span className="font-mono text-[#3f674f] tabular-nums">
                           {v.code}
                         </span>{" "}
-                        <span className="font-semibold text-[#0F172A] dark:text-slate-100">
+                        <span className="font-semibold text-[#171d19] dark:text-[#ecf3eb]">
                           {v.title}
                         </span>{" "}
-                        <span className="text-[#64748B]">at {v.companyName}</span>
+                        <span className="text-[#3f674f]">at {v.companyName}</span>
                       </span>
                     </button>
                   ))}

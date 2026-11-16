@@ -108,41 +108,58 @@ export function ApplicationsViewClient({
 
   return (
     <div className="mx-auto max-w-7xl space-y-5">
+      {/* Header Breadcrumb & Controls */}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-headline-md text-[#0F172A] dark:text-slate-100">
+          <div className="mb-1 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-[#3f674f] dark:text-[#a5d1b4]">
+            <span>Pipeline Intelligence</span>
+            <span>/</span>
+            <span className="text-[#006a42] dark:text-[#69dca0]">
+              Active Search Cycle
+            </span>
+          </div>
+          <h1 className="text-headline-md text-[#171d19] dark:text-[#ecf3eb]">
             Application Tracking & Pipeline
           </h1>
-          <p className="text-[13px] text-[#64748B]">
+          <p className="mt-0.5 text-[13px] text-[#3f674f] dark:text-[#a5d1b4]">
             Manage submitted job applications across HR recruitment stages via
             Kanban Board or Data Table.
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="inline-flex rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] p-0.5 dark:border-slate-800 dark:bg-slate-900">
+        <div className="flex flex-wrap items-center gap-2.5">
+          {/* Segmented Control matching Stitch HTML 1 */}
+          <div className="inline-flex rounded-xl bg-[#eff5ee] p-1 dark:bg-[#17231c]">
             <button
               type="button"
               onClick={() => switchView("board")}
-              className={`inline-flex items-center gap-1.5 rounded-[4px] px-3 py-1.5 text-xs font-semibold transition-colors ${
+              className={`inline-flex items-center gap-1.5 rounded-lg px-3.5 py-1.5 text-xs font-semibold transition-all ${
                 view === "board"
-                  ? "bg-[#204CD3] text-white"
-                  : "text-[#64748B] hover:bg-[#EEF2FF] hover:text-[#204CD3] dark:text-slate-400"
+                  ? "bg-[#ffffff] text-[#171d19] shadow-sm dark:bg-[#006a42] dark:text-white"
+                  : "text-[#3f674f] hover:text-[#171d19] dark:text-[#a5d1b4] dark:hover:text-white"
               }`}
             >
-              <Kanban className="h-3.5 w-3.5" />
+              <Kanban
+                className={`h-3.5 w-3.5 ${
+                  view === "board" ? "text-[#006a42] dark:text-white" : ""
+                }`}
+              />
               Kanban Board
             </button>
             <button
               type="button"
               onClick={() => switchView("table")}
-              className={`inline-flex items-center gap-1.5 rounded-[4px] px-3 py-1.5 text-xs font-semibold transition-colors ${
+              className={`inline-flex items-center gap-1.5 rounded-lg px-3.5 py-1.5 text-xs font-semibold transition-all ${
                 view === "table"
-                  ? "bg-[#204CD3] text-white"
-                  : "text-[#64748B] hover:bg-[#EEF2FF] hover:text-[#204CD3] dark:text-slate-400"
+                  ? "bg-[#ffffff] text-[#171d19] shadow-sm dark:bg-[#006a42] dark:text-white"
+                  : "text-[#3f674f] hover:text-[#171d19] dark:text-[#a5d1b4] dark:hover:text-white"
               }`}
             >
-              <Table className="h-3.5 w-3.5" />
+              <Table
+                className={`h-3.5 w-3.5 ${
+                  view === "table" ? "text-[#006a42] dark:text-white" : ""
+                }`}
+              />
               Data Table
             </button>
           </div>
@@ -150,7 +167,7 @@ export function ApplicationsViewClient({
           <a
             href={exportUrl}
             download
-            className="inline-flex h-9 items-center gap-1.5 rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-3 text-xs font-semibold text-[#0F172A] transition-colors hover:border-[#94A3B8] hover:bg-[#F8FAFC] dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200"
+            className="btn-secondary h-10 px-4 text-xs"
           >
             <Download className="h-3.5 w-3.5" />
             Export CSV
@@ -159,7 +176,7 @@ export function ApplicationsViewClient({
           <button
             type="button"
             onClick={() => setManualNewOpen(true)}
-            className="inline-flex h-9 items-center gap-1.5 rounded-[4px] bg-[#204CD3] px-3.5 text-xs font-semibold text-white transition-all hover:bg-[#1D4ED8] active:scale-[0.98]"
+            className="btn-primary h-10 px-4 text-xs"
           >
             <Plus className="h-3.5 w-3.5" />
             Log Application
@@ -167,16 +184,16 @@ export function ApplicationsViewClient({
         </div>
       </div>
 
-      {/* Filters */}
-      <div className="elevation-1 grid grid-cols-1 gap-2.5 rounded-[8px] border border-[#E2E8F0] bg-[#FFFFFF] p-3.5 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7 dark:border-slate-800 dark:bg-slate-900">
+      {/* Command & Control Filter Toolbar */}
+      <div className="elevation-1 grid grid-cols-1 gap-2.5 rounded-2xl border border-[#bdcabf]/40 bg-[#ffffff] p-3.5 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7 dark:border-[#24332a] dark:bg-[#111a15]">
         <div className="relative min-w-0 sm:col-span-2 lg:col-span-2 xl:col-span-2">
-          <Search className="pointer-events-none absolute top-3 left-3 h-4 w-4 text-[#94A3B8]" />
+          <Search className="pointer-events-none absolute top-3 left-3 h-4 w-4 text-[#3f674f] dark:text-[#a5d1b4]" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search company, position, APP ID, recruiter..."
-            className="h-10 w-full min-w-0 rounded-[4px] border border-[#CBD5E1] bg-[#F8FAFC] pr-3 pl-9 text-xs text-[#0F172A] outline-none placeholder:text-[#64748B] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+            className="h-10 w-full min-w-0 rounded-xl border border-transparent bg-[#eff5ee] pr-3 pl-9 text-xs text-[#171d19] outline-none placeholder:text-[#3f674f] focus:border-[#006a42] focus:bg-[#ffffff] dark:bg-[#17231c] dark:text-[#ecf3eb] dark:placeholder:text-[#a5d1b4]"
           />
         </div>
 
@@ -184,7 +201,7 @@ export function ApplicationsViewClient({
           aria-label="Filter by stage"
           value={stageFilter}
           onChange={(e) => setStageFilter(e.target.value)}
-          className="h-10 w-full min-w-0 rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+          className="h-10 w-full min-w-0 rounded-xl border border-transparent bg-[#eff5ee] px-3 text-xs font-medium text-[#171d19] dark:bg-[#17231c] dark:text-[#ecf3eb]"
         >
           <option value="all">All Stages</option>
           {appStages.map((s) => (
@@ -198,7 +215,7 @@ export function ApplicationsViewClient({
           aria-label="Filter by outcome"
           value={outcomeFilter}
           onChange={(e) => setOutcomeFilter(e.target.value as Outcome | "all")}
-          className="h-10 w-full min-w-0 rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+          className="h-10 w-full min-w-0 rounded-xl border border-transparent bg-[#eff5ee] px-3 text-xs font-medium text-[#171d19] dark:bg-[#17231c] dark:text-[#ecf3eb]"
         >
           <option value="all">All Outcomes</option>
           {OUTCOMES.map((o) => (
@@ -212,7 +229,7 @@ export function ApplicationsViewClient({
           aria-label="Filter by platform"
           value={platformFilter}
           onChange={(e) => setPlatformFilter(e.target.value)}
-          className="h-10 w-full min-w-0 rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] sm:col-span-2 lg:col-span-2 xl:col-span-1 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+          className="h-10 w-full min-w-0 rounded-xl border border-transparent bg-[#eff5ee] px-3 text-xs font-medium text-[#171d19] sm:col-span-2 lg:col-span-2 xl:col-span-1 dark:bg-[#17231c] dark:text-[#ecf3eb]"
         >
           <option value="all">All Platforms</option>
           {sources.map((s) => (
@@ -228,14 +245,14 @@ export function ApplicationsViewClient({
             aria-label="Submitted from date"
             value={fromDate}
             onChange={(e) => setFromDate(e.target.value)}
-            className="h-10 w-full min-w-0 rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2 text-[11px] text-[#0F172A] tabular-nums dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+            className="h-10 w-full min-w-0 rounded-xl border border-transparent bg-[#eff5ee] px-2.5 text-[11px] font-medium text-[#171d19] tabular-nums dark:bg-[#17231c] dark:text-[#ecf3eb]"
           />
           <input
             type="date"
             aria-label="Submitted to date"
             value={toDate}
             onChange={(e) => setToDate(e.target.value)}
-            className="h-10 w-full min-w-0 rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2 text-[11px] text-[#0F172A] tabular-nums dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+            className="h-10 w-full min-w-0 rounded-xl border border-transparent bg-[#eff5ee] px-2.5 text-[11px] font-medium text-[#171d19] tabular-nums dark:bg-[#17231c] dark:text-[#ecf3eb]"
           />
         </div>
       </div>

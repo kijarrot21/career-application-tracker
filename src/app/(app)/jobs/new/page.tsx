@@ -20,14 +20,14 @@ export default async function NewJobVacancyPage() {
         <div>
           <Link
             href="/jobs"
-            className="text-xs font-semibold text-[#204CD3] hover:underline dark:text-[#B7C4FF]"
+            className="text-xs font-semibold text-[#006a42] hover:underline dark:text-[#69dca0]"
           >
             &larr; Back to Find Jobs
           </Link>
-          <h1 className="text-headline-md mt-1 text-[#0F172A] dark:text-slate-100">
+          <h1 className="text-headline-md mt-1.5 text-[#171d19] dark:text-[#ecf3eb]">
             Add Job Vacancy
           </h1>
-          <p className="text-[13px] text-[#64748B]">
+          <p className="text-[13px] text-[#3f674f] dark:text-[#a5d1b4]">
             Save a job opportunity manually or from an external URL and
             automatically calculate initial suitability.
           </p>

@@ -67,16 +67,16 @@ export function SuitabilityPanel({
   }
 
   return (
-    <div className="elevation-1 space-y-4 rounded-[8px] border border-[#E2E8F0] bg-[#FFFFFF] p-5 dark:border-slate-800 dark:bg-slate-900">
-      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#E2E8F0] pb-3 dark:border-slate-800">
+    <div className="elevation-1 space-y-4 rounded-2xl border border-[#bdcabf]/40 bg-[#ffffff] p-6 dark:border-[#24332a] dark:bg-[#111a15]">
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#e3eae3] pb-3.5 dark:border-[#24332a]">
         <div>
           <div className="flex items-center gap-2">
-            <h3 className="text-headline-sm text-[#0F172A] dark:text-slate-100">
+            <h3 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
               Job Suitability Evaluation (0 to 100%)
             </h3>
             <SuitabilityBadge score={liveOverall} />
           </div>
-          <p className="text-xs text-[#64748B]">
+          <p className="text-xs text-[#3f674f] dark:text-[#a5d1b4]">
             Weighted evaluation across 6 HR suitability criteria
           </p>
         </div>
@@ -84,7 +84,7 @@ export function SuitabilityPanel({
         <button
           type="button"
           onClick={handleApplySuggestions}
-          className="inline-flex items-center gap-1.5 rounded-[4px] border border-[#204CD3]/25 bg-[#EEF2FF] px-2.5 py-1.5 text-xs font-semibold text-[#1D4ED8] transition-colors hover:bg-[#204CD3] hover:text-white dark:border-[#204CD3]/40 dark:bg-[#204CD3]/20 dark:text-[#B7C4FF]"
+          className="inline-flex items-center gap-1.5 rounded-xl bg-[#c0edcf] px-3 py-1.5 text-xs font-semibold text-[#005232] transition-colors hover:bg-[#006a42] hover:text-white dark:bg-[#005232] dark:text-[#86f9ba]"
         >
           <Sparkles className="h-3.5 w-3.5" />
           Apply Profile Suggestions
@@ -100,19 +100,19 @@ export function SuitabilityPanel({
           return (
             <div
               key={criterion}
-              className="rounded-[8px] border border-[#E2E8F0] bg-[#F8FAFC] p-3 text-xs dark:border-slate-800 dark:bg-slate-950"
+              className="rounded-xl bg-[#eff5ee] p-3.5 text-xs dark:bg-[#17231c]"
             >
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div>
-                  <span className="font-semibold text-[#0F172A] dark:text-slate-100">
+                  <span className="font-semibold text-[#171d19] dark:text-[#ecf3eb]">
                     {CRITERION_LABELS[criterion]}
                   </span>{" "}
-                  <span className="font-mono text-[11px] text-[#64748B] tabular-nums">
+                  <span className="font-mono text-[11px] text-[#3f674f] tabular-nums dark:text-[#a5d1b4]">
                     (weight {weight}%)
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="font-mono font-semibold text-[#204CD3] tabular-nums dark:text-[#B7C4FF]">
+                  <span className="font-mono font-bold text-[#006a42] tabular-nums dark:text-[#69dca0]">
                     {val != null ? `${val}%` : "Not rated"}
                   </span>
                   {val != null && (
@@ -121,7 +121,7 @@ export function SuitabilityPanel({
                       onClick={() =>
                         setScores((p) => ({ ...p, [criterion]: null }))
                       }
-                      className="text-[11px] font-semibold text-[#64748B] hover:text-[#0F172A]"
+                      className="text-[11px] font-semibold text-[#3f674f] hover:text-[#171d19]"
                     >
                       Clear
                     </button>
@@ -143,12 +143,12 @@ export function SuitabilityPanel({
                       [criterion]: Number(e.target.value),
                     }))
                   }
-                  className="h-1.5 flex-1 cursor-pointer accent-[#204CD3]"
+                  className="h-1.5 flex-1 cursor-pointer accent-[#006a42]"
                 />
               </div>
 
               {sug && (
-                <p className="mt-1.5 text-[11px] text-[#64748B] tabular-nums">
+                <p className="mt-1.5 text-[11px] text-[#3f674f] tabular-nums dark:text-[#a5d1b4]">
                   {sug.score != null ? `Suggested ${sug.score}%: ` : ""}
                   {sug.reason}
                 </p>
@@ -163,7 +163,7 @@ export function SuitabilityPanel({
           type="button"
           disabled={isPending}
           onClick={handleSave}
-          className="h-9 rounded-[4px] bg-[#204CD3] px-4 text-xs font-semibold text-white transition-all hover:bg-[#1D4ED8] active:scale-[0.98] disabled:opacity-50"
+          className="btn-primary h-10 px-4 text-xs disabled:opacity-50"
         >
           {isPending ? "Saving..." : "Save Suitability Score"}
         </button>

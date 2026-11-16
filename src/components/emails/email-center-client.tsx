@@ -232,10 +232,10 @@ export function EmailCenterClient({
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-headline-md text-[#0F172A] dark:text-slate-100">
+          <h1 className="text-headline-md text-[#171d19] dark:text-[#ecf3eb]">
             Recruitment Email Center & Correspondence Classifier
           </h1>
-          <p className="mt-0.5 text-body-sm text-[#64748B]">
+          <p className="mt-0.5 text-body-sm text-[#3f674f]">
             Connect Gmail or Outlook via read-only OAuth 2.0, classify recruitment emails, and confirm application stage updates.
           </p>
         </div>
@@ -244,7 +244,7 @@ export function EmailCenterClient({
           <button
             type="button"
             onClick={() => setShowSetupGuide(!showSetupGuide)}
-            className="btn-secondary h-9 px-3 text-xs dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
+            className="btn-secondary h-10 px-4 text-xs"
           >
             <HelpCircle className="h-3.5 w-3.5" />
             {showSetupGuide ? "Hide OAuth Setup Guide" : "OAuth 2.0 Setup Guide"}
@@ -253,7 +253,7 @@ export function EmailCenterClient({
           <button
             type="button"
             onClick={() => setActiveTab("analyzer")}
-            className="btn-primary h-9 px-3.5 text-xs"
+            className="btn-primary h-10 px-4 text-xs"
           >
             <Sparkles className="h-3.5 w-3.5" />
             Analyze / Log Email
@@ -262,26 +262,26 @@ export function EmailCenterClient({
       </div>
 
       {oauthError && (
-        <div className="rounded-[8px] border border-[#FECDD3] bg-[#FFF1F2] px-4 py-2.5 text-[#BE123C] dark:border-rose-900 dark:bg-rose-950/50 dark:text-rose-200">
+        <div className="rounded-2xl border border-[#ba1a1a]/25 bg-[#ffdad6]/70 px-4 py-2.5 text-[#93000a] dark:border-rose-900 dark:bg-rose-950/50 dark:text-rose-200">
           OAuth connection notice: {oauthError}
         </div>
       )}
 
       {connectedProvider && (
-        <div className="rounded-[8px] border border-[#A7F3D0] bg-[#ECFDF5] px-4 py-2.5 text-[#047857] dark:border-emerald-900 dark:bg-emerald-950/50 dark:text-emerald-200">
+        <div className="rounded-2xl border border-[#86f9ba] bg-[#c0edcf] px-4 py-2.5 text-[#005232] dark:border-emerald-900 dark:bg-emerald-950/50 dark:text-emerald-200">
           Connected {connectedProvider.toUpperCase()} account with read-only OAuth 2.0 permissions.
         </div>
       )}
 
       {/* OAuth 2.0 Connection Bar */}
-      <div className="elevation-1 rounded-[8px] border border-[#E2E8F0] bg-[#FFFFFF] p-4 space-y-3 dark:border-slate-800 dark:bg-slate-900">
+      <div className="elevation-1 rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] p-4 space-y-3 dark:border-[#24332a] dark:bg-[#111a15]">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-wrap items-center gap-2">
-            <ShieldCheck className="h-4 w-4 text-[#10B981]" />
-            <span className="font-semibold text-[#0F172A] dark:text-slate-100">
+            <ShieldCheck className="h-4 w-4 text-[#006a42]" />
+            <span className="font-semibold text-[#171d19] dark:text-[#ecf3eb]">
               Email Account Connections (Read-Only OAuth 2.0)
             </span>
-            <span className="text-[#64748B]">
+            <span className="text-[#3f674f]">
               Never sends, modifies, or deletes emails. Refresh tokens are encrypted with AES-256-GCM.
             </span>
           </div>
@@ -290,16 +290,16 @@ export function EmailCenterClient({
             {data.oauthStatus.gmailConfigured ? (
               <a
                 href="/api/email/oauth/gmail/start"
-                className="btn-secondary h-9 px-3 text-xs dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
+                className="btn-secondary h-10 px-4 text-xs"
               >
-                <Mail className="h-3.5 w-3.5 text-[#F43F5E]" />
+                <Mail className="h-3.5 w-3.5 text-[#ba1a1a]" />
                 Connect Gmail
               </a>
             ) : (
               <button
                 type="button"
                 onClick={() => setShowSetupGuide(true)}
-                className="inline-flex h-9 items-center gap-1.5 rounded-[4px] border border-dashed border-[#CBD5E1] px-3 font-semibold text-[#64748B] hover:border-[#204CD3] hover:text-[#204CD3] dark:border-slate-700"
+                className="inline-flex h-10 items-center gap-1.5 rounded-lg border border-dashed border-[#E2E8F0] px-3.5 font-semibold text-[#727973] transition-colors hover:border-[#08945F] hover:text-[#08945F] dark:border-[#2d3d33] dark:text-[#b7c6ba]"
               >
                 <Mail className="h-3.5 w-3.5" />
                 Configure Gmail OAuth
@@ -309,16 +309,16 @@ export function EmailCenterClient({
             {data.oauthStatus.outlookConfigured ? (
               <a
                 href="/api/email/oauth/outlook/start"
-                className="btn-secondary h-9 px-3 text-xs dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
+                className="btn-secondary h-10 px-4 text-xs"
               >
-                <Mail className="h-3.5 w-3.5 text-[#204CD3]" />
+                <Mail className="h-3.5 w-3.5 text-[#006a42]" />
                 Connect Outlook
               </a>
             ) : (
               <button
                 type="button"
                 onClick={() => setShowSetupGuide(true)}
-                className="inline-flex h-9 items-center gap-1.5 rounded-[4px] border border-dashed border-[#CBD5E1] px-3 font-semibold text-[#64748B] hover:border-[#204CD3] hover:text-[#204CD3] dark:border-slate-700"
+                className="inline-flex h-10 items-center gap-1.5 rounded-lg border border-dashed border-[#E2E8F0] px-3.5 font-semibold text-[#727973] transition-colors hover:border-[#08945F] hover:text-[#08945F] dark:border-[#2d3d33] dark:text-[#b7c6ba]"
               >
                 <Mail className="h-3.5 w-3.5" />
                 Configure Outlook OAuth
@@ -328,20 +328,20 @@ export function EmailCenterClient({
         </div>
 
         {data.accounts.length > 0 && (
-          <div className="divide-y divide-[#E2E8F0] border-t border-[#E2E8F0] pt-2 dark:divide-slate-800 dark:border-slate-800">
+          <div className="divide-y divide-[#dde4dd]/70 border-t border-[#bdcabf]/50 pt-2 dark:divide-[#24332a] dark:border-[#24332a]">
             {data.accounts.map((acc) => (
               <div
                 key={acc.id}
                 className="flex flex-wrap items-center justify-between gap-2 py-2"
               >
                 <div className="flex items-center gap-2">
-                  <span className="rounded-full bg-[#EEF2FF] px-2.5 py-0.5 font-mono text-[10px] font-semibold uppercase text-[#1D4ED8] dark:bg-[#204CD3]/20 dark:text-[#B7C4FF]">
+                  <span className="rounded-full bg-[#c0edcf]/60 px-2.5 py-0.5 font-mono text-[10px] font-semibold uppercase text-[#005232] dark:bg-[#006a42]/20 dark:text-[#86f9ba]">
                     {acc.provider}
                   </span>
-                  <span className="font-semibold text-[#0F172A] dark:text-slate-100">
+                  <span className="font-semibold text-[#171d19] dark:text-[#ecf3eb]">
                     {acc.email}
                   </span>
-                  <span className="text-[#64748B] tabular-nums">
+                  <span className="text-[#3f674f] tabular-nums">
                     Last synced:{" "}
                     {acc.lastSyncedAt
                       ? formatDateTime(acc.lastSyncedAt)
@@ -363,7 +363,7 @@ export function EmailCenterClient({
                     type="button"
                     disabled={isPending}
                     onClick={() => handleDisconnectAccount(acc.id)}
-                    className="inline-flex h-8 items-center gap-1 rounded-[4px] border border-[#FECDD3] bg-[#FFF1F2] px-2.5 font-semibold text-[#BE123C] hover:bg-rose-100"
+                    className="btn-destructive h-8 px-3 text-xs"
                   >
                     <Trash2 className="h-3 w-3" />
                     Disconnect
@@ -375,46 +375,46 @@ export function EmailCenterClient({
         )}
 
         {showSetupGuide && (
-          <div className="rounded-[8px] border border-[#C7D2FE] bg-[#EEF2FF]/60 p-4 space-y-2.5 text-xs dark:border-slate-700 dark:bg-slate-950">
-            <h3 className="text-headline-sm text-[#0F172A] dark:text-slate-100">
+          <div className="rounded-2xl border border-[#a5d1b4] bg-[#c0edcf]/60/60 p-4 space-y-2.5 text-xs dark:border-[#2d3d33] dark:bg-[#17231c]">
+            <h3 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
               How to Configure Gmail & Microsoft Outlook OAuth 2.0 Credentials
             </h3>
-            <p className="text-[#334155] dark:text-slate-300">
+            <p className="text-[#3e4a41] dark:text-[#b7c6ba]">
               Until you add OAuth credentials to <code>.env.local</code>, use the <strong>Analyze / Log Email</strong> tab to classify and link recruitment correspondence with the exact same classification engine.
             </p>
             <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-              <div className="rounded-[6px] border border-[#E2E8F0] bg-[#FFFFFF] p-3 space-y-1 dark:border-slate-800 dark:bg-slate-900">
-                <p className="font-semibold text-[#0F172A] dark:text-slate-100">
+              <div className="rounded-xl border border-[#bdcabf]/50 bg-[#ffffff] p-3 space-y-1 dark:border-[#24332a] dark:bg-[#111a15]">
+                <p className="font-semibold text-[#171d19] dark:text-[#ecf3eb]">
                   1. Google Cloud (Gmail API)
                 </p>
-                <p className="text-[#64748B]">
+                <p className="text-[#3f674f]">
                   Enable the Gmail API in Google Cloud Console and create an OAuth 2.0 Web Client with Redirect URI:
                 </p>
-                <code className="block rounded-[4px] bg-[#F1F5F9] p-1.5 font-mono text-[11px] text-[#0F172A] dark:bg-slate-950 dark:text-slate-200">
+                <code className="block rounded-xl bg-[#eff5ee] p-1.5 font-mono text-[11px] text-[#171d19] dark:bg-[#17231c] dark:text-[#ecf3eb]">
                   {data.oauthStatus.gmailRedirectUri}
                 </code>
-                <p className="text-[#64748B]">
+                <p className="text-[#3f674f]">
                   Scope: <code>https://www.googleapis.com/auth/gmail.readonly</code>
                 </p>
-                <p className="text-[#64748B]">
+                <p className="text-[#3f674f]">
                   Set <code>GOOGLE_CLIENT_ID</code> and <code>GOOGLE_CLIENT_SECRET</code> in <code>.env.local</code>.
                 </p>
               </div>
 
-              <div className="rounded-[6px] border border-[#E2E8F0] bg-[#FFFFFF] p-3 space-y-1 dark:border-slate-800 dark:bg-slate-900">
-                <p className="font-semibold text-[#0F172A] dark:text-slate-100">
+              <div className="rounded-xl border border-[#bdcabf]/50 bg-[#ffffff] p-3 space-y-1 dark:border-[#24332a] dark:bg-[#111a15]">
+                <p className="font-semibold text-[#171d19] dark:text-[#ecf3eb]">
                   2. Microsoft Entra ID (Outlook / Graph)
                 </p>
-                <p className="text-[#64748B]">
+                <p className="text-[#3f674f]">
                   Register an application in Microsoft Entra admin center with Web Redirect URI:
                 </p>
-                <code className="block rounded-[4px] bg-[#F1F5F9] p-1.5 font-mono text-[11px] text-[#0F172A] dark:bg-slate-950 dark:text-slate-200">
+                <code className="block rounded-xl bg-[#eff5ee] p-1.5 font-mono text-[11px] text-[#171d19] dark:bg-[#17231c] dark:text-[#ecf3eb]">
                   {data.oauthStatus.outlookRedirectUri}
                 </code>
-                <p className="text-[#64748B]">
+                <p className="text-[#3f674f]">
                   Delegated Scopes: <code>Mail.Read User.Read offline_access</code>
                 </p>
-                <p className="text-[#64748B]">
+                <p className="text-[#3f674f]">
                   Set <code>MICROSOFT_CLIENT_ID</code> and <code>MICROSOFT_CLIENT_SECRET</code> in <code>.env.local</code>.
                 </p>
               </div>
@@ -424,14 +424,14 @@ export function EmailCenterClient({
       </div>
 
       {/* Tabs */}
-      <div className="flex flex-wrap gap-1 border-b border-[#E2E8F0] dark:border-slate-800">
+      <div className="flex flex-wrap gap-1 border-b border-[#bdcabf]/50 dark:border-[#24332a]">
         <button
           type="button"
           onClick={() => setActiveTab("inbox")}
           className={`border-b-2 px-4 py-2.5 text-xs font-semibold transition-colors ${
             activeTab === "inbox"
-              ? "border-[#204CD3] text-[#204CD3] dark:border-[#3B66F5] dark:text-[#B7C4FF]"
-              : "border-transparent text-[#64748B] hover:text-[#0F172A] dark:hover:text-slate-200"
+              ? "border-[#006a42] text-[#006a42] dark:border-[#69dca0] dark:text-[#86f9ba]"
+              : "border-transparent text-[#3f674f] hover:text-[#171d19] dark:hover:text-slate-200"
           }`}
         >
           Recruitment Inbox ({data.emails.length})
@@ -442,8 +442,8 @@ export function EmailCenterClient({
           onClick={() => setActiveTab("analyzer")}
           className={`border-b-2 px-4 py-2.5 text-xs font-semibold transition-colors ${
             activeTab === "analyzer"
-              ? "border-[#204CD3] text-[#204CD3] dark:border-[#3B66F5] dark:text-[#B7C4FF]"
-              : "border-transparent text-[#64748B] hover:text-[#0F172A] dark:hover:text-slate-200"
+              ? "border-[#006a42] text-[#006a42] dark:border-[#69dca0] dark:text-[#86f9ba]"
+              : "border-transparent text-[#3f674f] hover:text-[#171d19] dark:hover:text-slate-200"
           }`}
         >
           Analyze / Log Email
@@ -454,8 +454,8 @@ export function EmailCenterClient({
           onClick={() => setActiveTab("recruiters")}
           className={`border-b-2 px-4 py-2.5 text-xs font-semibold transition-colors ${
             activeTab === "recruiters"
-              ? "border-[#204CD3] text-[#204CD3] dark:border-[#3B66F5] dark:text-[#B7C4FF]"
-              : "border-transparent text-[#64748B] hover:text-[#0F172A] dark:hover:text-slate-200"
+              ? "border-[#006a42] text-[#006a42] dark:border-[#69dca0] dark:text-[#86f9ba]"
+              : "border-transparent text-[#3f674f] hover:text-[#171d19] dark:hover:text-slate-200"
           }`}
         >
           Recruiter Contacts ({data.recruiterDirectory.length})
@@ -465,15 +465,15 @@ export function EmailCenterClient({
       {/* TAB 1: Classified Recruitment Inbox */}
       {activeTab === "inbox" && (
         <div className="space-y-4">
-          <div className="elevation-1 grid grid-cols-1 gap-2.5 rounded-[8px] border border-[#E2E8F0] bg-[#FFFFFF] p-3.5 sm:grid-cols-4 dark:border-slate-800 dark:bg-slate-900">
+          <div className="elevation-1 grid grid-cols-1 gap-2.5 rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] p-3.5 sm:grid-cols-4 dark:border-[#24332a] dark:bg-[#111a15]">
             <div className="relative sm:col-span-2">
-              <Search className="pointer-events-none absolute top-3 left-3 h-4 w-4 text-[#94A3B8]" />
+              <Search className="pointer-events-none absolute top-3 left-3 h-4 w-4 text-[#6e7a71]" />
               <input
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search email subject, sender, company, or snippet..."
-                className="h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] pr-3 pl-9 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className="h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] pr-3 pl-9 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
               />
             </div>
 
@@ -483,7 +483,7 @@ export function EmailCenterClient({
               onChange={(e) =>
                 setClassFilter(e.target.value as EmailClassification | "all")
               }
-              className="h-10 rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              className="h-10 rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
             >
               <option value="all">All Classifications</option>
               {EMAIL_CLASSIFICATIONS.map((c) => (
@@ -505,7 +505,7 @@ export function EmailCenterClient({
                     | "unlinked",
                 )
               }
-              className="h-10 rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              className="h-10 rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
             >
               <option value="all">All Link Statuses</option>
               <option value="suggested">Suggested Link (Needs Review)</option>
@@ -515,12 +515,12 @@ export function EmailCenterClient({
           </div>
 
           {filteredEmails.length === 0 ? (
-            <div className="elevation-1 flex flex-col items-center justify-center rounded-[8px] border border-[#E2E8F0] bg-[#FFFFFF] py-12 text-center dark:border-slate-800 dark:bg-slate-900">
-              <Mail className="h-7 w-7 text-[#64748B]" />
-              <p className="mt-2 text-title-md text-[#0F172A] dark:text-slate-100">
+            <div className="elevation-1 flex flex-col items-center justify-center rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] py-12 text-center dark:border-[#24332a] dark:bg-[#111a15]">
+              <Mail className="h-7 w-7 text-[#3f674f]" />
+              <p className="mt-2 text-title-md text-[#171d19] dark:text-[#ecf3eb]">
                 No recruitment correspondence matches your filters
               </p>
-              <p className="mt-1 text-xs text-[#64748B]">
+              <p className="mt-1 text-xs text-[#3f674f]">
                 Click &ldquo;Analyze / Log Email&rdquo; to classify a recruitment email and link it to an application.
               </p>
             </div>
@@ -530,12 +530,12 @@ export function EmailCenterClient({
                 <div
                   key={email.id}
                   data-testid={`email-card-${email.classification}`}
-                  className="elevation-2 rounded-[8px] border border-[#E2E8F0] bg-[#FFFFFF] p-4 space-y-3 dark:border-slate-800 dark:bg-slate-900"
+                  className="elevation-2 rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] p-4 space-y-3 dark:border-[#24332a] dark:bg-[#111a15]"
                 >
                   <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-start">
                     <div className="space-y-1">
                       <div className="flex flex-wrap items-center gap-2">
-                        <span className="rounded-full border border-[#C7D2FE] bg-[#EEF2FF] px-2.5 py-[2px] text-[11px] font-semibold text-[#1D4ED8] dark:border-[#204CD3]/40 dark:bg-[#204CD3]/20 dark:text-[#B7C4FF]">
+                        <span className="rounded-full border border-[#a5d1b4] bg-[#c0edcf]/60 px-2.5 py-[2px] text-[11px] font-semibold text-[#005232] dark:border-[#006a42]/40 dark:bg-[#006a42]/20 dark:text-[#86f9ba]">
                           {
                             EMAIL_CLASSIFICATION_LABELS[
                               email.classification as EmailClassification
@@ -543,17 +543,17 @@ export function EmailCenterClient({
                           }
                         </span>
                         {email.confidence != null && (
-                          <span className="font-mono text-[11px] text-[#64748B] tabular-nums">
+                          <span className="font-mono text-[11px] text-[#3f674f] tabular-nums">
                             {email.confidence}% confidence
                           </span>
                         )}
                         <span
                           className={`rounded-full px-2.5 py-[2px] font-mono text-[10px] font-semibold uppercase tracking-[0.04em] ${
                             email.linkStatus === "suggested"
-                              ? "bg-[#FFFBEB] text-[#B45309] dark:bg-amber-950 dark:text-amber-300"
+                              ? "bg-[#ffdead]/60 text-[#5d4211] dark:bg-amber-950 dark:text-amber-300"
                               : email.linkStatus === "confirmed"
-                                ? "bg-[#ECFDF5] text-[#047857] dark:bg-emerald-950 dark:text-emerald-300"
-                                : "bg-[#F1F5F9] text-[#64748B] dark:bg-slate-800"
+                                ? "bg-[#c0edcf] text-[#005232] dark:bg-emerald-950 dark:text-emerald-300"
+                                : "bg-[#eff5ee] text-[#3f674f] dark:bg-[#1d2b23]"
                           }`}
                         >
                           {email.linkStatus}
@@ -561,11 +561,11 @@ export function EmailCenterClient({
                         {email.isSample && <SampleBadge />}
                       </div>
 
-                      <h3 className="text-headline-sm text-[#0F172A] dark:text-slate-100">
+                      <h3 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
                         {email.subject}
                       </h3>
 
-                      <div className="flex flex-wrap items-center gap-3 text-[12px] text-[#64748B]">
+                      <div className="flex flex-wrap items-center gap-3 text-[12px] text-[#3f674f]">
                         {email.sender && <span>From: {email.sender}</span>}
                         <span>
                           {COMM_CHANNEL_LABELS[email.channel as CommChannel]} ·{" "}
@@ -578,7 +578,7 @@ export function EmailCenterClient({
                         {email.detectedCompany && (
                           <span>
                             Detected Company:{" "}
-                            <strong className="text-[#0F172A] dark:text-slate-200">
+                            <strong className="text-[#171d19] dark:text-[#ecf3eb]">
                               {email.detectedCompany}
                             </strong>
                           </span>
@@ -586,7 +586,7 @@ export function EmailCenterClient({
                         {email.detectedPosition && (
                           <span>
                             Detected Role:{" "}
-                            <strong className="text-[#0F172A] dark:text-slate-200">
+                            <strong className="text-[#171d19] dark:text-[#ecf3eb]">
                               {email.detectedPosition}
                             </strong>
                           </span>
@@ -594,30 +594,30 @@ export function EmailCenterClient({
                       </div>
                     </div>
 
-                    <span className="shrink-0 font-mono text-[11px] text-[#64748B] tabular-nums">
+                    <span className="shrink-0 font-mono text-[11px] text-[#3f674f] tabular-nums">
                       {formatDateTime(email.occurredAt)}
                     </span>
                   </div>
 
                   {email.snippet && (
-                    <p className="rounded-[6px] bg-[#F8FAFC] p-3 whitespace-pre-line text-[#334155] dark:bg-slate-950 dark:text-slate-300">
+                    <p className="rounded-xl bg-[#eff5ee] p-3 whitespace-pre-line text-[#3e4a41] dark:bg-[#17231c] dark:text-[#b7c6ba]">
                       {email.snippet}
                     </p>
                   )}
 
                   {email.classifierReasons &&
                     email.classifierReasons.length > 0 && (
-                      <p className="text-[11px] text-[#64748B]">
+                      <p className="text-[11px] text-[#3f674f]">
                         Classifier notes: {email.classifierReasons.join(" · ")}
                       </p>
                     )}
 
                   {/* User-Confirmed Stage Transition Prompt */}
                   {email.linkedApplication && email.suggestedStage && (
-                    <div className="flex flex-wrap items-center justify-between gap-2 rounded-[6px] border border-[#C7D2FE] bg-[#EEF2FF] px-3.5 py-2.5 dark:border-[#204CD3]/40 dark:bg-[#204CD3]/15">
+                    <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-[#a5d1b4] bg-[#c0edcf]/60 px-3.5 py-2.5 dark:border-[#006a42]/40 dark:bg-[#006a42]/15">
                       <div className="flex flex-wrap items-center gap-2">
-                        <Sparkles className="h-4 w-4 text-[#204CD3] dark:text-[#B7C4FF]" />
-                        <span className="font-semibold text-[#0F172A] dark:text-slate-100">
+                        <Sparkles className="h-4 w-4 text-[#006a42] dark:text-[#86f9ba]" />
+                        <span className="font-semibold text-[#171d19] dark:text-[#ecf3eb]">
                           Suggested Stage Update for{" "}
                           <span className="font-mono">
                             {email.linkedApplication.code}
@@ -628,7 +628,7 @@ export function EmailCenterClient({
                           name={email.linkedApplication.currentStageName}
                           color={email.linkedApplication.currentStageColor}
                         />
-                        <ArrowRight className="h-3.5 w-3.5 text-[#64748B]" />
+                        <ArrowRight className="h-3.5 w-3.5 text-[#3f674f]" />
                         <StageBadge
                           name={email.suggestedStage.name}
                           color={email.suggestedStage.color}
@@ -655,10 +655,10 @@ export function EmailCenterClient({
                   )}
 
                   {/* Manual Link / Unlink Bar */}
-                  <div className="flex flex-wrap items-center justify-between gap-2 border-t border-[#E2E8F0] pt-2.5 dark:border-slate-800">
+                  <div className="flex flex-wrap items-center justify-between gap-2 border-t border-[#bdcabf]/50 pt-2.5 dark:border-[#24332a]">
                     <div className="flex flex-wrap items-center gap-2">
-                      <Link2 className="h-3.5 w-3.5 text-[#64748B]" />
-                      <span className="text-[#64748B]">Linked Application:</span>
+                      <Link2 className="h-3.5 w-3.5 text-[#3f674f]" />
+                      <span className="text-[#3f674f]">Linked Application:</span>
                       <select
                         aria-label={`Link application for ${email.subject}`}
                         disabled={isPending}
@@ -669,7 +669,7 @@ export function EmailCenterClient({
                             e.target.value || null,
                           )
                         }
-                        className="h-8 rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2 text-xs font-medium text-[#0F172A] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
+                        className="h-8 rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2 text-xs font-medium text-[#171d19] dark:border-[#2d3d33] dark:bg-[#1d2b23] dark:text-[#ecf3eb]"
                       >
                         <option value="">Unlinked (No application)</option>
                         {data.applications.map((app) => (
@@ -690,7 +690,7 @@ export function EmailCenterClient({
                                 email.applicationId,
                               )
                             }
-                            className="inline-flex h-8 items-center gap-1 rounded-[4px] bg-[#10B981] px-2.5 text-[11px] font-semibold text-white hover:bg-[#047857]"
+                            className="btn-primary h-8 px-3 text-[11px]"
                           >
                             <CheckCircle2 className="h-3 w-3" />
                             Confirm Suggested Link
@@ -713,7 +713,7 @@ export function EmailCenterClient({
                     {email.linkedApplication && (
                       <Link
                         href={`/applications/${email.linkedApplication.id}?tab=communications`}
-                        className="font-semibold text-[#204CD3] hover:underline dark:text-[#B7C4FF]"
+                        className="font-semibold text-[#006a42] hover:underline dark:text-[#86f9ba]"
                       >
                         Open {email.linkedApplication.code} &rarr;
                       </Link>
@@ -730,20 +730,20 @@ export function EmailCenterClient({
       {activeTab === "analyzer" && (
         <form
           onSubmit={handleAnalyzeAndSave}
-          className="elevation-1 rounded-[8px] border border-[#E2E8F0] bg-[#FFFFFF] p-5 space-y-4 dark:border-slate-800 dark:bg-slate-900"
+          className="elevation-1 rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] p-5 space-y-4 dark:border-[#24332a] dark:bg-[#111a15]"
         >
           <div>
-            <h2 className="text-headline-sm text-[#0F172A] dark:text-slate-100">
+            <h2 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
               Analyze & Import Recruitment Email
             </h2>
-            <p className="text-[#64748B]">
+            <p className="text-[#3f674f]">
               Paste any email subject and message body. The classifier will detect whether it is an Application Confirmation, CV Screening, Interview Invitation, Assessment Invitation, Rejection, or Job Offer, extract the company/position, and match it to your applications.
             </p>
           </div>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <div>
-              <label className="block font-semibold text-[#334155] dark:text-slate-300">
+              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
                 Sender Name / Email
               </label>
               <input
@@ -751,19 +751,19 @@ export function EmailCenterClient({
                 value={sender}
                 onChange={(e) => setSender(e.target.value)}
                 placeholder="Talent Acquisition <careers@company.com>"
-                className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-3 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950"
+                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-3 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
               />
             </div>
 
             <div>
-              <label className="block font-semibold text-[#334155] dark:text-slate-300">
+              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
                 Channel & Direction
               </label>
               <div className="mt-1 flex gap-2">
                 <select
                   value={channel}
                   onChange={(e) => setChannel(e.target.value as CommChannel)}
-                  className="h-10 flex-1 rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950"
+                  className="h-10 flex-1 rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
                 >
                   {COMM_CHANNELS.map((c) => (
                     <option key={c} value={c}>
@@ -776,7 +776,7 @@ export function EmailCenterClient({
                   onChange={(e) =>
                     setDirection(e.target.value as CommDirection)
                   }
-                  className="h-10 flex-1 rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950"
+                  className="h-10 flex-1 rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
                 >
                   {COMM_DIRECTIONS.map((d) => (
                     <option key={d} value={d}>
@@ -788,13 +788,13 @@ export function EmailCenterClient({
             </div>
 
             <div>
-              <label className="block font-semibold text-[#334155] dark:text-slate-300">
+              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
                 Link to Application (Optional, leave blank to auto-match)
               </label>
               <select
                 value={explicitAppId}
                 onChange={(e) => setExplicitAppId(e.target.value)}
-                className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950"
+                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
               >
                 <option value="">Auto-detect matching application</option>
                 {data.applications.map((app) => (
@@ -809,7 +809,7 @@ export function EmailCenterClient({
           <div>
             <label
               htmlFor="analyzer-subject"
-              className="block font-semibold text-[#334155] dark:text-slate-300"
+              className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]"
             >
               Email Subject *
             </label>
@@ -820,14 +820,14 @@ export function EmailCenterClient({
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
               placeholder="e.g., Interview Invitation for Staff Full-Stack Engineer at PT GoTo"
-              className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-3 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950"
+              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-3 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
             />
           </div>
 
           <div>
             <label
               htmlFor="analyzer-snippet"
-              className="block font-semibold text-[#334155] dark:text-slate-300"
+              className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]"
             >
               Email Body / Excerpt
             </label>
@@ -837,7 +837,7 @@ export function EmailCenterClient({
               value={snippet}
               onChange={(e) => setSnippet(e.target.value)}
               placeholder="Paste the email content here (e.g., We would like to invite you to an HR interview on Thursday at 10:00 WIB)..."
-              className="mt-1 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] p-3 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950"
+              className="mt-1 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] p-3 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
             />
           </div>
 
@@ -845,7 +845,7 @@ export function EmailCenterClient({
             <button
               type="submit"
               disabled={isPending}
-              className="btn-primary h-9 px-4 text-xs disabled:opacity-50"
+              className="btn-primary h-10 px-4 text-xs disabled:opacity-50"
             >
               <Sparkles className="h-3.5 w-3.5" />
               {isPending ? "Analyzing..." : "Classify & Save Email"}
@@ -858,13 +858,13 @@ export function EmailCenterClient({
       {activeTab === "recruiters" && (
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
           <div className="space-y-3 lg:col-span-7">
-            <div className="elevation-1 rounded-[8px] border border-[#E2E8F0] bg-[#FFFFFF] p-5 space-y-3 dark:border-slate-800 dark:bg-slate-900">
-              <h2 className="text-headline-sm text-[#0F172A] dark:text-slate-100">
+            <div className="elevation-1 rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] p-5 space-y-3 dark:border-[#24332a] dark:bg-[#111a15]">
+              <h2 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
                 Recruiter & Talent Acquisition Contact History
               </h2>
 
               {data.recruiterDirectory.length === 0 ? (
-                <p className="py-6 text-[#64748B]">
+                <p className="py-6 text-[#3f674f]">
                   No recruiter contacts recorded yet.
                 </p>
               ) : (
@@ -872,25 +872,25 @@ export function EmailCenterClient({
                   {data.recruiterDirectory.map((rec) => (
                     <div
                       key={rec.id}
-                      className="flex flex-wrap items-center justify-between gap-2 rounded-[8px] border border-[#E2E8F0] bg-[#F8FAFC] p-3.5 dark:border-slate-800 dark:bg-slate-950"
+                      className="flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-[#bdcabf]/50 bg-[#eff5ee] p-3.5 dark:border-[#24332a] dark:bg-[#17231c]"
                     >
                       <div className="space-y-0.5">
                         <div className="flex items-center gap-2">
-                          <UserCheck className="h-3.5 w-3.5 text-[#204CD3]" />
-                          <span className="font-semibold text-[#0F172A] dark:text-slate-100">
+                          <UserCheck className="h-3.5 w-3.5 text-[#006a42]" />
+                          <span className="font-semibold text-[#171d19] dark:text-[#ecf3eb]">
                             {rec.name}
                           </span>
                           {rec.title && (
-                            <span className="text-[#64748B]">· {rec.title}</span>
+                            <span className="text-[#3f674f]">· {rec.title}</span>
                           )}
                           {rec.companyName && (
-                            <span className="rounded-full bg-[#EEF2FF] px-2.5 py-0.5 text-[11px] font-semibold text-[#1D4ED8] dark:bg-slate-800 dark:text-slate-300">
+                            <span className="rounded-full bg-[#c0edcf]/60 px-2.5 py-0.5 text-[11px] font-semibold text-[#005232] dark:bg-[#1d2b23] dark:text-[#b7c6ba]">
                               {rec.companyName}
                             </span>
                           )}
                           {rec.isSample && <SampleBadge />}
                         </div>
-                        <div className="flex flex-wrap gap-3 text-[11px] text-[#64748B] tabular-nums">
+                        <div className="flex flex-wrap gap-3 text-[11px] text-[#3f674f] tabular-nums">
                           {rec.email && <span>Email: {rec.email}</span>}
                           {rec.phone && <span>Phone: {rec.phone}</span>}
                           <span>
@@ -916,7 +916,7 @@ export function EmailCenterClient({
                             router.refresh();
                           })
                         }
-                        className="rounded-[4px] p-1.5 text-[#64748B] hover:bg-[#FFF1F2] hover:text-[#BE123C]"
+                        className="btn-destructive h-8 w-8 p-0"
                       >
                         <Trash2 className="h-3.5 w-3.5" />
                       </button>
@@ -929,17 +929,17 @@ export function EmailCenterClient({
 
           <form
             onSubmit={handleAddRecruiter}
-            className="elevation-1 rounded-[8px] border border-[#E2E8F0] bg-[#FFFFFF] p-5 space-y-3 lg:col-span-5 dark:border-slate-800 dark:bg-slate-900"
+            className="elevation-1 rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] p-5 space-y-3 lg:col-span-5 dark:border-[#24332a] dark:bg-[#111a15]"
           >
             <div className="flex items-center gap-2">
-              <Plus className="h-4 w-4 text-[#204CD3]" />
-              <h3 className="text-headline-sm text-[#0F172A] dark:text-slate-100">
+              <Plus className="h-4 w-4 text-[#006a42]" />
+              <h3 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
                 Add Recruiter Contact
               </h3>
             </div>
 
             <div>
-              <label className="block font-semibold text-[#334155] dark:text-slate-300">
+              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
                 Recruiter Name *
               </label>
               <input
@@ -948,13 +948,13 @@ export function EmailCenterClient({
                 value={recName}
                 onChange={(e) => setRecName(e.target.value)}
                 placeholder="Nadia Putri"
-                className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950"
+                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
               />
             </div>
 
             <div className="grid grid-cols-2 gap-2.5">
               <div>
-                <label className="block font-semibold text-[#334155] dark:text-slate-300">
+                <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
                   Company
                 </label>
                 <input
@@ -962,11 +962,11 @@ export function EmailCenterClient({
                   value={recCompany}
                   onChange={(e) => setRecCompany(e.target.value)}
                   placeholder="PT GoTo"
-                  className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950"
+                  className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
                 />
               </div>
               <div>
-                <label className="block font-semibold text-[#334155] dark:text-slate-300">
+                <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
                   Role / Title
                 </label>
                 <input
@@ -974,14 +974,14 @@ export function EmailCenterClient({
                   value={recTitle}
                   onChange={(e) => setRecTitle(e.target.value)}
                   placeholder="Technical Recruiter"
-                  className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950"
+                  className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-2.5">
               <div>
-                <label className="block font-semibold text-[#334155] dark:text-slate-300">
+                <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
                   Email
                 </label>
                 <input
@@ -989,11 +989,11 @@ export function EmailCenterClient({
                   value={recEmail}
                   onChange={(e) => setRecEmail(e.target.value)}
                   placeholder="nadia@company.com"
-                  className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950"
+                  className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
                 />
               </div>
               <div>
-                <label className="block font-semibold text-[#334155] dark:text-slate-300">
+                <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
                   Phone / WhatsApp
                 </label>
                 <input
@@ -1001,7 +1001,7 @@ export function EmailCenterClient({
                   value={recPhone}
                   onChange={(e) => setRecPhone(e.target.value)}
                   placeholder="+62..."
-                  className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950"
+                  className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
                 />
               </div>
             </div>
@@ -1009,7 +1009,7 @@ export function EmailCenterClient({
             <button
               type="submit"
               disabled={isPending}
-              className="btn-primary h-9 w-full text-xs disabled:opacity-50"
+              className="btn-primary h-10 w-full px-4 text-xs disabled:opacity-50"
             >
               Save Recruiter Contact
             </button>

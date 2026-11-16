@@ -276,27 +276,27 @@ export function VacancyForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-6 text-xs">
       {error && (
-        <div className="rounded-[8px] border border-[#F43F5E]/40 bg-[#FFF1F2] px-4 py-3 text-[#BE123C] dark:border-rose-900 dark:bg-rose-950/60 dark:text-rose-300">
+        <div className="rounded-2xl border border-[#ba1a1a]/40 bg-[#ffdad6]/70 px-4 py-3 text-[#93000a] dark:border-rose-900 dark:bg-rose-950/60 dark:text-rose-300">
           {error}
         </div>
       )}
 
       {/* URL Auto-Inspect Section */}
-      <div className="elevation-1 rounded-[8px] border border-[#E2E8F0] bg-[#FFFFFF] p-4 dark:border-slate-800 dark:bg-slate-900">
+      <div className="elevation-1 rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] p-4 dark:border-[#24332a] dark:bg-[#111a15]">
         <div className="mb-2 flex items-center gap-2">
-          <Link2 className="h-4 w-4 text-[#204CD3] dark:text-[#B7C4FF]" />
-          <span className="text-headline-sm text-[#0F172A] dark:text-slate-100">
+          <Link2 className="h-4 w-4 text-[#006a42] dark:text-[#86f9ba]" />
+          <span className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
             Save from External Job URL (Optional)
           </span>
         </div>
-        <p className="mb-3 text-[11px] text-[#64748B]">
+        <p className="mb-3 text-[11px] text-[#3f674f]">
           Paste a link from LinkedIn, JobStreet, Indeed, Glints, Kalibrr, or a
           company career page to automatically detect the source platform and
           external job ID.
         </p>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
           <div className="sm:col-span-2">
-            <label className="block font-semibold text-[#334155] dark:text-slate-300">
+            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
               Job Vacancy URL
             </label>
             <input
@@ -304,17 +304,17 @@ export function VacancyForm({
               value={url}
               onChange={(e) => handleUrlChange(e.target.value)}
               placeholder="https://www.linkedin.com/jobs/view/..."
-              className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-3 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-3 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
             />
           </div>
           <div>
-            <label className="block font-semibold text-[#334155] dark:text-slate-300">
+            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
               Source Platform
             </label>
             <select
               value={sourceId}
               onChange={(e) => setSourceId(e.target.value)}
-              className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
             >
               <option value="">Select source...</option>
               {sources.map((s) => (
@@ -327,14 +327,14 @@ export function VacancyForm({
         </div>
 
         {detectedPlatformNote && (
-          <p className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-[#EEF2FF] px-3 py-1 text-[11px] font-semibold text-[#1D4ED8] dark:bg-[#204CD3]/20 dark:text-[#B7C4FF]">
+          <p className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-[#c0edcf]/60 px-3 py-1 text-[11px] font-semibold text-[#005232] dark:bg-[#006a42]/20 dark:text-[#86f9ba]">
             <Sparkles className="h-3 w-3" />
             {detectedPlatformNote}
           </p>
         )}
 
         {duplicateWarning && (
-          <div className="mt-3 flex items-center justify-between gap-2 rounded-[4px] border border-[#F59E0B]/40 bg-[#FFFBEB] px-3 py-2 text-[#B45309] dark:border-amber-800 dark:bg-amber-950/50 dark:text-amber-200">
+          <div className="mt-3 flex items-center justify-between gap-2 rounded-xl border border-[#e8c084]/40 bg-[#ffdead]/60 px-3 py-2 text-[#5d4211] dark:border-amber-800 dark:bg-amber-950/50 dark:text-amber-200">
             <span className="flex items-center gap-2">
               <AlertTriangle className="h-4 w-4 shrink-0" />
               <span>
@@ -358,8 +358,8 @@ export function VacancyForm({
       </div>
 
       {/* Core Position & Company Details */}
-      <div className="elevation-1 space-y-4 rounded-[8px] border border-[#E2E8F0] bg-[#FFFFFF] p-5 dark:border-slate-800 dark:bg-slate-900">
-        <h3 className="text-headline-sm text-[#0F172A] dark:text-slate-100">
+      <div className="elevation-1 space-y-4 rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] p-5 dark:border-[#24332a] dark:bg-[#111a15]">
+        <h3 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
           Position & Company Information
         </h3>
 
@@ -367,7 +367,7 @@ export function VacancyForm({
           <div>
             <label
               htmlFor="vacancy-company"
-              className="block font-semibold text-[#334155] dark:text-slate-300"
+              className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]"
             >
               Company Name *
             </label>
@@ -379,14 +379,14 @@ export function VacancyForm({
               onBlur={handleCheckRoleDuplicate}
               onChange={(e) => setCompanyName(e.target.value)}
               placeholder="e.g., PT GoTo Gojek Tokopedia Tbk"
-              className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-3 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-3 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
             />
           </div>
 
           <div>
             <label
               htmlFor="vacancy-title"
-              className="block font-semibold text-[#334155] dark:text-slate-300"
+              className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]"
             >
               Position Title *
             </label>
@@ -398,12 +398,12 @@ export function VacancyForm({
               onBlur={handleCheckRoleDuplicate}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g., Senior Frontend Engineer"
-              className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-3 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-3 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
             />
           </div>
 
           <div>
-            <label className="block font-semibold text-[#334155] dark:text-slate-300">
+            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
               Department
             </label>
             <input
@@ -411,12 +411,12 @@ export function VacancyForm({
               value={department}
               onChange={(e) => setDepartment(e.target.value)}
               placeholder="Product Engineering"
-              className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-3 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-3 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
             />
           </div>
 
           <div>
-            <label className="block font-semibold text-[#334155] dark:text-slate-300">
+            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
               Industry
             </label>
             <input
@@ -424,12 +424,12 @@ export function VacancyForm({
               value={industry}
               onChange={(e) => setIndustry(e.target.value)}
               placeholder="Technology / Fintech / FMCG"
-              className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-3 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-3 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
             />
           </div>
 
           <div>
-            <label className="block font-semibold text-[#334155] dark:text-slate-300">
+            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
               Job Location
             </label>
             <input
@@ -437,13 +437,13 @@ export function VacancyForm({
               value={location}
               onChange={(e) => setLocation(e.target.value)}
               placeholder="Jakarta, Indonesia"
-              className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-3 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-3 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block font-semibold text-[#334155] dark:text-slate-300">
+              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
                 Employment Type
               </label>
               <select
@@ -451,7 +451,7 @@ export function VacancyForm({
                 onChange={(e) =>
                   setEmploymentType(e.target.value as EmploymentType)
                 }
-                className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
               >
                 {EMPLOYMENT_TYPES.map((t) => (
                   <option key={t} value={t}>
@@ -461,7 +461,7 @@ export function VacancyForm({
               </select>
             </div>
             <div>
-              <label className="block font-semibold text-[#334155] dark:text-slate-300">
+              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
                 Work Arrangement
               </label>
               <select
@@ -469,7 +469,7 @@ export function VacancyForm({
                 onChange={(e) =>
                   setWorkArrangement(e.target.value as WorkArrangement)
                 }
-                className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
               >
                 {WORK_ARRANGEMENTS.map((w) => (
                   <option key={w} value={w}>
@@ -484,7 +484,7 @@ export function VacancyForm({
         {/* Compensation & Requirements */}
         <div className="grid grid-cols-1 gap-4 pt-2 sm:grid-cols-4">
           <div>
-            <label className="block font-semibold text-[#334155] dark:text-slate-300">
+            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
               Salary Min
             </label>
             <input
@@ -493,11 +493,11 @@ export function VacancyForm({
               value={salaryMin}
               onChange={(e) => setSalaryMin(e.target.value)}
               placeholder="20000000"
-              className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-3 text-xs text-[#0F172A] tabular-nums dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-3 text-xs text-[#171d19] tabular-nums dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
             />
           </div>
           <div>
-            <label className="block font-semibold text-[#334155] dark:text-slate-300">
+            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
               Salary Max
             </label>
             <input
@@ -506,18 +506,18 @@ export function VacancyForm({
               value={salaryMax}
               onChange={(e) => setSalaryMax(e.target.value)}
               placeholder="30000000"
-              className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-3 text-xs text-[#0F172A] tabular-nums dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-3 text-xs text-[#171d19] tabular-nums dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
             />
           </div>
           <div>
-            <label className="block font-semibold text-[#334155] dark:text-slate-300">
+            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
               Currency & Period
             </label>
             <div className="mt-1 flex gap-1.5">
               <select
                 value={currency}
                 onChange={(e) => setCurrency(e.target.value as Currency)}
-                className="h-10 w-20 rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className="h-10 w-20 rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
               >
                 {CURRENCIES.map((c) => (
                   <option key={c} value={c}>
@@ -530,7 +530,7 @@ export function VacancyForm({
                 onChange={(e) =>
                   setSalaryPeriod(e.target.value as SalaryPeriod)
                 }
-                className="h-10 flex-1 rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className="h-10 flex-1 rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
               >
                 {SALARY_PERIODS.map((p) => (
                   <option key={p} value={p}>
@@ -541,7 +541,7 @@ export function VacancyForm({
             </div>
           </div>
           <div>
-            <label className="block font-semibold text-[#334155] dark:text-slate-300">
+            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
               Min Experience (Years)
             </label>
             <input
@@ -551,14 +551,14 @@ export function VacancyForm({
               value={requiredExperienceYears}
               onChange={(e) => setRequiredExperienceYears(e.target.value)}
               placeholder="3"
-              className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-3 text-xs text-[#0F172A] tabular-nums dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-3 text-xs text-[#171d19] tabular-nums dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
             />
           </div>
         </div>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           <div>
-            <label className="block font-semibold text-[#334155] dark:text-slate-300">
+            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
               Required Education
             </label>
             <select
@@ -566,7 +566,7 @@ export function VacancyForm({
               onChange={(e) =>
                 setRequiredEducation(e.target.value as EducationLevel)
               }
-              className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
             >
               {EDUCATION_LEVELS.map((lvl) => (
                 <option key={lvl} value={lvl}>
@@ -576,7 +576,7 @@ export function VacancyForm({
             </select>
           </div>
           <div className="sm:col-span-2">
-            <label className="block font-semibold text-[#334155] dark:text-slate-300">
+            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
               Required Skills (comma-separated, used for Suitability Scoring)
             </label>
             <input
@@ -584,20 +584,20 @@ export function VacancyForm({
               value={skillsText}
               onChange={(e) => setSkillsText(e.target.value)}
               placeholder="TypeScript, React, Next.js, PostgreSQL, REST API"
-              className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-3 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-3 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
             />
           </div>
         </div>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">
           <div>
-            <label className="block font-semibold text-[#334155] dark:text-slate-300">
+            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
               Save Status (Triage)
             </label>
             <select
               value={triageStatus}
               onChange={(e) => setTriageStatus(e.target.value as TriageStatus)}
-              className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
             >
               {TRIAGE_STATUSES.map((st) => (
                 <option key={st} value={st}>
@@ -608,13 +608,13 @@ export function VacancyForm({
           </div>
 
           <div>
-            <label className="block font-semibold text-[#334155] dark:text-slate-300">
+            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
               Job Priority
             </label>
             <select
               value={priority}
               onChange={(e) => setPriority(e.target.value as JobPriority)}
-              className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
             >
               {JOB_PRIORITIES.map((p) => (
                 <option key={p} value={p}>
@@ -625,33 +625,33 @@ export function VacancyForm({
           </div>
 
           <div>
-            <label className="block font-semibold text-[#334155] dark:text-slate-300">
+            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
               Application Deadline
             </label>
             <input
               type="date"
               value={deadline}
               onChange={(e) => setDeadline(e.target.value)}
-              className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] tabular-nums dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] tabular-nums dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
             />
           </div>
 
           <div>
-            <label className="block font-semibold text-[#334155] dark:text-slate-300">
+            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
               Date Discovered
             </label>
             <input
               type="date"
               value={discoveredOn}
               onChange={(e) => setDiscoveredOn(e.target.value)}
-              className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-2.5 text-xs text-[#0F172A] tabular-nums dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] tabular-nums dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
             />
           </div>
         </div>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <label className="block font-semibold text-[#334155] dark:text-slate-300">
+            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
               Job Description
             </label>
             <textarea
@@ -659,12 +659,12 @@ export function VacancyForm({
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Paste key responsibilities and role summary..."
-              className="mt-1 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-3 py-2 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              className="mt-1 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-3 py-2 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
             />
           </div>
 
           <div>
-            <label className="block font-semibold text-[#334155] dark:text-slate-300">
+            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
               Required Qualifications
             </label>
             <textarea
@@ -672,15 +672,15 @@ export function VacancyForm({
               value={qualifications}
               onChange={(e) => setQualifications(e.target.value)}
               placeholder="Key qualifications, certifications, or domain requirements..."
-              className="mt-1 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-3 py-2 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              className="mt-1 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-3 py-2 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
             />
           </div>
         </div>
 
         {!initialData?.id && (
-          <div className="grid grid-cols-1 gap-3 border-t border-[#E2E8F0] pt-3 sm:grid-cols-3 dark:border-slate-800">
+          <div className="grid grid-cols-1 gap-3 border-t border-[#bdcabf]/50 pt-3 sm:grid-cols-3 dark:border-[#24332a]">
             <div>
-              <label className="block font-semibold text-[#334155] dark:text-slate-300">
+              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
                 Recruiter / HR Contact Name
               </label>
               <input
@@ -688,11 +688,11 @@ export function VacancyForm({
                 value={recruiterName}
                 onChange={(e) => setRecruiterName(e.target.value)}
                 placeholder="Optional HR contact"
-                className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-3 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-3 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
               />
             </div>
             <div>
-              <label className="block font-semibold text-[#334155] dark:text-slate-300">
+              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
                 Recruiter Email
               </label>
               <input
@@ -700,11 +700,11 @@ export function VacancyForm({
                 value={recruiterEmail}
                 onChange={(e) => setRecruiterEmail(e.target.value)}
                 placeholder="hr@company.com"
-                className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-3 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-3 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
               />
             </div>
             <div>
-              <label className="block font-semibold text-[#334155] dark:text-slate-300">
+              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
                 Recruiter Phone
               </label>
               <input
@@ -712,14 +712,14 @@ export function VacancyForm({
                 value={recruiterPhone}
                 onChange={(e) => setRecruiterPhone(e.target.value)}
                 placeholder="+62..."
-                className="mt-1 h-10 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-3 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-3 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
               />
             </div>
           </div>
         )}
 
         <div>
-          <label className="block font-semibold text-[#334155] dark:text-slate-300">
+          <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
             Notes
           </label>
           <textarea
@@ -727,22 +727,22 @@ export function VacancyForm({
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             placeholder="Personal notes on team culture, compensation, or referral contacts..."
-            className="mt-1 w-full rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-3 py-2 text-xs text-[#0F172A] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+            className="mt-1 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-3 py-2 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
           />
         </div>
 
-        <div className="flex justify-end gap-2 border-t border-[#E2E8F0] pt-4 dark:border-slate-800">
+        <div className="flex justify-end gap-2 border-t border-[#bdcabf]/50 pt-4 dark:border-[#24332a]">
           <button
             type="button"
             onClick={() => router.back()}
-            className="h-9 rounded-[4px] border border-[#CBD5E1] bg-[#FFFFFF] px-3 text-xs font-semibold text-[#0F172A] hover:border-[#94A3B8] hover:bg-[#F8FAFC] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
+            className="btn-secondary h-10 px-4 text-xs"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={isPending}
-            className="h-9 rounded-[4px] bg-[#204CD3] px-4 text-xs font-semibold text-white transition-all hover:bg-[#1D4ED8] active:scale-[0.98] disabled:opacity-50"
+            className="btn-primary h-10 px-4 text-xs disabled:opacity-50"
           >
             {isPending
               ? "Saving..."
