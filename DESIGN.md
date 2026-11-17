@@ -1,269 +1,139 @@
 ---
-name: Executive Precision ATS
-colors:
-  surface: '#f4fbf4'
-  surface-dim: '#d5dcd5'
-  surface-bright: '#f4fbf4'
-  surface-container-lowest: '#ffffff'
-  surface-container-low: '#eff5ee'
-  surface-container: '#e9f0e8'
-  surface-container-high: '#e3eae3'
-  surface-container-highest: '#dde4dd'
-  on-surface: '#171d19'
-  on-surface-variant: '#3e4a41'
-  inverse-surface: '#2b322d'
-  inverse-on-surface: '#ecf3eb'
-  outline: '#6e7a71'
-  outline-variant: '#bdcabf'
-  surface-tint: '#006d44'
-  primary: '#006a42'
-  on-primary: '#ffffff'
-  primary-container: '#008655'
-  on-primary-container: '#f6fff6'
-  inverse-primary: '#69dca0'
-  secondary: '#3f674f'
-  on-secondary: '#ffffff'
-  secondary-container: '#c0edcf'
-  on-secondary-container: '#446d55'
-  tertiary: '#745725'
-  on-tertiary: '#ffffff'
-  tertiary-container: '#8f6f3b'
-  on-tertiary-container: '#fffbff'
-  error: '#ba1a1a'
-  on-error: '#ffffff'
-  error-container: '#ffdad6'
-  on-error-container: '#93000a'
-  primary-fixed: '#86f9ba'
-  primary-fixed-dim: '#69dca0'
-  on-primary-fixed: '#002111'
-  on-primary-fixed-variant: '#005232'
-  secondary-fixed: '#c0edcf'
-  secondary-fixed-dim: '#a5d1b4'
-  on-secondary-fixed: '#002111'
-  on-secondary-fixed-variant: '#274f39'
-  tertiary-fixed: '#ffdead'
-  tertiary-fixed-dim: '#e8c084'
-  on-tertiary-fixed: '#281900'
-  on-tertiary-fixed-variant: '#5d4211'
-  background: '#f4fbf4'
-  on-background: '#171d19'
-  surface-variant: '#dde4dd'
-typography:
-  display:
-    fontFamily: Plus Jakarta Sans
-    fontSize: 3rem
-    fontWeight: '700'
-    lineHeight: 3.5rem
-    letterSpacing: -0.03em
-  display-mobile:
-    fontFamily: Plus Jakarta Sans
-    fontSize: 2.25rem
-    fontWeight: '700'
-    lineHeight: 2.75rem
-    letterSpacing: -0.025em
-  headline-lg:
-    fontFamily: Plus Jakarta Sans
-    fontSize: 2rem
-    fontWeight: '700'
-    lineHeight: 2.5rem
-    letterSpacing: -0.025em
-  headline-lg-mobile:
-    fontFamily: Plus Jakarta Sans
-    fontSize: 1.5rem
-    fontWeight: '600'
-    lineHeight: 2rem
-    letterSpacing: -0.02em
-  headline-md:
-    fontFamily: Plus Jakarta Sans
-    fontSize: 1.5rem
-    fontWeight: '600'
-    lineHeight: 2rem
-    letterSpacing: -0.02em
-  headline-sm:
-    fontFamily: Plus Jakarta Sans
-    fontSize: 1.25rem
-    fontWeight: '600'
-    lineHeight: 1.75rem
-    letterSpacing: -0.015em
-  title-lg:
-    fontFamily: Plus Jakarta Sans
-    fontSize: 1.125rem
-    fontWeight: '600'
-    lineHeight: 1.625rem
-    letterSpacing: -0.01em
-  title-md:
-    fontFamily: Plus Jakarta Sans
-    fontSize: 1rem
-    fontWeight: '600'
-    lineHeight: 1.5rem
-    letterSpacing: -0.01em
-  title-sm:
-    fontFamily: Plus Jakarta Sans
-    fontSize: 0.875rem
-    fontWeight: '600'
-    lineHeight: 1.25rem
-    letterSpacing: 0em
-  body-lg:
-    fontFamily: Plus Jakarta Sans
-    fontSize: 1rem
-    fontWeight: '400'
-    lineHeight: 1.625rem
-    letterSpacing: -0.005em
-  body-md:
-    fontFamily: Plus Jakarta Sans
-    fontSize: 0.875rem
-    fontWeight: '400'
-    lineHeight: 1.375rem
-    letterSpacing: 0em
-  body-sm:
-    fontFamily: Plus Jakarta Sans
-    fontSize: 0.75rem
-    fontWeight: '400'
-    lineHeight: 1.125rem
-    letterSpacing: 0.01em
-  label-md:
-    fontFamily: Plus Jakarta Sans
-    fontSize: 0.875rem
-    fontWeight: '500'
-    lineHeight: 1.25rem
-    letterSpacing: 0.01em
-  label-sm:
-    fontFamily: Plus Jakarta Sans
-    fontSize: 0.75rem
-    fontWeight: '600'
-    lineHeight: 1rem
-    letterSpacing: 0.04em
-  label-xs:
-    fontFamily: Plus Jakarta Sans
-    fontSize: 0.6875rem
-    fontWeight: '600'
-    lineHeight: 0.875rem
-    letterSpacing: 0.06em
-rounded:
-  sm: 0.25rem
-  DEFAULT: 0.5rem
-  md: 0.75rem
-  lg: 1rem
-  xl: 1.5rem
-  full: 9999px
-spacing:
-  gutter: 1.5rem
-  gutter-sm: 1rem
-  margin: 2rem
-  margin-mobile: 1rem
-  space-xs: 0.25rem
-  space-sm: 0.5rem
-  space-md: 1rem
-  space-lg: 1.5rem
-  space-xl: 2rem
-  space-2xl: 3rem
+name: Career Application Tracker (Trackr ATS) Design System
+version: 2.0.0
+framework: Tailwind CSS v4 + Radix UI + Class Variance Authority
 ---
 
-## Brand & Style
+# Design System Specification
 
-The design system projects authority, deliberate clarity, and operational momentum. Tailored for enterprise talent executives, recruiters, and elite candidates navigating high-stakes career placement, the atmosphere eliminates noise in favor of analytical clarity and confident visual weight.
+## 1. Design Direction
 
-The aesthetic fuses **Modern Executive Precision** with high-clarity enterprise SaaS ergonomics:
-- **Tone:** Methodical, high-trust, and decisive. Interfaces mirror the precision of high-tier financial terminals while preserving the friction-free ergonomics of modern consumer software.
-- **Structural Integrity:** Crisp hairline architecture, calibrated whitespace, and micro-elevation replace decorative flourishes. Visual priority is dictated by status semantics, match metrics, and actionable workflow pipelines.
-- **Duality:** Seamless cohesion across public executive onboarding portals (clean, spacious split-shell layouts) and data-intensive workspaces (dense kanban boards, live telemetry, and split-pane resume audit suites).
+Career Application Tracker uses a professional productivity SaaS aesthetic tailored to personal career management:
 
-## Colors
+- **Information Hierarchy (Linear-inspired):** Crisp 1px hairline borders, clear breadcrumb and page header structure, muted secondary metadata, and unambiguous primary calls to action.
+- **Structured Workspace Simplicity (Notion-inspired):** Calm neutral canvas (`#f6f8f7` light / `#0b110e` dark) paired with elevated white/dark-pine cards (`#ffffff` / `#111915`) and subtle recessed wells (`#eef3ef` / `#141e19`).
+- **Data Presentation (Stripe-inspired):** Tabular numeric alignment (`tabular-nums`), consistent metric cards, sortable data tables with `aria-sort` indicators, and theme-aware visualizations.
+- **Practical ATS Workflows:** Stage status badges with dot indicators, Kanban cards, suitability gauges, and explicit confirmation dialogs for destructive actions.
 
-The palette leverages a calibrated Emerald Green core paired with precise semantic indicators for real-time ATS status updates and match evaluations.
+---
 
-### Palette Architecture
-- **Primary (`#08945F`):** The operational driver used for high-emphasis CTAs, active application pipelines, key indicators, and navigational active states.
-  - Hover: `#06764C`
-  - Active / Pressed: `#055C3C`
-  - Surface Wash / Tint: `#E8F8F2`
-- **Secondary (`#578067`):** Reserved for secondary analytical drivers, talent intelligence workflows, skill match accents, and executive-level features.
-- **Tertiary (`#FFD698`):** Grounded warm accent for structural icons, secondary metadata, column headers, and highlights.
-- **Neutral Core:**
-  - Ink Primary (`#727973`): Deep neutral slate for high-priority headings, names, and metrics.
-  - Ink Secondary (`#578067`): Supporting text, pipeline counts, and timestamps.
-  - Ink Muted (`#94A3B8`): Field placeholders, subtle dividers, and inactive icons.
-  - Canvas Ground (`#F8FAFC`): Base interface canvas providing zero-glare contrast.
-  - Surface Pristine (`#FFFFFF`): Elevated cards, modals, dropdown panels, and sticky table heads.
-  - Hairline Rule (`#E2E8F0`): Subtle 1px structural framing.
+## 2. Semantic Color Tokens (`src/app/globals.css`)
 
-### Functional Semantics
-- **Success (`#10B981` / Tint `#ECFDF5`):** Optimal ATS match scores (85%+), confirmed interview rounds, active requisitions.
-- **Warning (`#F59E0B` / Tint `#FFFBEB`):** Review pending, upcoming deadline within 24h, portfolio gap flags.
-- **Critical / Danger (`#EF4444` / Tint `#FEF2F2`):** Missing core prerequisites, rejected status, canceled interviews.
-- **Information (`#0EA5E9` / Tint `#F0F9FF`):** System notifications, stage notes, integration alerts.
+All components consume semantic CSS custom properties mapped via Tailwind CSS v4 `@theme inline`. Arbitrary hex values are disallowed inside feature modules.
 
-## Typography
+### 2.1 Surfaces & Text
 
-The typography uses Plus Jakarta Sans exclusively, delivering contemporary geometric proportions paired with functional legibility under high information density.
+| Token | Light Mode | Dark Mode | Purpose |
+| :--- | :--- | :--- | :--- |
+| `--background` | `#f6f8f7` | `#0b110e` | Root application canvas |
+| `--foreground` | `#111814` | `#ecf2ee` | Primary headings and body ink |
+| `--surface` | `#f6f8f7` | `#0b110e` | Base shell surface |
+| `--surface-subtle` | `#eef3ef` | `#141e19` | Recessed wells, table headers, Kanban lanes |
+| `--surface-elevated` / `--card` | `#ffffff` | `#111915` | Cards, panels, modals |
+| `--popover` | `#ffffff` | `#141e19` | Popovers, dropdowns, chart tooltips |
+| `--muted` | `#eef3ef` | `#141e19` | Muted fills and pill backgrounds |
+| `--muted-foreground` | `#4b5d52` | `#9cb0a3` | Secondary text, helper copy, table sub-labels |
+| `--subtle-foreground` | `#687a6f` | `#788c7f` | Placeholders, inactive icons |
 
-- **Numerics & Data Density:** All numeric figures across pipeline throughputs, match percentages, salary bands, and interview timestamps must render with tabular figures (`tnum`) enabled via OpenType feature settings to ensure aligned metric columns.
-- **Scale Usage:**
-  - `display`: Reserved for executive portal hero titles and score counters.
-  - `headline-lg` through `headline-sm`: View containers, section titles, and modal headers.
-  - `title-md` / `title-sm`: Candidate names inside pipeline cards, sidebar section heads, and table row groupings.
-  - `body-md` / `body-sm`: Executive notes, ATS parse summaries, candidate correspondence, and input descriptions.
-  - `label-sm` / `label-xs`: Uppercase section tags, stage badges, and ATS keyword chips.
+### 2.2 Brand, Secondary & Borders
 
-## Layout & Spacing
+| Token | Light Mode | Dark Mode | Purpose |
+| :--- | :--- | :--- | :--- |
+| `--primary` | `#006a42` | `#007a4d` | Primary buttons, active navigation, active tabs (WCAG AA contrast with `#ffffff`) |
+| `--primary-hover` | `#005635` | `#00633e` | Primary hover state |
+| `--primary-active` | `#00442a` | `#004e30` | Primary pressed state |
+| `--primary-foreground` | `#ffffff` | `#ffffff` | Text/icons on `--primary` |
+| `--primary-soft` | `#e3f4ea` | `rgba(0, 134, 85, 0.22)` | Soft highlights, active pills |
+| `--primary-on-soft` | `#005232` | `#86f9ba` | High-contrast text on `--primary-soft` |
+| `--primary-text` | `#006a42` | `#69dca0` | Inline links, active icons, metric accents |
+| `--secondary` | `#eef3ef` | `#18241e` | Secondary fills and neutral badges |
+| `--secondary-hover` | `#e2ebe5` | `#213129` | Secondary hover surface |
+| `--secondary-foreground` | `#1f2d25` | `#dce8e0` | Secondary button and badge text |
+| `--border` | `#d7e2db` | `#223229` | Standard 1px hairline borders |
+| `--border-subtle` | `#e6eee9` | `#1a2720` | Internal dividers and row separators |
+| `--border-strong` | `#b7c8bd` | `#334a3d` | Hover borders and emphasized containers |
+| `--input` | `#ffffff` | `#141e19` | Form field background |
+| `--input-border` | `#c5d4cb` | `#2a3d32` | Form field border |
+| `--ring` | `#006a42` | `#34d399` | Keyboard focus ring |
 
-The interface employs a hybrid layout approach:
-1. **Public Portals (Sign In / Register / Access Request):** Centered card or 50/50 split-canvas layout. Left pane accommodates immersive enterprise credentials, security indicators, and key metrics; right pane houses clean, floating input forms.
-2. **Dashboard & Workspaces:** Multi-pane fluid application shell featuring a fixed 240px navigation rail (collapsible to 72px icon rail), a sticky top command bar (height 64px), and a responsive content viewport.
+### 2.3 Semantic Status
 
-### Breakpoint Strategy
-- **Desktop (>= 1280px):** 12-column grid or horizontal fluid multi-column boards (e.g., 5-stage kanban view without horizontal canvas scrolling, minimum stage column width of 280px).
-- **Tablet (768px - 1279px):** Sidebar converts to an overlay drawer; kanban board transitions to swipeable columns or segment-filtered single-lane cards.
-- **Mobile (< 768px):** Single-column stack, sticky bottom action bars for applicant evaluations, and bottom-sheet drawers for filtering and resume inspectors.
+| Role | Solid | Soft Fill | Text on Soft | Border |
+| :--- | :--- | :--- | :--- | :--- |
+| **Destructive** | `--destructive` (`#dc2626`) | `--destructive-soft` | `--destructive-on-soft` | `--destructive-border` |
+| **Success** | `--success` (`#059669` / `#10b981`) | `--success-soft` | `--success-on-soft` | `--success-border` |
+| **Warning** | `--warning` (`#d97706` / `#f59e0b`) | `--warning-soft` | `--warning-on-soft` | `--warning-border` |
+| **Information** | `--info` (`#0284c7` / `#38bdf8`) | `--info-soft` | `--info-on-soft` | `--info-border` |
 
-## Elevation & Depth
+---
 
-Visual hierarchy relies on crisp surface layering, low-contrast ghost outlines, and ultra-soft, daylight-calibrated ambient shadows. Deep, murky shadows are prohibited to maintain a clean, enterprise-grade feel.
+## 3. Typography (`geist/font`)
 
-- **Level 0 (Flat / Canvas):** `#F8FAFC`. Background canvas, recessed input wells, and disabled kanban lanes.
-- **Level 1 (Card & Board Tile):** `#FFFFFF` with `border: 1px solid #E2E8F0` and `box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.04), 0 1px 2px -1px rgba(15, 23, 42, 0.02)`. Used for candidate cards, table wrappers, and metrics blocks.
-- **Level 2 (Hover & Active Drag):** `#FFFFFF` with `border: 1px solid #CBD5E1` and `box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.06), 0 4px 6px -4px rgba(15, 23, 42, 0.03)`. Applied when lifting candidate cards in the pipeline or hovering interactive rows.
-- **Level 3 (Flyouts, Menus & Command Palette):** `#FFFFFF` with `border: 1px solid #E2E8F0` and `box-shadow: 0 20px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.04)`.
-- **Level 4 (Modals & Resume Vault Viewer):** `#FFFFFF` over an ambient backdrop scrim (`rgba(15, 23, 42, 0.45)` with `backdrop-filter: blur(4px)`).
+Loaded offline-safe via `geist/font/sans` and `geist/font/mono` in `src/app/layout.tsx`.
 
-## Shapes
+| Role | Class | Size / Line Height | Weight | Tracking |
+| :--- | :--- | :--- | :--- | :--- |
+| **Display Hero** | `.text-display-lg` | `2.25rem` / `2.75rem` (desktop `3rem` / `3.5rem`) | `700` | `-0.025em` to `-0.03em` |
+| **Page Title** | `.text-page-title` (`.text-headline-md`) | `1.5rem` (24px) / `2rem` | `600` | `-0.02em` |
+| **Section Title** | `.text-section-title` (`.text-headline-sm`) | `1.0625rem` (17px) / `1.5rem` | `600` | `-0.015em` |
+| **Card Title** | `.text-card-title` (`.text-title-md`) | `0.9375rem` (15px) / `1.375rem` | `600` | `-0.01em` |
+| **Body** | `.text-body-md` (`body`) | `0.875rem` (14px) / `1.375rem` | `400` | `0` |
+| **Secondary Text** | `.text-body-sm` | `0.8125rem` (13px) / `1.25rem` | `400` | `0` |
+| **Caption** | `.text-caption` | `0.75rem` (12px) / `1.125rem` | `400` | `0.01em` |
+| **Labels** | `.text-label-md` / `.text-label-sm` / `.text-label-xs` | `13px` / `12px` / `11px` | `500-600` | `0` to `0.05em` |
+| **Numeric Data** | `.text-numeric` / `.text-metric-num` | `1.75rem` (28px) / `2rem` | `700` | `-0.02em` (`tabular-nums`) |
 
-The design system establishes a consistent `0.5rem` (8px) base radius for structural and functional interface modules, stepping up to `1rem` (16px) for major floating sheets and dialogue containers.
+All numeric figures, tracking IDs (`JOB-0001`, `APP-0001`), dates, durations, and salary bands enforce `font-variant-numeric: tabular-nums`.
 
-- **Base Radius (`0.5rem` / 8px):** Form fields, standard buttons, kanban candidate cards, table action triggers, and filter chips.
-- **Extended Radius (`1rem` / 16px):** Portal access cards, application metrics containers, and modal dialog frames.
-- **Pill Radius (`9999px`):** Status indicator tags, match score pill meters, and user avatar badges.
-- **Dividers & Strokes:** 1px hairline width across all structural borders. No heavy outlines.
+---
 
-## Components
+## 4. Spacing, Radius & Elevation
 
-### Buttons & Interactive Controls
-- **Primary Action:** Solid `#08945F` background, `#FFFFFF` text, `font-weight: 600`, 8px corner radius. Hover shifts to `#06764C`; focus ring displays an offset 2px glow of `#08945F/40`.
-- **Secondary / Ghost:** Transparent background with 1px `#E2E8F0` border, `#727973` text. Hover transitions to `#F8FAFC` surface with `#CBD5E1` border.
-- **Destructive:** Light tint `#FEF2F2` background, `#EF4444` text, 1px border `#FEE2E2`. Shifts to solid `#EF4444` with `#FFFFFF` text on confirmation states.
-- **Height Dimensions:** Small (32px) for compact table actions, Regular (40px) for standard workflow actions, Large (48px) for executive portal CTAs.
+- **Border Radius:**
+  - `rounded-md` (`0.375rem` / 6px): Compact buttons (`xs`), pills inside segments
+  - `rounded-lg` (`0.5rem` / 8px): Standard `Button`, `Input`, `Select`, `Textarea`
+  - `rounded-xl` (`0.75rem` / 12px): `Card`, `DataTable`, list items, dropdown menus
+  - `rounded-2xl` (`1rem` / 16px): `Dialog`, `ConfirmDialog`, Kanban lanes, `Popover`
+  - `rounded-full`: `Badge`, `StatusBadge`, avatars
+- **Control Heights:**
+  - `xs`: `h-7` (28px)
+  - `sm`: `h-8` (32px)
+  - `md`: `h-9` (36px, default)
+  - `lg`: `h-10` (40px, primary toolbar & form actions)
+  - `xl`: `h-11` / `h-12` (44px+, auth portals)
+- **Elevation:**
+  - `.elevation-0`: Flat canvas (`--background`)
+  - `.elevation-1`: Static cards (`--shadow-xs`)
+  - `.elevation-2`: Interactive cards (`--shadow-sm`, lifts to `--shadow-md` on hover)
+  - `.elevation-3`: Active drag tile (`scale(1.015)` + `--shadow-md` + `--primary` border)
+  - `.elevation-4`: Modals, popovers, dropdown menus (`--shadow-lg`)
 
-### Form Inputs & Selectors
-- **Input Fields:** Pristine white background, 1px `#CBD5E1` border, 8px border-radius, 12px horizontal padding, 10px vertical padding. Inactive placeholders use `#94A3B8`.
-- **Focus State:** 1px `#08945F` border with a 3px ambient shadow ring (`rgba(8, 148, 95, 0.15)`).
-- **Validation Messages:** Positioned 4px below input in `label-sm` sizing. Uses `#EF4444` for error strings and `#10B981` for verified unique inputs.
+---
 
-### Candidate & Application Cards (Kanban)
-- **Container:** White surface, Level 1 elevation, 8px radius, 14px padding.
-- **Header:** Candidate name (`title-sm`), target role, and an ATS score pill indicator.
-- **Body:** Current company, years of experience, and compact skill chips.
-- **Footer:** Last updated timestamp, pending action badge (e.g., "Schedule Rd 2"), and assignee avatar (24px circle).
+## 5. Component Library (`src/components/ui/`)
 
-### ATS Score Gauges & Badges
-- **Pill Badges:** 22px height, `label-xs` uppercase typography, rounded full, 8px horizontal padding.
-  - High Fit (85-100%): Text `#047857`, Background `#ECFDF5`, Border `#A7F3D0`.
-  - Moderate Fit (65-84%): Text `#B45309`, Background `#FFFBEB`, Border `#FDE68A`.
-  - Low Fit (<65%): Text `#B91C1C`, Background `#FEF2F2`, Border `#FECACA`.
+All reusable UI components are exported from `src/components/ui/index.ts`:
 
-### Pipeline Analytics & Milestone Timelines
-- **Metrics Tiles:** Single metric display featuring a muted descriptive label (`label-sm`), high-contrast primary number (`headline-lg`, tabular figures), and comparative delta badge (+/- percentage in green/red pill).
-- **Milestone Stepper:** Horizontal chain connected via 2px `#E2E8F0` track. Completed nodes render with solid `#08945F` checkmarks, current stage glows with a primary border ring, and future nodes stay muted in slate.
+| Component | File | Underlying Primitive / Notes |
+| :--- | :--- | :--- |
+| `Button`, `buttonVariants` | `button.tsx` | `cva` + `radix-ui` `Slot` (`asChild`), variants: `primary`, `secondary`, `ghost`, `warning`, `destructive`, `destructiveSolid`, `soft`, `outline`, `link`; explicit `#ffffff` text on solid primary/destructive actions |
+| `Input`, `inputVariants` | `input.tsx` | Sizes `sm`-`xl`, tones `default` (cards/forms) / `subtle` (toolbars), `hasError` state |
+| `Textarea`, `textareaVariants` | `textarea.tsx` | Sizes `sm`/`md`/`lg`, tones `default` (cards/forms) / `subtle` (toolbars), uniform border/hover/focus ring and `hasError` state |
+| `Select`, `selectVariants` | `select.tsx` | Styled native `<select>` with custom chevron icon for full form and Playwright `selectOption` compatibility |
+| `FormField` | `form-field.tsx` | `radix-ui` `Label` with automatic `id`/`htmlFor` wiring, required marker, hint, and alert error text |
+| `Card`, `CardHeader`, `CardTitle`, `CardDescription`, `CardContent`, `CardFooter` | `card.tsx` | `cva` variants for `elevation`, `tone`, and `padding` |
+| `Badge`, `badgeVariants` | `badge.tsx` | Semantic variants: `default`, `primary`, `secondary`, `success`, `warning`, `destructive`, `info`, `outline` |
+| `StatusBadge`, `StageBadge`, `OutcomeBadge`, `TriageBadge`, `PriorityBadge`, `SuitabilityBadge`, `SampleBadge` | `badges.tsx` | Stage-to-tone mapping with status dot indicators |
+| `DataTable`, `DataTableContainer`, `DataTableRoot`, `DataTableHeader`, `DataTableBody`, `DataTableRow`, `DataTableHead`, `DataTableSortButton`, `DataTableCell` | `data-table.tsx` | Sortable headers with `aria-sort` and directional arrow icons, responsive scroll container |
+| `Dialog`, `DialogContent`, `DialogHeader`, `DialogFooter`, `DialogTitle`, `DialogDescription` | `dialog.tsx` | `radix-ui` `Dialog` with focus trap, backdrop blur, Escape dismissal, and close button |
+| `ConfirmDialog` | `confirm-dialog.tsx` | `radix-ui` `AlertDialog` replacing `window.confirm()` for destructive confirmations |
+| `DropdownMenu` suite | `dropdown-menu.tsx` | `radix-ui` `DropdownMenu` |
+| `Popover` suite | `popover.tsx` | `radix-ui` `Popover` |
+| `Tabs`, `TabsList`, `TabsTrigger`, `TabsContent` | `tabs.tsx` | `radix-ui` `Tabs` supporting `underline` and `segmented` variants |
+| `Tooltip`, `TooltipProvider`, `TooltipTrigger`, `TooltipContent` | `tooltip.tsx` | `radix-ui` `Tooltip` (provider mounted in `ThemeProvider`) |
+| `EmptyState`, `LoadingState`, `ErrorState` | `states.tsx` | Standardized async, empty, and alert error states (wired into `app/(app)/loading.tsx`, `error.tsx`, and `app/not-found.tsx`) |
+| `PageHeader`, `SectionHeader` | `page-header.tsx` | Standardized breadcrumbs, page titles, badges, and action slots |
 
-### Resume Vault & Tailoring Inspector
-- **Split View Layout:** Left pane hosts raw/parsed text highlights, right pane displays job description keyword parity.
-- **Match Diff Chips:** Inline highlight markers (`#ECFDF5` for present qualifications, `#FEF2F2` with strike-through for missing requirements).
+### Notes on Tailwind v4 Cascade & Class Merging
+- Base element rules (`body`, headings, native field fallbacks) live in `@layer base` and `.btn-*` compatibility rules live in `@layer components` inside `src/app/globals.css` so Tailwind utilities always win cleanly.
+- `cn()` in `src/lib/utils.ts` uses `extendTailwindMerge` with all custom typography tokens (`.text-body-sm`, `.text-card-title`, etc.) registered under `font-size` so combining them with semantic color classes (`text-white`, `text-primary-foreground`, `text-card-foreground`) never drops the text color.

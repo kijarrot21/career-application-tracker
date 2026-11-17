@@ -6,6 +6,15 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import {
+  Badge,
+  Button,
+  Card,
+  FormField,
+  Input,
+  Select,
+  Textarea,
+} from "@/components/ui";
+import {
   CURRENCIES,
   EMPLOYMENT_TYPE_LABELS,
   EMPLOYMENT_TYPES,
@@ -276,45 +285,42 @@ export function VacancyForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-6 text-xs">
       {error && (
-        <div className="rounded-2xl border border-[#ba1a1a]/40 bg-[#ffdad6]/70 px-4 py-3 text-[#93000a] dark:border-rose-900 dark:bg-rose-950/60 dark:text-rose-300">
+        <div
+          role="alert"
+          className="rounded-xl border border-destructive-border bg-destructive-soft px-4 py-3 text-destructive-on-soft"
+        >
           {error}
         </div>
       )}
 
       {/* URL Auto-Inspect Section */}
-      <div className="elevation-1 rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] p-4 dark:border-[#24332a] dark:bg-[#111a15]">
+      <Card padding="sm">
         <div className="mb-2 flex items-center gap-2">
-          <Link2 className="h-4 w-4 text-[#006a42] dark:text-[#86f9ba]" />
-          <span className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
+          <Link2 className="h-4 w-4 text-primary-text" />
+          <span className="text-section-title text-foreground">
             Save from External Job URL (Optional)
           </span>
         </div>
-        <p className="mb-3 text-[11px] text-[#3f674f]">
+        <p className="mb-3 text-[11px] text-muted-foreground">
           Paste a link from LinkedIn, JobStreet, Indeed, Glints, Kalibrr, or a
           company career page to automatically detect the source platform and
           external job ID.
         </p>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-          <div className="sm:col-span-2">
-            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-              Job Vacancy URL
-            </label>
-            <input
+          <FormField label="Job Vacancy URL" className="sm:col-span-2">
+            <Input
               type="url"
+              inputSize="lg"
               value={url}
               onChange={(e) => handleUrlChange(e.target.value)}
               placeholder="https://www.linkedin.com/jobs/view/..."
-              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-3 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
             />
-          </div>
-          <div>
-            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-              Source Platform
-            </label>
-            <select
+          </FormField>
+          <FormField label="Source Platform">
+            <Select
+              selectSize="lg"
               value={sourceId}
               onChange={(e) => setSourceId(e.target.value)}
-              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
             >
               <option value="">Select source...</option>
               {sources.map((s) => (
@@ -322,19 +328,19 @@ export function VacancyForm({
                   {s.name}
                 </option>
               ))}
-            </select>
-          </div>
+            </Select>
+          </FormField>
         </div>
 
         {detectedPlatformNote && (
-          <p className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-[#c0edcf]/60 px-3 py-1 text-[11px] font-semibold text-[#005232] dark:bg-[#006a42]/20 dark:text-[#86f9ba]">
+          <Badge variant="primary" className="mt-2 py-1">
             <Sparkles className="h-3 w-3" />
             {detectedPlatformNote}
-          </p>
+          </Badge>
         )}
 
         {duplicateWarning && (
-          <div className="mt-3 flex items-center justify-between gap-2 rounded-xl border border-[#e8c084]/40 bg-[#ffdead]/60 px-3 py-2 text-[#5d4211] dark:border-amber-800 dark:bg-amber-950/50 dark:text-amber-200">
+          <div className="mt-3 flex items-center justify-between gap-2 rounded-xl border border-warning-border bg-warning-soft px-3 py-2 text-warning-on-soft">
             <span className="flex items-center gap-2">
               <AlertTriangle className="h-4 w-4 shrink-0" />
               <span>
@@ -355,403 +361,337 @@ export function VacancyForm({
             </Link>
           </div>
         )}
-      </div>
+      </Card>
 
       {/* Core Position & Company Details */}
-      <div className="elevation-1 space-y-4 rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] p-5 dark:border-[#24332a] dark:bg-[#111a15]">
-        <h3 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
+      <Card padding="md" className="space-y-4">
+        <h3 className="text-section-title text-foreground">
           Position & Company Information
         </h3>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div>
-            <label
-              htmlFor="vacancy-company"
-              className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]"
-            >
-              Company Name *
-            </label>
-            <input
+          <FormField label="Company Name" htmlFor="vacancy-company" required>
+            <Input
               id="vacancy-company"
               type="text"
+              inputSize="lg"
               required
               value={companyName}
               onBlur={handleCheckRoleDuplicate}
               onChange={(e) => setCompanyName(e.target.value)}
               placeholder="e.g., PT GoTo Gojek Tokopedia Tbk"
-              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-3 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
             />
-          </div>
+          </FormField>
 
-          <div>
-            <label
-              htmlFor="vacancy-title"
-              className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]"
-            >
-              Position Title *
-            </label>
-            <input
+          <FormField label="Position Title" htmlFor="vacancy-title" required>
+            <Input
               id="vacancy-title"
               type="text"
+              inputSize="lg"
               required
               value={title}
               onBlur={handleCheckRoleDuplicate}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g., Senior Frontend Engineer"
-              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-3 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
             />
-          </div>
+          </FormField>
 
-          <div>
-            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-              Department
-            </label>
-            <input
+          <FormField label="Department">
+            <Input
               type="text"
+              inputSize="lg"
               value={department}
               onChange={(e) => setDepartment(e.target.value)}
               placeholder="Product Engineering"
-              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-3 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
             />
-          </div>
+          </FormField>
 
-          <div>
-            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-              Industry
-            </label>
-            <input
+          <FormField label="Industry">
+            <Input
               type="text"
+              inputSize="lg"
               value={industry}
               onChange={(e) => setIndustry(e.target.value)}
               placeholder="Technology / Fintech / FMCG"
-              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-3 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
             />
-          </div>
+          </FormField>
 
-          <div>
-            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-              Job Location
-            </label>
-            <input
+          <FormField label="Job Location">
+            <Input
               type="text"
+              inputSize="lg"
               value={location}
               onChange={(e) => setLocation(e.target.value)}
               placeholder="Jakarta, Indonesia"
-              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-3 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
             />
-          </div>
+          </FormField>
 
           <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                Employment Type
-              </label>
-              <select
+            <FormField label="Employment Type">
+              <Select
+                selectSize="lg"
                 value={employmentType}
                 onChange={(e) =>
                   setEmploymentType(e.target.value as EmploymentType)
                 }
-                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
               >
                 {EMPLOYMENT_TYPES.map((t) => (
                   <option key={t} value={t}>
                     {EMPLOYMENT_TYPE_LABELS[t]}
                   </option>
                 ))}
-              </select>
-            </div>
-            <div>
-              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                Work Arrangement
-              </label>
-              <select
+              </Select>
+            </FormField>
+            <FormField label="Work Arrangement">
+              <Select
+                selectSize="lg"
                 value={workArrangement}
                 onChange={(e) =>
                   setWorkArrangement(e.target.value as WorkArrangement)
                 }
-                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
               >
                 {WORK_ARRANGEMENTS.map((w) => (
                   <option key={w} value={w}>
                     {WORK_ARRANGEMENT_LABELS[w]}
                   </option>
                 ))}
-              </select>
-            </div>
+              </Select>
+            </FormField>
           </div>
         </div>
 
         {/* Compensation & Requirements */}
         <div className="grid grid-cols-1 gap-4 pt-2 sm:grid-cols-4">
-          <div>
-            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-              Salary Min
-            </label>
-            <input
+          <FormField label="Salary Min">
+            <Input
               type="number"
+              inputSize="lg"
               min={0}
               value={salaryMin}
               onChange={(e) => setSalaryMin(e.target.value)}
               placeholder="20000000"
-              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-3 text-xs text-[#171d19] tabular-nums dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
+              className="tabular-nums"
             />
-          </div>
-          <div>
-            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-              Salary Max
-            </label>
-            <input
+          </FormField>
+          <FormField label="Salary Max">
+            <Input
               type="number"
+              inputSize="lg"
               min={0}
               value={salaryMax}
               onChange={(e) => setSalaryMax(e.target.value)}
               placeholder="30000000"
-              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-3 text-xs text-[#171d19] tabular-nums dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
+              className="tabular-nums"
             />
-          </div>
-          <div>
-            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-              Currency & Period
-            </label>
-            <div className="mt-1 flex gap-1.5">
-              <select
+          </FormField>
+          <FormField label="Currency & Period">
+            <div className="flex gap-1.5">
+              <Select
+                aria-label="Salary currency"
+                selectSize="lg"
+                wrapperClassName="w-24 shrink-0"
                 value={currency}
                 onChange={(e) => setCurrency(e.target.value as Currency)}
-                className="h-10 w-20 rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
               >
                 {CURRENCIES.map((c) => (
                   <option key={c} value={c}>
                     {c}
                   </option>
                 ))}
-              </select>
-              <select
+              </Select>
+              <Select
+                aria-label="Salary period"
+                selectSize="lg"
                 value={salaryPeriod}
                 onChange={(e) =>
                   setSalaryPeriod(e.target.value as SalaryPeriod)
                 }
-                className="h-10 flex-1 rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
               >
                 {SALARY_PERIODS.map((p) => (
                   <option key={p} value={p}>
                     {SALARY_PERIOD_LABELS[p]}
                   </option>
                 ))}
-              </select>
+              </Select>
             </div>
-          </div>
-          <div>
-            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-              Min Experience (Years)
-            </label>
-            <input
+          </FormField>
+          <FormField label="Min Experience (Years)">
+            <Input
               type="number"
+              inputSize="lg"
               min={0}
               max={50}
               value={requiredExperienceYears}
               onChange={(e) => setRequiredExperienceYears(e.target.value)}
               placeholder="3"
-              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-3 text-xs text-[#171d19] tabular-nums dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
+              className="tabular-nums"
             />
-          </div>
+          </FormField>
         </div>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-          <div>
-            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-              Required Education
-            </label>
-            <select
+          <FormField label="Required Education">
+            <Select
+              selectSize="lg"
               value={requiredEducation}
               onChange={(e) =>
                 setRequiredEducation(e.target.value as EducationLevel)
               }
-              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
             >
               {EDUCATION_LEVELS.map((lvl) => (
                 <option key={lvl} value={lvl}>
                   {EDUCATION_LABELS[lvl]}
                 </option>
               ))}
-            </select>
-          </div>
-          <div className="sm:col-span-2">
-            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-              Required Skills (comma-separated, used for Suitability Scoring)
-            </label>
-            <input
+            </Select>
+          </FormField>
+          <FormField
+            label="Required Skills (comma-separated, used for Suitability Scoring)"
+            className="sm:col-span-2"
+          >
+            <Input
               type="text"
+              inputSize="lg"
               value={skillsText}
               onChange={(e) => setSkillsText(e.target.value)}
               placeholder="TypeScript, React, Next.js, PostgreSQL, REST API"
-              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-3 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
             />
-          </div>
+          </FormField>
         </div>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">
-          <div>
-            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-              Save Status (Triage)
-            </label>
-            <select
+          <FormField label="Save Status (Triage)">
+            <Select
+              selectSize="lg"
               value={triageStatus}
               onChange={(e) => setTriageStatus(e.target.value as TriageStatus)}
-              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
             >
               {TRIAGE_STATUSES.map((st) => (
                 <option key={st} value={st}>
                   {TRIAGE_LABELS[st]}
                 </option>
               ))}
-            </select>
-          </div>
+            </Select>
+          </FormField>
 
-          <div>
-            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-              Job Priority
-            </label>
-            <select
+          <FormField label="Job Priority">
+            <Select
+              selectSize="lg"
               value={priority}
               onChange={(e) => setPriority(e.target.value as JobPriority)}
-              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
             >
               {JOB_PRIORITIES.map((p) => (
                 <option key={p} value={p}>
                   {PRIORITY_LABELS[p]}
                 </option>
               ))}
-            </select>
-          </div>
+            </Select>
+          </FormField>
 
-          <div>
-            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-              Application Deadline
-            </label>
-            <input
+          <FormField label="Application Deadline">
+            <Input
               type="date"
+              inputSize="lg"
               value={deadline}
               onChange={(e) => setDeadline(e.target.value)}
-              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] tabular-nums dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
+              className="tabular-nums"
             />
-          </div>
+          </FormField>
 
-          <div>
-            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-              Date Discovered
-            </label>
-            <input
+          <FormField label="Date Discovered">
+            <Input
               type="date"
+              inputSize="lg"
               value={discoveredOn}
               onChange={(e) => setDiscoveredOn(e.target.value)}
-              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] tabular-nums dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
+              className="tabular-nums"
             />
-          </div>
+          </FormField>
         </div>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div>
-            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-              Job Description
-            </label>
-            <textarea
+          <FormField label="Job Description">
+            <Textarea
               rows={4}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Paste key responsibilities and role summary..."
-              className="mt-1 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-3 py-2 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
             />
-          </div>
+          </FormField>
 
-          <div>
-            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-              Required Qualifications
-            </label>
-            <textarea
+          <FormField label="Required Qualifications">
+            <Textarea
               rows={4}
               value={qualifications}
               onChange={(e) => setQualifications(e.target.value)}
               placeholder="Key qualifications, certifications, or domain requirements..."
-              className="mt-1 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-3 py-2 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
             />
-          </div>
+          </FormField>
         </div>
 
         {!initialData?.id && (
-          <div className="grid grid-cols-1 gap-3 border-t border-[#bdcabf]/50 pt-3 sm:grid-cols-3 dark:border-[#24332a]">
-            <div>
-              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                Recruiter / HR Contact Name
-              </label>
-              <input
+          <div className="grid grid-cols-1 gap-3 border-t border-border-subtle pt-3 sm:grid-cols-3">
+            <FormField label="Recruiter / HR Contact Name">
+              <Input
                 type="text"
+                inputSize="lg"
                 value={recruiterName}
                 onChange={(e) => setRecruiterName(e.target.value)}
                 placeholder="Optional HR contact"
-                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-3 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
               />
-            </div>
-            <div>
-              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                Recruiter Email
-              </label>
-              <input
+            </FormField>
+            <FormField label="Recruiter Email">
+              <Input
                 type="email"
+                inputSize="lg"
                 value={recruiterEmail}
                 onChange={(e) => setRecruiterEmail(e.target.value)}
                 placeholder="hr@company.com"
-                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-3 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
               />
-            </div>
-            <div>
-              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                Recruiter Phone
-              </label>
-              <input
+            </FormField>
+            <FormField label="Recruiter Phone">
+              <Input
                 type="text"
+                inputSize="lg"
                 value={recruiterPhone}
                 onChange={(e) => setRecruiterPhone(e.target.value)}
                 placeholder="+62..."
-                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-3 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
               />
-            </div>
+            </FormField>
           </div>
         )}
 
-        <div>
-          <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-            Notes
-          </label>
-          <textarea
+        <FormField label="Notes">
+          <Textarea
             rows={2}
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             placeholder="Personal notes on team culture, compensation, or referral contacts..."
-            className="mt-1 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-3 py-2 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
           />
-        </div>
+        </FormField>
 
-        <div className="flex justify-end gap-2 border-t border-[#bdcabf]/50 pt-4 dark:border-[#24332a]">
-          <button
-            type="button"
+        <div className="flex justify-end gap-2 border-t border-border-subtle pt-4">
+          <Button
+            variant="secondary"
+            size="lg"
             onClick={() => router.back()}
-            className="btn-secondary h-10 px-4 text-xs"
           >
             Cancel
-          </button>
-          <button
+          </Button>
+          <Button
             type="submit"
+            variant="primary"
+            size="lg"
             disabled={isPending}
-            className="btn-primary h-10 px-4 text-xs disabled:opacity-50"
           >
             {isPending
               ? "Saving..."
               : initialData?.id
                 ? "Save Changes"
                 : "Save Job Vacancy"}
-          </button>
+          </Button>
         </div>
-      </div>
+      </Card>
     </form>
   );
 }

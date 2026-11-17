@@ -18,14 +18,14 @@ import {
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
+import { Button, Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui";
 import { signOut } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 
 interface NavItem {
   label: string;
-  href?: string;
+  href: string;
   icon: React.ComponentType<{ className?: string }>;
-  phaseBadge?: string;
 }
 
 const PIPELINE_NAV_ITEMS: NavItem[] = [
@@ -81,56 +81,31 @@ export function AppSidebar({
   function renderNavGroup(
     items: NavItem[],
     labelVisibilityClass: string,
-    badgeVisibilityClass: string,
+    isCollapsed: boolean,
   ) {
     return items.map((item) => {
       const Icon = item.icon;
-      if (!item.href) {
-        return (
-          <div
-            key={item.label}
-            aria-disabled="true"
-            title={`${item.label} unlocks in ${item.phaseBadge}`}
-            className="flex cursor-not-allowed items-center justify-between rounded-xl px-3 py-2.5 text-[14px] font-medium text-[#6e7a71]/60 select-none dark:text-slate-600"
-          >
-            <span className="flex items-center gap-3">
-              <Icon className="h-[18px] w-[18px] shrink-0" />
-              <span className={labelVisibilityClass}>{item.label}</span>
-            </span>
-            <span
-              className={cn(
-                "rounded-full border border-[#bdcabf]/60 bg-[#eff5ee] px-2 py-[1px] font-mono text-[10px] font-semibold tracking-[0.04em] text-[#3e4a41]",
-                badgeVisibilityClass,
-              )}
-            >
-              {item.phaseBadge}
-            </span>
-          </div>
-        );
-      }
-
       const active =
         pathname === item.href || pathname.startsWith(`${item.href}/`);
-      return (
+
+      const linkEl = (
         <Link
           key={item.label}
           href={item.href}
           onClick={onCloseMobile}
-          title={item.label}
           aria-current={active ? "page" : undefined}
           className={cn(
             "flex items-center gap-3 rounded-xl px-3 py-2.5 text-[14px] leading-5 transition-all",
+            isCollapsed && "justify-center px-0",
             active
-              ? "bg-[#006a42] font-semibold text-white shadow-sm dark:bg-[#008655] dark:text-[#f6fff6]"
-              : "font-medium text-[#3e4a41] hover:bg-[#eff5ee] hover:text-[#171d19] dark:text-[#b7c6ba] dark:hover:bg-[#17231c] dark:hover:text-[#ecf3eb]",
+              ? "bg-primary font-semibold text-white shadow-xs"
+              : "font-medium text-muted-foreground hover:bg-surface-subtle hover:text-foreground",
           )}
         >
           <Icon
             className={cn(
               "h-[18px] w-[18px] shrink-0",
-              active
-                ? "text-white"
-                : "text-[#3f674f] dark:text-[#a5d1b4]",
+              active ? "text-white" : "text-primary-text",
             )}
           />
           <span className={cn("truncate", labelVisibilityClass)}>
@@ -138,6 +113,17 @@ export function AppSidebar({
           </span>
         </Link>
       );
+
+      if (isCollapsed) {
+        return (
+          <Tooltip key={item.label}>
+            <TooltipTrigger asChild>{linkEl}</TooltipTrigger>
+            <TooltipContent side="right">{item.label}</TooltipContent>
+          </Tooltip>
+        );
+      }
+
+      return linkEl;
     });
   }
 
@@ -162,7 +148,7 @@ export function AppSidebar({
           : "inline-flex";
 
     return (
-      <div className="flex h-full flex-col justify-between bg-[#ffffff] shadow-[0_1px_8px_rgba(0,0,0,0.04)] dark:border-r dark:border-[#24332a] dark:bg-[#111a15]">
+      <div className="flex h-full flex-col justify-between border-r border-border bg-card">
         <div className="flex min-h-0 flex-1 flex-col">
           {/* Brand Header */}
           <div className="flex h-16 shrink-0 items-center justify-between px-4">
@@ -170,17 +156,17 @@ export function AppSidebar({
               href="/dashboard"
               onClick={onCloseMobile}
               title="Trackr ATS | Executive Precision"
-              className="flex items-center gap-2 font-display font-bold tracking-tight text-[#171d19] dark:text-[#ecf3eb]"
+              className="flex items-center gap-2 font-display font-bold tracking-tight text-foreground"
             >
-              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[#006a42] text-xs font-bold text-white shadow-sm">
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-primary text-xs font-bold text-white shadow-xs">
                 CT
               </span>
-              <span className={cn("text-[16px] truncate", labelVisibilityClass)}>
+              <span className={cn("truncate text-[16px]", labelVisibilityClass)}>
                 Trackr
               </span>
               <span
                 className={cn(
-                  "rounded-full bg-[#c0edcf] px-1.5 py-0.5 text-[10px] font-bold tracking-wider text-[#005232] dark:bg-[#005232] dark:text-[#86f9ba]",
+                  "rounded-full bg-primary-soft px-1.5 py-0.5 text-[10px] font-bold tracking-wider text-primary-on-soft",
                   badgeVisibilityClass,
                 )}
               >
@@ -189,28 +175,27 @@ export function AppSidebar({
             </Link>
 
             {isMobileDrawer && onCloseMobile ? (
-              <button
-                type="button"
+              <Button
+                variant="ghost"
+                size="icon-sm"
                 onClick={onCloseMobile}
                 aria-label="Close navigation menu"
-                className="rounded-lg p-1.5 text-[#3e4a41] transition-colors hover:bg-[#eff5ee] hover:text-[#171d19] md:hidden dark:text-[#b7c6ba]"
+                className="md:hidden"
               >
                 <X className="h-4 w-4" />
-              </button>
+              </Button>
             ) : (
-              <button
-                type="button"
+              <Button
+                variant="ghost"
+                size="icon-sm"
                 onClick={() =>
                   setCollapsedOverride((prev) =>
                     prev === null ? true : !prev,
                   )
                 }
-                aria-label={
-                  isCollapsed ? "Expand sidebar" : "Collapse sidebar"
-                }
+                aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
                 title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
                 className={cn(
-                  "rounded-lg p-1.5 text-[#3e4a41] transition-colors hover:bg-[#eff5ee] hover:text-[#171d19] dark:text-[#b7c6ba] dark:hover:bg-[#17231c]",
                   isCollapsed
                     ? "hidden"
                     : isAutoResponsive
@@ -219,38 +204,47 @@ export function AppSidebar({
                 )}
               >
                 <PanelLeftClose className="h-4 w-4" />
-              </button>
+              </Button>
             )}
           </div>
 
           {!isMobileDrawer && isCollapsed && (
             <div className="flex justify-center py-2">
-              <button
-                type="button"
+              <Button
+                variant="ghost"
+                size="icon-sm"
                 onClick={() => setCollapsedOverride(false)}
                 aria-label="Expand sidebar"
                 title="Expand sidebar"
-                className="rounded-lg p-1.5 text-[#3e4a41] transition-colors hover:bg-[#eff5ee] hover:text-[#006a42] dark:text-[#b7c6ba] dark:hover:bg-[#17231c]"
               >
                 <PanelLeftOpen className="h-4 w-4" />
-              </button>
+              </Button>
             </div>
           )}
 
           {/* Active Search Status Indicator */}
-          <div className={cn("px-4 py-1.5", isCollapsed ? "hidden" : isAutoResponsive ? "hidden xl:block" : "block")}>
+          <div
+            className={cn(
+              "px-4 py-1.5",
+              isCollapsed
+                ? "hidden"
+                : isAutoResponsive
+                  ? "hidden xl:block"
+                  : "block",
+            )}
+          >
             <Link
               href="/settings"
               onClick={onCloseMobile}
-              className="flex items-center justify-between rounded-xl bg-[#eff5ee] px-3 py-2 transition-colors hover:bg-[#e3eae3] dark:bg-[#17231c] dark:hover:bg-[#1d2b23]"
+              className="flex items-center justify-between rounded-xl bg-surface-subtle px-3 py-2 transition-colors hover:bg-secondary-hover"
             >
               <div className="flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-[#006a42] animate-pulse dark:bg-[#69dca0]" />
-                <span className="text-[12px] font-semibold text-[#171d19] dark:text-[#ecf3eb]">
+                <span className="h-2 w-2 animate-pulse rounded-full bg-primary" />
+                <span className="text-[12px] font-semibold text-foreground">
                   Executive Pipeline
                 </span>
               </div>
-              <span className="text-[11px] font-medium text-[#3f674f] dark:text-[#a5d1b4]">
+              <span className="text-[11px] font-medium text-primary-text">
                 Live
               </span>
             </Link>
@@ -261,10 +255,14 @@ export function AppSidebar({
             <div
               className={cn(
                 "px-3 pb-1.5",
-                isCollapsed ? "hidden" : isAutoResponsive ? "hidden xl:block" : "block",
+                isCollapsed
+                  ? "hidden"
+                  : isAutoResponsive
+                    ? "hidden xl:block"
+                    : "block",
               )}
             >
-              <span className="text-[11px] font-semibold uppercase tracking-wider text-[#3f674f] dark:text-[#a5d1b4]">
+              <span className="text-label-xs uppercase text-muted-foreground">
                 Pipeline Management
               </span>
             </div>
@@ -272,70 +270,80 @@ export function AppSidebar({
               {renderNavGroup(
                 PIPELINE_NAV_ITEMS,
                 labelVisibilityClass,
-                badgeVisibilityClass,
+                isCollapsed,
               )}
             </nav>
 
             <div
               className={cn(
                 "px-3 pt-5 pb-1.5",
-                isCollapsed ? "hidden" : isAutoResponsive ? "hidden xl:block" : "block",
+                isCollapsed
+                  ? "hidden"
+                  : isAutoResponsive
+                    ? "hidden xl:block"
+                    : "block",
               )}
             >
-              <span className="text-[11px] font-semibold uppercase tracking-wider text-[#3f674f] dark:text-[#a5d1b4]">
+              <span className="text-label-xs uppercase text-muted-foreground">
                 Career Assets
               </span>
             </div>
-            <nav className="flex flex-col gap-1" aria-label="Career assets navigation">
+            <nav
+              className="flex flex-col gap-1"
+              aria-label="Career assets navigation"
+            >
               {renderNavGroup(
                 ASSET_NAV_ITEMS,
                 labelVisibilityClass,
-                badgeVisibilityClass,
+                isCollapsed,
               )}
             </nav>
           </div>
         </div>
 
         {/* Bottom Settings + User Card */}
-        <div className="space-y-2 p-3">
+        <div className="space-y-2 border-t border-border-subtle p-3">
           <nav className="flex flex-col gap-1" aria-label="Settings navigation">
-            {renderNavGroup(
-              FOOTER_NAV_ITEMS,
-              labelVisibilityClass,
-              badgeVisibilityClass,
-            )}
+            {renderNavGroup(FOOTER_NAV_ITEMS, labelVisibilityClass, isCollapsed)}
           </nav>
 
-          <div className="flex items-center justify-between gap-2 rounded-xl bg-[#eff5ee] px-3 py-2.5 dark:bg-[#17231c]">
+          <div
+            className={cn(
+              "flex items-center gap-2 rounded-xl bg-surface-subtle p-2.5",
+              isCollapsed
+                ? "flex-col justify-center"
+                : "justify-between md:flex-col xl:flex-row",
+            )}
+          >
             <div className="flex min-w-0 items-center gap-2.5">
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#c0edcf] text-[12px] font-bold text-[#005232] dark:bg-[#274f39] dark:text-[#c0edcf]">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary-soft text-[12px] font-bold text-primary-on-soft">
                 {getUserInitials(user.name)}
               </div>
               <div className={cn("min-w-0", labelVisibilityClass)}>
-                <p className="truncate text-[13px] font-semibold text-[#171d19] dark:text-[#ecf3eb]">
+                <p className="truncate text-[13px] font-semibold text-foreground">
                   {user.name}
                 </p>
-                <p className="truncate text-[11px] text-[#3f674f] dark:text-[#a5d1b4]">
+                <p className="truncate text-[11px] text-muted-foreground">
                   {user.email}
                 </p>
               </div>
             </div>
-            <button
-              type="button"
+            <Button
+              variant="ghost"
+              size="icon-sm"
               onClick={handleSignOut}
               title="Sign out"
               aria-label="Sign out"
-              className="shrink-0 rounded-lg p-1.5 text-[#3e4a41] transition-colors hover:bg-[#ffffff] hover:text-[#ba1a1a] dark:text-[#b7c6ba] dark:hover:bg-[#23342a]"
+              className="shrink-0 hover:bg-destructive-soft hover:text-destructive-on-soft"
             >
               <LogOut className="h-4 w-4" />
-            </button>
+            </Button>
           </div>
         </div>
       </div>
     );
   }
 
-  // Responsive sidebar width: 72px on tablet or collapsed, 256px (w-64) on xl+ desktop
   const desktopAsideWidth =
     collapsedOverride === true
       ? "md:w-[72px]"
@@ -356,7 +364,7 @@ export function AppSidebar({
       {mobileOpen && (
         <div className="fixed inset-0 z-50 flex md:hidden">
           <div
-            className="fixed inset-0 bg-[#171d19]/30 backdrop-blur-[2px]"
+            className="fixed inset-0 bg-foreground/30 backdrop-blur-[2px]"
             onClick={onCloseMobile}
             aria-hidden="true"
           />

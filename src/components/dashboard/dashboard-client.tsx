@@ -4,6 +4,7 @@ import {
   Activity,
   AlertTriangle,
   ArrowRight,
+  BadgeCheck,
   BookmarkCheck,
   Briefcase,
   CalendarClock,
@@ -14,7 +15,6 @@ import {
   Kanban,
   Plus,
   TrendingUp,
-  BadgeCheck,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -33,10 +33,16 @@ import {
 } from "recharts";
 import { toast } from "sonner";
 import {
+  Badge,
+  Button,
+  Card,
+  EmptyState,
   getStageColorStyle,
   SampleBadge,
+  SectionHeader,
+  Select,
   StageBadge,
-} from "@/components/ui/badges";
+} from "@/components/ui";
 import {
   INTERVIEW_TYPE_LABELS,
   SEARCH_STATUS_LABELS,
@@ -45,6 +51,7 @@ import {
   type SearchStatus,
 } from "@/lib/constants";
 import { formatDate, formatDateTime } from "@/lib/format";
+import { cn } from "@/lib/utils";
 import { completeFollowUpTaskAction } from "@/server/actions/applications";
 import {
   loadSampleDataAction,
@@ -55,11 +62,11 @@ import type { getDashboardData } from "@/server/queries/dashboard";
 type DashboardData = Awaited<ReturnType<typeof getDashboardData>>;
 
 const OUTCOME_COLORS: Record<string, string> = {
-  active: "#006a42",
-  successful: "#008655",
-  unsuccessful: "#ba1a1a",
-  withdrawn: "#6e7a71",
-  no_response: "#8f6f3b",
+  active: "var(--primary)",
+  successful: "var(--success)",
+  unsuccessful: "var(--destructive)",
+  withdrawn: "var(--subtle-foreground)",
+  no_response: "var(--warning)",
 };
 
 export function DashboardClient({
@@ -122,148 +129,157 @@ export function DashboardClient({
   return (
     <div className="mx-auto max-w-7xl space-y-6">
       {/* TOP SECTION: Welcome, Search Status, Quick Actions */}
-      <section className="elevation-1 flex flex-col justify-between gap-4 rounded-2xl border border-[#bdcabf]/40 bg-[#ffffff] p-6 sm:flex-row sm:items-center dark:border-[#24332a] dark:bg-[#111a15]">
+      <Card
+        padding="lg"
+        className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center"
+      >
         <div>
-          <div className="mb-1 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-[#3f674f] dark:text-[#a5d1b4]">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#006a42] dark:bg-[#69dca0]" />
+          <div className="mb-1 flex items-center gap-1.5 text-label-xs uppercase text-muted-foreground">
+            <span className="h-1.5 w-1.5 rounded-full bg-primary" />
             <span>Pipeline Intelligence</span>
             <span>/</span>
-            <span className="text-[#006a42] dark:text-[#69dca0]">
-              Command Center
-            </span>
+            <span className="text-primary-text">Command Center</span>
           </div>
           <div className="flex flex-wrap items-center gap-2.5">
-            <h1 className="text-headline-md text-[#171d19] dark:text-[#ecf3eb]">
+            <h1 className="text-page-title text-foreground">
               Welcome back, {user.name}
             </h1>
-            <select
+            <Select
               aria-label="Current job search status"
+              selectSize="xs"
+              wrapperClassName="w-auto"
               value={data.settings.searchStatus}
               disabled={isPending}
               onChange={(e) =>
                 handleStatusChange(e.target.value as SearchStatus)
               }
-              className="rounded-full border border-[#a5d1b4]/60 bg-[#c0edcf] px-3 py-1 text-[11px] font-semibold tracking-[0.02em] text-[#005232] outline-none dark:border-[#006a42]/40 dark:bg-[#006a42]/25 dark:text-[#86f9ba]"
+              className="rounded-full border-primary/25 bg-primary-soft pr-7 pl-3 font-semibold text-primary-on-soft"
             >
               {SEARCH_STATUSES.map((s) => (
                 <option key={s} value={s}>
                   {SEARCH_STATUS_LABELS[s]}
                 </option>
               ))}
-            </select>
+            </Select>
           </div>
-          <p className="mt-1 text-[13px] leading-[18px] text-[#3f674f] dark:text-[#a5d1b4]">
+          <p className="mt-1 text-body-sm text-muted-foreground">
             Executive Career Command Center. All metrics are calculated from
             your recorded applications.
           </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          <Link href="/jobs/new" className="btn-secondary h-10 px-4 text-xs">
-            <Plus className="h-3.5 w-3.5" />
-            Add Job Vacancy
-          </Link>
-          <Link
-            href="/applications?new=1"
-            className="btn-primary h-10 px-4 text-xs"
-          >
-            <Plus className="h-3.5 w-3.5" />
-            Log Application
-          </Link>
-          <Link href="/shortlist" className="btn-secondary h-10 px-4 text-xs">
-            <BookmarkCheck className="h-3.5 w-3.5" />
-            Shortlist
-          </Link>
+          <Button variant="secondary" size="lg" asChild>
+            <Link href="/jobs/new">
+              <Plus className="h-3.5 w-3.5" />
+              Add Job Vacancy
+            </Link>
+          </Button>
+          <Button variant="primary" size="lg" asChild>
+            <Link href="/applications?new=1">
+              <Plus className="h-3.5 w-3.5" />
+              Log Application
+            </Link>
+          </Button>
+          <Button variant="secondary" size="lg" asChild>
+            <Link href="/shortlist">
+              <BookmarkCheck className="h-3.5 w-3.5" />
+              Shortlist
+            </Link>
+          </Button>
           {kpi.totalApplicationsSubmitted === 0 &&
             kpi.totalJobsDiscovered === 0 &&
             !data.sampleStatus.hasSampleData && (
-              <button
-                type="button"
+              <Button
+                variant="outline"
+                size="lg"
                 disabled={isPending}
                 onClick={handleLoadSample}
-                className="inline-flex h-10 items-center gap-1.5 rounded-lg border border-[#e8c084] bg-[#ffdead]/60 px-4 text-xs font-semibold text-[#5d4211] transition-colors hover:bg-[#ffdead] dark:border-amber-800 dark:bg-amber-950/50 dark:text-amber-200"
+                className="border-warning-border bg-warning-soft text-warning-on-soft hover:bg-warning-soft/80"
               >
                 <Database className="h-3.5 w-3.5" />
                 Load Sample Data
-              </button>
+              </Button>
             )}
         </div>
-      </section>
+      </Card>
 
       {/* KPI SECTION: 4 Primary Executive Ribbon Tiles + 6 Secondary KPIs */}
       <section aria-label="Key Performance Indicators" className="space-y-4">
-        <div className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-1 md:grid md:grid-cols-2 md:gap-4 md:overflow-visible md:pb-0 xl:grid-cols-4 xl:gap-5">
-          <div className="elevation-1 group min-w-[230px] shrink-0 snap-start rounded-2xl border border-[#bdcabf]/40 bg-[#ffffff] p-5 transition-shadow hover:shadow-md md:min-w-0 dark:border-[#24332a] dark:bg-[#111a15]">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4 xl:gap-5">
+          <Card padding="md" className="group transition-shadow hover:shadow-md">
             <div className="flex items-center justify-between">
-              <p className="text-label-sm uppercase tracking-wider text-[#3f674f] dark:text-[#a5d1b4]">
+              <p className="text-label-sm uppercase text-muted-foreground">
                 Total Applications
               </p>
-              <span className="rounded-lg bg-[#eff5ee] p-1.5 text-[#006a42] transition-colors group-hover:bg-[#c0edcf] dark:bg-[#17231c] dark:text-[#69dca0]">
+              <span className="rounded-lg bg-surface-subtle p-1.5 text-primary-text transition-colors group-hover:bg-primary-soft">
                 <FolderOpen className="h-4 w-4" />
               </span>
             </div>
-            <p className="text-metric-num mt-2 text-[#171d19] tabular-nums dark:text-[#ecf3eb]">
+            <p className="text-metric-num mt-2 text-foreground tabular-nums">
               {kpi.totalApplicationsSubmitted}
             </p>
-            <p className="mt-1.5 text-xs font-semibold text-[#006a42] tabular-nums dark:text-[#69dca0]">
+            <p className="mt-1.5 text-xs font-semibold text-primary-text tabular-nums">
               From {kpi.totalJobsDiscovered} discovered vacancies
             </p>
-          </div>
+          </Card>
 
-          <div className="elevation-1 group min-w-[230px] shrink-0 snap-start rounded-2xl border border-[#bdcabf]/40 bg-[#ffffff] p-5 transition-shadow hover:shadow-md md:min-w-0 dark:border-[#24332a] dark:bg-[#111a15]">
+          <Card padding="md" className="group transition-shadow hover:shadow-md">
             <div className="flex items-center justify-between">
-              <p className="text-label-sm uppercase tracking-wider text-[#3f674f] dark:text-[#a5d1b4]">
+              <p className="text-label-sm uppercase text-muted-foreground">
                 Active Applications
               </p>
-              <span className="rounded-lg bg-[#eff5ee] p-1.5 text-[#3f674f] transition-colors group-hover:bg-[#c0edcf] dark:bg-[#17231c] dark:text-[#a5d1b4]">
+              <span className="rounded-lg bg-surface-subtle p-1.5 text-muted-foreground transition-colors group-hover:bg-primary-soft group-hover:text-primary-on-soft">
                 <Hourglass className="h-4 w-4" />
               </span>
             </div>
-            <p className="text-metric-num mt-2 text-[#171d19] tabular-nums dark:text-[#ecf3eb]">
+            <p className="text-metric-num mt-2 text-foreground tabular-nums">
               {kpi.activeApplications}
             </p>
-            <p className="mt-1.5 text-xs font-semibold text-[#3f674f] tabular-nums dark:text-[#a5d1b4]">
+            <p className="mt-1.5 text-xs font-semibold text-muted-foreground tabular-nums">
               {kpi.applicationsUnderScreening} currently under CV screening
             </p>
-          </div>
+          </Card>
 
-          <div className="elevation-1 group min-w-[230px] shrink-0 snap-start rounded-2xl border border-[#bdcabf]/40 bg-[#ffffff] p-5 transition-shadow hover:shadow-md md:min-w-0 dark:border-[#24332a] dark:bg-[#111a15]">
+          <Card padding="md" className="group transition-shadow hover:shadow-md">
             <div className="flex items-center justify-between">
-              <p className="text-label-sm uppercase tracking-wider text-[#3f674f] dark:text-[#a5d1b4]">
+              <p className="text-label-sm uppercase text-muted-foreground">
                 Upcoming Interviews
               </p>
-              <span className="rounded-lg bg-[#c0edcf] p-1.5 text-[#005232] dark:bg-[#005232] dark:text-[#86f9ba]">
+              <span className="rounded-lg bg-primary-soft p-1.5 text-primary-on-soft">
                 <CalendarClock className="h-4 w-4" />
               </span>
             </div>
-            <p className="text-metric-num mt-2 text-[#006a42] tabular-nums dark:text-[#69dca0]">
+            <p className="text-metric-num mt-2 text-primary-text tabular-nums">
               {kpi.interviewsScheduled}
             </p>
-            <p className="mt-1.5 text-xs font-semibold text-[#008655] tabular-nums dark:text-[#86f9ba]">
+            <p className="mt-1.5 text-xs font-semibold text-primary-text tabular-nums">
               Interview conversion:{" "}
               {kpi.applicationToInterviewRate != null
                 ? `${kpi.applicationToInterviewRate}%`
                 : "Not enough data"}
             </p>
-          </div>
+          </Card>
 
-          <div className="elevation-1 group relative min-w-[230px] shrink-0 snap-start overflow-hidden rounded-2xl border border-[#bdcabf]/40 bg-[#ffffff] p-5 transition-shadow hover:shadow-md md:min-w-0 dark:border-[#24332a] dark:bg-[#111a15]">
-            <div className="pointer-events-none absolute -right-4 -bottom-4 h-16 w-16 rounded-full bg-[#ffdead]/40 blur-xl dark:bg-[#745725]/20" />
+          <Card
+            padding="md"
+            className="group relative overflow-hidden transition-shadow hover:shadow-md"
+          >
             <div className="flex items-center justify-between">
-              <p className="text-label-sm uppercase tracking-wider text-[#745725] dark:text-[#e8c084]">
+              <p className="text-label-sm uppercase text-warning-on-soft">
                 Offers Received
               </p>
-              <span className="rounded-lg bg-[#ffdead] p-1.5 text-[#5d4211] dark:bg-[#5d4211] dark:text-[#ffdead]">
+              <span className="rounded-lg bg-warning-soft p-1.5 text-warning-on-soft">
                 <BadgeCheck className="h-4 w-4" />
               </span>
             </div>
-            <p className="text-metric-num mt-2 text-[#745725] tabular-nums dark:text-[#e8c084]">
+            <p className="text-metric-num mt-2 text-warning-on-soft tabular-nums">
               {kpi.offersReceived}
             </p>
-            <p className="mt-1.5 text-xs font-semibold text-[#006a42] tabular-nums dark:text-[#69dca0]">
+            <p className="mt-1.5 text-xs font-semibold text-primary-text tabular-nums">
               {kpi.successfulApplications} accepted / hired
             </p>
-          </div>
+          </Card>
         </div>
 
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
@@ -285,25 +301,21 @@ export function DashboardClient({
       {/* MAIN SECTION: Pipeline, Upcoming Interviews, Pending Follow-ups */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
         {/* Application Pipeline */}
-        <section className="elevation-1 rounded-2xl border border-[#bdcabf]/40 bg-[#ffffff] p-6 lg:col-span-7 dark:border-[#24332a] dark:bg-[#111a15]">
-          <div className="mb-5 flex items-center justify-between">
-            <div>
-              <h2 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
-                Application Pipeline
-              </h2>
-              <p className="text-[13px] text-[#3f674f] dark:text-[#a5d1b4]">
-                Current count across standard HR recruitment stages
-              </p>
-            </div>
-            <Link
-              href="/applications?view=board"
-              className="inline-flex items-center gap-1.5 rounded-xl bg-[#eff5ee] px-3 py-1.5 text-xs font-semibold text-[#006a42] transition-colors hover:bg-[#c0edcf] dark:bg-[#17231c] dark:text-[#69dca0]"
-            >
-              <Kanban className="h-3.5 w-3.5" />
-              Open Board
-              <ArrowRight className="h-3 w-3" />
-            </Link>
-          </div>
+        <Card padding="lg" className="lg:col-span-7">
+          <SectionHeader
+            title="Application Pipeline"
+            description="Current count across standard HR recruitment stages"
+            className="mb-5"
+            actions={
+              <Button variant="soft" size="sm" asChild>
+                <Link href="/applications?view=board">
+                  <Kanban className="h-3.5 w-3.5" />
+                  Open Board
+                  <ArrowRight className="h-3 w-3" />
+                </Link>
+              </Button>
+            }
+          />
 
           <div className="space-y-3">
             {data.stageBreakdown.map((st) => {
@@ -319,45 +331,47 @@ export function DashboardClient({
                 >
                   <div className="flex w-44 shrink-0 items-center gap-2 truncate">
                     <span
-                      className={`h-2.5 w-2.5 shrink-0 rounded-full ${style.dot}`}
+                      className={cn(
+                        "h-2.5 w-2.5 shrink-0 rounded-full",
+                        style.dot,
+                      )}
                     />
-                    <span className="truncate font-medium text-[#171d19] dark:text-[#ecf3eb]">
+                    <span className="truncate font-medium text-foreground">
                       {st.name}
                     </span>
                   </div>
-                  <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-[#eff5ee] dark:bg-[#17231c]">
+                  <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-surface-subtle">
                     <div
-                      className={`h-full rounded-full ${style.dot}`}
+                      className={cn("h-full rounded-full", style.dot)}
                       style={{ width: `${widthPct}%` }}
                     />
                   </div>
-                  <span className="w-8 text-right font-mono text-xs font-bold text-[#171d19] tabular-nums dark:text-[#ecf3eb]">
+                  <span className="w-8 text-right font-mono text-xs font-bold text-foreground tabular-nums">
                     {st.count}
                   </span>
                 </div>
               );
             })}
           </div>
-        </section>
+        </Card>
 
         {/* Right column: Upcoming Interviews + Pending Follow-ups */}
         <div className="space-y-6 lg:col-span-5">
           {/* Upcoming Interviews */}
-          <section className="elevation-1 rounded-2xl border border-[#bdcabf]/40 bg-[#ffffff] p-6 dark:border-[#24332a] dark:bg-[#111a15]">
-            <div className="mb-3.5 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <CalendarClock className="h-4 w-4 text-[#006a42] dark:text-[#69dca0]" />
-                <h2 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
-                  Upcoming Interviews
-                </h2>
-              </div>
-              <span className="rounded-full bg-[#c0edcf] px-2.5 py-0.5 font-mono text-xs font-bold text-[#005232] tabular-nums dark:bg-[#005232] dark:text-[#86f9ba]">
-                {data.upcomingInterviews.length}
-              </span>
-            </div>
+          <Card padding="lg">
+            <SectionHeader
+              icon={CalendarClock}
+              title="Upcoming Interviews"
+              className="mb-3.5"
+              actions={
+                <Badge variant="primary" className="font-mono tabular-nums">
+                  {data.upcomingInterviews.length}
+                </Badge>
+              }
+            />
 
             {data.upcomingInterviews.length === 0 ? (
-              <p className="py-4 text-[13px] text-[#3f674f] dark:text-[#a5d1b4]">
+              <p className="py-4 text-[13px] text-muted-foreground">
                 No scheduled interviews right now. Schedule interviews from any
                 application detail page.
               </p>
@@ -367,10 +381,10 @@ export function DashboardClient({
                   <Link
                     key={intv.id}
                     href={`/applications/${intv.applicationId}?tab=interviews`}
-                    className="elevation-2 block rounded-xl border border-[#bdcabf]/40 bg-[#eff5ee]/70 p-3.5 transition-all hover:bg-[#ffffff] dark:border-[#24332a] dark:bg-[#17231c]"
+                    className="elevation-2 block rounded-xl border border-border bg-surface-subtle p-3.5 transition-all hover:bg-card"
                   >
                     <div className="flex items-center justify-between gap-2">
-                      <span className="text-[13px] font-semibold text-[#171d19] dark:text-[#ecf3eb]">
+                      <span className="text-[13px] font-semibold text-foreground">
                         {INTERVIEW_TYPE_LABELS[
                           intv.interviewType as InterviewType
                         ] ?? intv.interviewType}{" "}
@@ -378,10 +392,10 @@ export function DashboardClient({
                       </span>
                       {intv.isSample && <SampleBadge />}
                     </div>
-                    <p className="mt-0.5 text-xs text-[#3e4a41] dark:text-[#b7c6ba]">
+                    <p className="mt-0.5 text-xs text-muted-foreground">
                       {intv.jobTitle} ({intv.appCode})
                     </p>
-                    <p className="mt-1.5 font-mono text-[11px] font-semibold text-[#006a42] tabular-nums dark:text-[#69dca0]">
+                    <p className="mt-1.5 font-mono text-[11px] font-semibold text-primary-text tabular-nums">
                       {formatDateTime(intv.startsAt, data.settings.timezone)} (
                       {intv.durationMinutes} min)
                     </p>
@@ -389,21 +403,22 @@ export function DashboardClient({
                 ))}
               </div>
             )}
-          </section>
+          </Card>
 
           {/* Pending Follow-ups */}
-          <section className="elevation-1 rounded-2xl border border-[#bdcabf]/40 bg-[#ffffff] p-6 dark:border-[#24332a] dark:bg-[#111a15]">
-            <div className="mb-3.5 flex items-center justify-between">
-              <h2 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
-                Pending Follow-ups
-              </h2>
-              <span className="rounded-full bg-[#eff5ee] px-2.5 py-0.5 font-mono text-xs font-bold text-[#3e4a41] tabular-nums dark:bg-[#17231c] dark:text-[#b7c6ba]">
-                {data.pendingFollowUps.length}
-              </span>
-            </div>
+          <Card padding="lg">
+            <SectionHeader
+              title="Pending Follow-ups"
+              className="mb-3.5"
+              actions={
+                <Badge variant="secondary" className="font-mono tabular-nums">
+                  {data.pendingFollowUps.length}
+                </Badge>
+              }
+            />
 
             {data.pendingFollowUps.length === 0 ? (
-              <p className="py-4 text-[13px] text-[#3f674f] dark:text-[#a5d1b4]">
+              <p className="py-4 text-[13px] text-muted-foreground">
                 All caught up! Automatic follow-up tasks are created when you
                 record new applications.
               </p>
@@ -412,22 +427,22 @@ export function DashboardClient({
                 {data.pendingFollowUps.map((task) => (
                   <div
                     key={task.id}
-                    className="flex items-start justify-between gap-2 rounded-xl border border-[#bdcabf]/40 bg-[#eff5ee]/60 p-3 text-xs dark:border-[#24332a] dark:bg-[#17231c]"
+                    className="flex items-start justify-between gap-2 rounded-xl border border-border-subtle bg-surface-subtle p-3 text-xs"
                   >
                     <div className="min-w-0">
                       <div className="flex flex-wrap items-center gap-1.5">
                         {task.isOverdue && (
-                          <span className="inline-flex items-center gap-1 rounded-full bg-[#ffdad6] px-2 py-0.5 text-[10px] font-bold tracking-[0.04em] text-[#93000a] dark:bg-rose-950 dark:text-rose-300">
+                          <Badge variant="destructive" className="text-[10px]">
                             <AlertTriangle className="h-3 w-3" />
                             OVERDUE
-                          </span>
+                          </Badge>
                         )}
-                        <span className="font-semibold text-[#171d19] dark:text-[#ecf3eb]">
+                        <span className="font-semibold text-foreground">
                           {task.title}
                         </span>
                         {task.isSample && <SampleBadge />}
                       </div>
-                      <p className="mt-0.5 text-[11px] text-[#3f674f] tabular-nums dark:text-[#a5d1b4]">
+                      <p className="mt-0.5 text-[11px] text-muted-foreground tabular-nums">
                         Due {formatDate(task.dueOn)}
                         {task.applicationId && task.appCode ? (
                           <>
@@ -435,7 +450,7 @@ export function DashboardClient({
                             ·{" "}
                             <Link
                               href={`/applications/${task.applicationId}`}
-                              className="font-mono font-semibold text-[#006a42] hover:underline dark:text-[#69dca0]"
+                              className="font-mono font-semibold text-primary-text hover:underline"
                             >
                               {task.appCode}
                             </Link>
@@ -443,37 +458,36 @@ export function DashboardClient({
                         ) : null}
                       </p>
                     </div>
-                    <button
-                      type="button"
+                    <Button
+                      variant="secondary"
+                      size="xs"
                       disabled={isPending}
                       onClick={() => handleCompleteTask(task.id)}
-                      className="inline-flex shrink-0 items-center gap-1 rounded-xl border border-[#bdcabf] bg-[#ffffff] px-2.5 py-1 text-[11px] font-semibold text-[#171d19] transition-colors hover:border-[#006a42] hover:bg-[#c0edcf] hover:text-[#005232] dark:border-[#2d3d33] dark:bg-[#111a15] dark:text-[#ecf3eb]"
+                      className="shrink-0"
                     >
                       <CheckCircle2 className="h-3.5 w-3.5" />
                       Done
-                    </button>
+                    </Button>
                   </div>
                 ))}
               </div>
             )}
-          </section>
+          </Card>
         </div>
       </div>
 
       {/* Recent Application Activity */}
-      <section className="elevation-1 rounded-2xl border border-[#bdcabf]/40 bg-[#ffffff] p-6 dark:border-[#24332a] dark:bg-[#111a15]">
-        <h2 className="text-headline-sm mb-3 text-[#171d19] dark:text-[#ecf3eb]">
-          Recent Application Activity
-        </h2>
+      <Card padding="lg">
+        <SectionHeader title="Recent Application Activity" className="mb-3" />
         {data.recentActivity.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-6 text-center">
-            <Briefcase className="h-6 w-6 text-[#3f674f]" />
-            <p className="mt-2 text-xs text-[#3f674f]">
-              No recruitment transitions recorded yet.
-            </p>
-          </div>
+          <EmptyState
+            icon={Briefcase}
+            title="No recruitment transitions recorded yet"
+            description="Stage transitions and application submissions will appear here."
+            className="border-0 shadow-none"
+          />
         ) : (
-          <div className="divide-y divide-[#e3eae3] dark:divide-[#24332a]">
+          <div className="divide-y divide-border-subtle">
             {data.recentActivity.map((item) => (
               <div
                 key={item.id}
@@ -482,18 +496,18 @@ export function DashboardClient({
                 <div className="flex flex-wrap items-center gap-2">
                   <Link
                     href={`/applications/${item.applicationId}`}
-                    className="font-mono text-xs font-semibold text-[#006a42] tabular-nums hover:underline dark:text-[#69dca0]"
+                    className="font-mono text-xs font-semibold text-primary-text tabular-nums hover:underline"
                   >
                     {item.app?.code}
                   </Link>
-                  <span className="font-semibold text-[#171d19] dark:text-[#ecf3eb]">
+                  <span className="font-semibold text-foreground">
                     {item.app?.jobTitle}
                   </span>
-                  <span className="text-[#3f674f] dark:text-[#a5d1b4]">
+                  <span className="text-muted-foreground">
                     at {item.app?.companyName}
                   </span>
                   {item.fromStageName && (
-                    <span className="text-[#6e7a71]">
+                    <span className="text-subtle-foreground">
                       {item.fromStageName} &rarr;
                     </span>
                   )}
@@ -503,16 +517,16 @@ export function DashboardClient({
                   />
                   {item.app?.isSample && <SampleBadge />}
                 </div>
-                <span className="font-mono text-xs text-[#3f674f] tabular-nums dark:text-[#a5d1b4]">
+                <span className="font-mono text-xs text-muted-foreground tabular-nums">
                   {formatDate(item.effectiveOn)}
                 </span>
               </div>
             ))}
           </div>
         )}
-      </section>
+      </Card>
 
-      {/* ANALYTICS SECTION: Performance Metrics, Funnel, Activity Over Time, Outcomes */}
+      {/* ANALYTICS SECTION */}
       <section
         aria-label="Recruitment Performance Analytics"
         className="space-y-4"
@@ -576,24 +590,24 @@ export function DashboardClient({
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           {/* Funnel */}
-          <div className="elevation-1 rounded-2xl border border-[#bdcabf]/40 bg-[#ffffff] p-6 dark:border-[#24332a] dark:bg-[#111a15]">
+          <Card padding="lg">
             <div className="mb-1 flex items-center justify-between">
-              <h3 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
+              <h3 className="text-section-title text-foreground">
                 Recruitment Conversion Funnel
               </h3>
-              <TrendingUp className="h-4 w-4 text-[#006a42] dark:text-[#69dca0]" />
+              <TrendingUp className="h-4 w-4 text-primary-text" />
             </div>
-            <p className="mb-4 text-xs text-[#3f674f] dark:text-[#a5d1b4]">
+            <p className="mb-4 text-caption text-muted-foreground">
               Cumulative progression across submitted applications
             </p>
             <div className="space-y-3">
               {data.funnel.map((step) => (
                 <div key={step.key} className="space-y-1 text-xs">
                   <div className="flex justify-between">
-                    <span className="font-semibold text-[#171d19] dark:text-[#ecf3eb]">
+                    <span className="font-semibold text-foreground">
                       {step.label}
                     </span>
-                    <span className="font-mono text-[#3f674f] tabular-nums dark:text-[#a5d1b4]">
+                    <span className="font-mono text-muted-foreground tabular-nums">
                       {step.count} (
                       {step.percentageOfSubmitted != null
                         ? `${step.percentageOfSubmitted}%`
@@ -601,30 +615,30 @@ export function DashboardClient({
                       )
                     </span>
                   </div>
-                  <div className="h-2.5 w-full overflow-hidden rounded-full bg-[#eff5ee] dark:bg-[#17231c]">
+                  <div className="h-2.5 w-full overflow-hidden rounded-full bg-surface-subtle">
                     <div
-                      className="h-full rounded-full bg-[#006a42] dark:bg-[#008655]"
+                      className="h-full rounded-full bg-primary"
                       style={{ width: `${step.percentageOfSubmitted ?? 0}%` }}
                     />
                   </div>
                 </div>
               ))}
             </div>
-          </div>
+          </Card>
 
           {/* Activity Over Time */}
-          <div className="elevation-1 rounded-2xl border border-[#bdcabf]/40 bg-[#ffffff] p-6 dark:border-[#24332a] dark:bg-[#111a15]">
+          <Card padding="lg">
             <div className="mb-1 flex items-center justify-between">
-              <h3 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
+              <h3 className="text-section-title text-foreground">
                 Application Activity Over Time
               </h3>
-              <Activity className="h-4 w-4 text-[#006a42] dark:text-[#69dca0]" />
+              <Activity className="h-4 w-4 text-primary-text" />
             </div>
-            <p className="mb-4 text-xs text-[#3f674f] dark:text-[#a5d1b4]">
+            <p className="mb-4 text-caption text-muted-foreground">
               Applications submitted by month
             </p>
             {data.activityOverTime.length === 0 ? (
-              <p className="py-12 text-center text-xs text-[#3f674f]">
+              <p className="py-12 text-center text-xs text-muted-foreground">
                 No submission data yet
               </p>
             ) : (
@@ -634,32 +648,40 @@ export function DashboardClient({
                     <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
                     <XAxis dataKey="period" tick={{ fontSize: 11 }} />
                     <YAxis allowDecimals={false} tick={{ fontSize: 11 }} />
-                    <Tooltip />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: "var(--popover)",
+                        borderColor: "var(--border)",
+                        borderRadius: "0.75rem",
+                        color: "var(--popover-foreground)",
+                        fontSize: "12px",
+                      }}
+                    />
                     <Bar
                       dataKey="applications"
-                      fill="#006a42"
+                      fill="var(--primary)"
                       radius={[6, 6, 0, 0]}
                     />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
             )}
-          </div>
+          </Card>
 
           {/* Outcome Breakdown */}
-          <div className="elevation-1 rounded-2xl border border-[#bdcabf]/40 bg-[#ffffff] p-6 dark:border-[#24332a] dark:bg-[#111a15]">
-            <h3 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
+          <Card padding="lg">
+            <h3 className="text-section-title text-foreground">
               Application Outcomes
             </h3>
-            <p className="mb-4 text-xs text-[#3f674f] dark:text-[#a5d1b4]">
+            <p className="mb-4 text-caption text-muted-foreground">
               Distribution of active and closed applications
             </p>
             {data.outcomeDistribution.length === 0 ? (
-              <p className="py-12 text-center text-xs text-[#3f674f]">
+              <p className="py-12 text-center text-xs text-muted-foreground">
                 No application outcomes yet
               </p>
             ) : (
-              <div className="flex items-center gap-4">
+              <div className="flex flex-wrap items-center gap-4">
                 <div className="h-44 w-44 shrink-0">
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
@@ -674,11 +696,21 @@ export function DashboardClient({
                         {data.outcomeDistribution.map((entry) => (
                           <Cell
                             key={entry.key}
-                            fill={OUTCOME_COLORS[entry.key] ?? "#006a42"}
+                            fill={
+                              OUTCOME_COLORS[entry.key] ?? "var(--primary)"
+                            }
                           />
                         ))}
                       </Pie>
-                      <Tooltip />
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: "var(--popover)",
+                          borderColor: "var(--border)",
+                          borderRadius: "0.75rem",
+                          color: "var(--popover-foreground)",
+                          fontSize: "12px",
+                        }}
+                      />
                     </PieChart>
                   </ResponsiveContainer>
                 </div>
@@ -689,13 +721,13 @@ export function DashboardClient({
                         className="h-2.5 w-2.5 rounded-full"
                         style={{
                           backgroundColor:
-                            OUTCOME_COLORS[item.key] ?? "#006a42",
+                            OUTCOME_COLORS[item.key] ?? "var(--primary)",
                         }}
                       />
-                      <span className="text-[#3e4a41] dark:text-[#b7c6ba]">
+                      <span className="text-muted-foreground">
                         {item.name}:
                       </span>
-                      <span className="font-mono font-semibold text-[#171d19] tabular-nums dark:text-[#ecf3eb]">
+                      <span className="font-mono font-semibold text-foreground tabular-nums">
                         {item.value}
                       </span>
                     </div>
@@ -703,7 +735,7 @@ export function DashboardClient({
                 </div>
               </div>
             )}
-          </div>
+          </Card>
         </div>
       </section>
     </div>
@@ -712,14 +744,14 @@ export function DashboardClient({
 
 function MiniStat({ label, value }: { label: string; value: number }) {
   return (
-    <div className="elevation-1 rounded-xl border border-[#bdcabf]/40 bg-[#ffffff] px-4 py-3 dark:border-[#24332a] dark:bg-[#111a15]">
-      <p className="truncate text-[11px] font-semibold uppercase tracking-[0.04em] text-[#3f674f] dark:text-[#a5d1b4]">
+    <Card padding="sm" className="px-4 py-3">
+      <p className="truncate text-label-xs uppercase text-muted-foreground">
         {label}
       </p>
-      <p className="mt-1 font-display text-lg font-bold text-[#171d19] tabular-nums dark:text-[#ecf3eb]">
+      <p className="mt-1 font-display text-lg font-bold text-foreground tabular-nums">
         {value}
       </p>
-    </div>
+    </Card>
   );
 }
 
@@ -733,16 +765,14 @@ function MetricCard({
   sub: string;
 }) {
   return (
-    <div className="elevation-1 rounded-2xl border border-[#bdcabf]/40 bg-[#ffffff] p-4 dark:border-[#24332a] dark:bg-[#111a15]">
-      <p className="text-label-xs uppercase text-[#3f674f] dark:text-[#a5d1b4]">
-        {label}
-      </p>
-      <p className="mt-1.5 font-display text-2xl font-bold text-[#171d19] tabular-nums dark:text-[#ecf3eb]">
+    <Card padding="sm">
+      <p className="text-label-xs uppercase text-muted-foreground">{label}</p>
+      <p className="mt-1.5 font-display text-2xl font-bold text-foreground tabular-nums">
         {value}
       </p>
-      <p className="mt-1 text-[11px] font-semibold text-[#006a42] tabular-nums dark:text-[#69dca0]">
+      <p className="mt-1 text-[11px] font-semibold text-primary-text tabular-nums">
         {sub}
       </p>
-    </div>
+    </Card>
   );
 }

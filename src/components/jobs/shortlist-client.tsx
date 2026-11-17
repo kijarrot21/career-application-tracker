@@ -16,12 +16,16 @@ import {
   type VacancyOptionForSubmission,
 } from "@/components/applications/record-submission-dialog";
 import {
+  Button,
+  Card,
+  EmptyState,
+  PageHeader,
   PriorityBadge,
   SampleBadge,
   StageBadge,
   SuitabilityBadge,
   TriageBadge,
-} from "@/components/ui/badges";
+} from "@/components/ui";
 import { WORK_ARRANGEMENT_LABELS, type TriageStatus } from "@/lib/constants";
 import { formatDate, formatSalaryRange } from "@/lib/format";
 import { setVacancyTriageAction } from "@/server/actions/vacancies";
@@ -71,62 +75,54 @@ export function ShortlistClient({
 
   return (
     <div className="mx-auto max-w-7xl space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <div className="mb-1 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-[#3f674f] dark:text-[#a5d1b4]">
-            <span>Career Assets</span>
-            <span>/</span>
-            <span className="text-[#006a42] dark:text-[#69dca0]">
-              Shortlist & Comparison
-            </span>
-          </div>
-          <h1 className="text-headline-md text-[#171d19] dark:text-[#ecf3eb]">
-            Job Shortlist & Suitability Comparison
-          </h1>
-          <p className="mt-0.5 text-[13px] text-[#3f674f] dark:text-[#a5d1b4]">
-            Interested and Shortlisted opportunities ranked by overall
-            suitability score and upcoming deadlines.
-          </p>
-        </div>
-
-        <Link href="/jobs" className="btn-secondary h-10 px-4 text-xs">
-          Browse All Vacancies
-        </Link>
-      </div>
+      <PageHeader
+        breadcrumbs={[
+          { label: "Career Assets" },
+          { label: "Shortlist & Comparison" },
+        ]}
+        title="Job Shortlist & Suitability Comparison"
+        description="Interested and Shortlisted opportunities ranked by overall suitability score and upcoming deadlines."
+        actions={
+          <Button variant="secondary" size="lg" asChild>
+            <Link href="/jobs">Browse All Vacancies</Link>
+          </Button>
+        }
+      />
 
       {/* Side-by-side comparison tray */}
       {compared.length > 0 && (
-        <div className="elevation-1 space-y-3 rounded-2xl border border-[#a5d1b4] bg-[#ffffff] p-5 dark:border-[#006a42]/40 dark:bg-[#111a15]">
+        <Card padding="md" className="space-y-3 border-primary/30">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-xs font-semibold text-[#006a42] tabular-nums dark:text-[#69dca0]">
+            <div className="flex items-center gap-2 text-xs font-semibold text-primary-text tabular-nums">
               <Columns3 className="h-4 w-4" />
               Side-by-Side Comparison ({compared.length} of 3 selected)
             </div>
-            <button
-              type="button"
+            <Button
+              variant="link"
+              size="xs"
               onClick={() => setCompareIds([])}
-              className="text-xs font-semibold text-[#3f674f] hover:text-[#006a42] hover:underline"
             >
               Clear comparison
-            </button>
+            </Button>
           </div>
 
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             {compared.map((v) => (
-              <div
+              <Card
                 key={v.id}
-                className="space-y-1.5 rounded-xl bg-[#eff5ee] p-4 text-xs tabular-nums dark:bg-[#17231c]"
+                tone="subtle"
+                elevation="flat"
+                padding="sm"
+                className="space-y-1.5 text-xs tabular-nums"
               >
                 <div className="flex items-center justify-between">
-                  <span className="font-mono text-[#3f674f] dark:text-[#a5d1b4]">
+                  <span className="font-mono text-muted-foreground">
                     {v.code}
                   </span>
                   <SuitabilityBadge score={v.suitabilityScore} />
                 </div>
-                <p className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
-                  {v.title}
-                </p>
-                <p className="font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
+                <p className="text-card-title text-foreground">{v.title}</p>
+                <p className="font-semibold text-muted-foreground">
                   {v.company.name}
                 </p>
                 <p>
@@ -153,23 +149,23 @@ export function ShortlistClient({
                 <p>
                   <strong>Deadline:</strong> {formatDate(v.deadline)}
                 </p>
-              </div>
+              </Card>
             ))}
           </div>
-        </div>
+        </Card>
       )}
 
       {vacancies.length === 0 ? (
-        <div className="elevation-1 flex flex-col items-center justify-center rounded-2xl border border-[#bdcabf]/40 bg-[#ffffff] py-14 text-center dark:border-[#24332a] dark:bg-[#111a15]">
-          <BookmarkCheck className="h-7 w-7 text-[#3f674f]" />
-          <p className="mt-2 font-display text-sm font-semibold text-[#171d19] dark:text-[#ecf3eb]">
-            Your shortlist is empty
-          </p>
-          <p className="mt-1 text-xs text-[#3f674f]">
-            Mark vacancies as Interested or Shortlisted in Find Jobs to evaluate
-            and compare them here.
-          </p>
-        </div>
+        <EmptyState
+          icon={BookmarkCheck}
+          title="Your shortlist is empty"
+          description="Mark vacancies as Interested or Shortlisted in Find Jobs to evaluate and compare them here."
+          action={
+            <Button variant="primary" size="lg" asChild>
+              <Link href="/jobs">Browse Find Jobs</Link>
+            </Button>
+          }
+        />
       ) : (
         <div className="space-y-3">
           {vacancies.map((v) => {
@@ -181,9 +177,11 @@ export function ShortlistClient({
             );
 
             return (
-              <div
+              <Card
                 key={v.id}
-                className="elevation-2 flex flex-col justify-between gap-3 rounded-2xl border border-[#bdcabf]/40 bg-[#ffffff] p-5 sm:flex-row sm:items-center dark:border-[#24332a] dark:bg-[#111a15]"
+                elevation="interactive"
+                padding="md"
+                className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center"
               >
                 <div className="space-y-1.5">
                   <div className="flex flex-wrap items-center gap-2">
@@ -192,14 +190,14 @@ export function ShortlistClient({
                       aria-label={`Compare ${v.title}`}
                       checked={compareIds.includes(v.id)}
                       onChange={() => toggleCompare(v.id)}
-                      className="h-4 w-4 rounded border-[#bdcabf] accent-[#006a42]"
+                      className="h-4 w-4 rounded border-border accent-primary"
                     />
-                    <span className="font-mono text-xs text-[#3f674f] tabular-nums dark:text-[#a5d1b4]">
+                    <span className="font-mono text-xs text-muted-foreground tabular-nums">
                       {v.code}
                     </span>
                     <Link
                       href={`/jobs/${v.id}`}
-                      className="text-headline-sm text-[#171d19] hover:text-[#006a42] dark:text-[#ecf3eb] dark:hover:text-[#69dca0]"
+                      className="text-section-title text-foreground hover:text-primary-text"
                     >
                       {v.title}
                     </Link>
@@ -209,8 +207,8 @@ export function ShortlistClient({
                     {v.isSample && <SampleBadge />}
                   </div>
 
-                  <p className="text-[13px] text-[#3f674f] tabular-nums dark:text-[#a5d1b4]">
-                    <strong className="font-semibold text-[#171d19] dark:text-[#ecf3eb]">
+                  <p className="text-[13px] text-muted-foreground tabular-nums">
+                    <strong className="font-semibold text-foreground">
                       {v.company.name}
                     </strong>
                     {v.location ? ` · ${v.location}` : ""}
@@ -218,7 +216,7 @@ export function ShortlistClient({
                       ? ` (${WORK_ARRANGEMENT_LABELS[v.workArrangement]})`
                       : ""}
                     {" · "}
-                    <span className="font-mono font-semibold text-[#171d19] dark:text-[#ecf3eb]">
+                    <span className="font-mono font-semibold text-foreground">
                       {formatSalaryRange(
                         v.salaryMin,
                         v.salaryMax,
@@ -234,7 +232,7 @@ export function ShortlistClient({
                   {activeApp ? (
                     <Link
                       href={`/applications/${activeApp.id}`}
-                      className="inline-flex h-9 items-center gap-1.5 rounded-xl border border-[#a5d1b4] bg-[#c0edcf]/60 px-3 text-xs font-semibold text-[#005232] tabular-nums dark:border-[#006a42]/40 dark:bg-[#006a42]/20 dark:text-[#86f9ba]"
+                      className="inline-flex h-10 items-center gap-1.5 rounded-lg border border-primary/25 bg-primary-soft px-3 text-xs font-semibold text-primary-on-soft tabular-nums"
                     >
                       <span>{activeApp.code}:</span>
                       <StageBadge
@@ -243,8 +241,9 @@ export function ShortlistClient({
                       />
                     </Link>
                   ) : (
-                    <button
-                      type="button"
+                    <Button
+                      variant="primary"
+                      size="lg"
                       onClick={() =>
                         setApplyTarget({
                           id: v.id,
@@ -258,36 +257,35 @@ export function ShortlistClient({
                           hasClosedApp: Boolean(closedApp),
                         })
                       }
-                      className="btn-primary h-10 px-4 text-xs"
                     >
                       <Send className="h-3 w-3" />
                       Record Submission
-                    </button>
+                    </Button>
                   )}
 
-                  <button
-                    type="button"
+                  <Button
+                    variant="secondary"
+                    size="lg"
                     disabled={isPending}
                     onClick={() => handleTriage(v.id, "not_interested")}
                     title="Mark Not Interested"
-                    className="btn-secondary h-10 px-3.5 text-xs"
                   >
                     <XCircle className="h-3.5 w-3.5" />
                     Not Interested
-                  </button>
+                  </Button>
 
-                  <button
-                    type="button"
+                  <Button
+                    variant="secondary"
+                    size="lg"
                     disabled={isPending}
                     onClick={() => handleTriage(v.id, "archived")}
                     title="Archive"
-                    className="btn-secondary h-10 px-3.5 text-xs"
                   >
                     <Archive className="h-3.5 w-3.5" />
                     Archive
-                  </button>
+                  </Button>
                 </div>
-              </div>
+              </Card>
             );
           })}
         </div>

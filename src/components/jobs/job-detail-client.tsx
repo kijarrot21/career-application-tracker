@@ -9,13 +9,18 @@ import { RecordSubmissionDialog } from "@/components/applications/record-submiss
 import { SuitabilityPanel } from "@/components/jobs/suitability-panel";
 import { VacancyForm } from "@/components/jobs/vacancy-form";
 import {
+  Badge,
+  Button,
+  Card,
+  ConfirmDialog,
   OutcomeBadge,
   PriorityBadge,
   SampleBadge,
+  Select,
   StageBadge,
   SuitabilityBadge,
   TriageBadge,
-} from "@/components/ui/badges";
+} from "@/components/ui";
 import {
   EMPLOYMENT_TYPE_LABELS,
   TRIAGE_LABELS,
@@ -52,6 +57,7 @@ export function JobDetailClient({
   const [isPending, startTransition] = useTransition();
   const [editing, setEditing] = useState(false);
   const [applyOpen, setApplyOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
 
   const activeApp = vacancy.applications.find((a) => a.outcome === "active");
   const hasClosedApp = vacancy.applications.some((a) => a.outcome !== "active");
@@ -70,15 +76,12 @@ export function JobDetailClient({
     });
   }
 
-  function handleDelete() {
-    if (
-      !window.confirm(`Delete job vacancy ${vacancy.code} (${vacancy.title})?`)
-    )
-      return;
+  function handleConfirmDelete() {
     startTransition(async () => {
       try {
         await deleteVacancyAction(vacancy.id);
         toast.success("Vacancy deleted.");
+        setDeleteOpen(false);
         router.push("/jobs");
       } catch (err) {
         toast.error(
@@ -93,21 +96,21 @@ export function JobDetailClient({
       <div>
         <Link
           href="/jobs"
-          className="text-xs font-semibold text-[#006a42] hover:underline dark:text-[#86f9ba]"
+          className="text-xs font-semibold text-primary-text hover:underline"
         >
           &larr; Back to Find Jobs
         </Link>
       </div>
 
       {/* Header Card */}
-      <div className="elevation-1 rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] p-5 dark:border-[#24332a] dark:bg-[#111a15]">
+      <Card padding="md">
         <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-start">
           <div className="space-y-1.5">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="font-mono text-xs text-[#3f674f] tabular-nums">
+              <span className="font-mono text-xs text-muted-foreground tabular-nums">
                 {vacancy.code}
               </span>
-              <h1 className="text-headline-md text-[#171d19] dark:text-[#ecf3eb]">
+              <h1 className="text-page-title text-foreground">
                 {vacancy.title}
               </h1>
               <SuitabilityBadge score={vacancy.suitabilityScore} />
@@ -116,8 +119,8 @@ export function JobDetailClient({
               {vacancy.isSample && <SampleBadge />}
             </div>
 
-            <p className="text-[14px] text-[#3e4a41] dark:text-[#b7c6ba]">
-              <strong className="font-semibold text-[#171d19] dark:text-[#ecf3eb]">
+            <p className="text-[14px] text-muted-foreground">
+              <strong className="font-semibold text-foreground">
                 {vacancy.company.name}
               </strong>
               {vacancy.department ? ` · ${vacancy.department}` : ""}
@@ -128,10 +131,10 @@ export function JobDetailClient({
                 : ""}
             </p>
 
-            <div className="flex flex-wrap items-center gap-4 text-xs text-[#3f674f] tabular-nums">
+            <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground tabular-nums">
               <span>
                 Salary:{" "}
-                <strong className="font-mono font-semibold text-[#171d19] dark:text-[#ecf3eb]">
+                <strong className="font-mono font-semibold text-foreground">
                   {formatSalaryRange(
                     vacancy.salaryMin,
                     vacancy.salaryMax,
@@ -156,7 +159,7 @@ export function JobDetailClient({
                   href={vacancy.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 font-semibold text-[#006a42] hover:underline dark:text-[#86f9ba]"
+                  className="inline-flex items-center gap-1 font-semibold text-primary-text hover:underline"
                 >
                   Open Job Posting
                   <ExternalLink className="h-3.5 w-3.5" />
@@ -166,59 +169,61 @@ export function JobDetailClient({
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            <select
+            <Select
               aria-label="Vacancy triage status"
+              selectSize="lg"
+              tone="subtle"
+              wrapperClassName="w-auto"
               disabled={isPending}
               value={vacancy.triageStatus}
               onChange={(e) => handleTriage(e.target.value as TriageStatus)}
-              className="h-9 rounded-xl border border-[#bdcabf]/70 bg-[#eff5ee] px-2.5 text-xs font-semibold text-[#3e4a41] dark:border-[#2d3d33] dark:bg-[#1d2b23] dark:text-[#ecf3eb]"
+              className="font-semibold"
             >
               {TRIAGE_STATUSES.map((s) => (
                 <option key={s} value={s}>
                   Save as: {TRIAGE_LABELS[s]}
                 </option>
               ))}
-            </select>
+            </Select>
 
             {activeApp ? (
-              <Link
-                href={`/applications/${activeApp.id}`}
-                className="btn-primary h-10 px-4 text-xs"
-              >
-                View Application ({activeApp.code})
-              </Link>
+              <Button variant="primary" size="lg" asChild>
+                <Link href={`/applications/${activeApp.id}`}>
+                  View Application ({activeApp.code})
+                </Link>
+              </Button>
             ) : (
-              <button
-                type="button"
+              <Button
+                variant="primary"
+                size="lg"
                 onClick={() => setApplyOpen(true)}
-                className="btn-primary h-10 px-4 text-xs"
               >
                 <Send className="h-3.5 w-3.5" />
                 {hasClosedApp ? "Re-apply to Position" : "Record Submission"}
-              </button>
+              </Button>
             )}
 
-            <button
-              type="button"
+            <Button
+              variant="secondary"
+              size="lg"
               onClick={() => setEditing(!editing)}
-              className="btn-secondary h-10 px-4 text-xs"
             >
               <Edit3 className="h-3.5 w-3.5" />
               {editing ? "Close Editor" : "Edit"}
-            </button>
+            </Button>
 
-            <button
-              type="button"
+            <Button
+              variant="destructive"
+              size="lg"
               disabled={isPending}
-              onClick={handleDelete}
-              className="btn-destructive h-10 px-4 text-xs disabled:opacity-50"
+              onClick={() => setDeleteOpen(true)}
             >
               <Trash2 className="h-3.5 w-3.5" />
               Delete
-            </button>
+            </Button>
           </div>
         </div>
-      </div>
+      </Card>
 
       {editing ? (
         <VacancyForm
@@ -260,15 +265,15 @@ export function JobDetailClient({
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
           {/* Left (60%): Description, Qualifications, Skills, Linked Applications */}
           <div className="space-y-6 lg:col-span-7">
-            <div className="elevation-1 space-y-4 rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] p-5 text-xs dark:border-[#24332a] dark:bg-[#111a15]">
-              <h2 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
+            <Card padding="md" className="space-y-4 text-xs">
+              <h2 className="text-section-title text-foreground">
                 Vacancy Details & Requirements
               </h2>
 
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                 <div>
-                  <span className="text-[#3f674f]">Employment Type</span>
-                  <p className="mt-0.5 font-semibold text-[#171d19] dark:text-[#ecf3eb]">
+                  <span className="text-muted-foreground">Employment Type</span>
+                  <p className="mt-0.5 font-semibold text-foreground">
                     {vacancy.employmentType
                       ? EMPLOYMENT_TYPE_LABELS[
                           vacancy.employmentType as EmploymentType
@@ -277,16 +282,20 @@ export function JobDetailClient({
                   </p>
                 </div>
                 <div>
-                  <span className="text-[#3f674f]">Required Experience</span>
-                  <p className="mt-0.5 font-semibold text-[#171d19] tabular-nums dark:text-[#ecf3eb]">
+                  <span className="text-muted-foreground">
+                    Required Experience
+                  </span>
+                  <p className="mt-0.5 font-semibold text-foreground tabular-nums">
                     {vacancy.requiredExperienceYears != null
                       ? `${vacancy.requiredExperienceYears} years`
                       : "Not specified"}
                   </p>
                 </div>
                 <div>
-                  <span className="text-[#3f674f]">Required Education</span>
-                  <p className="mt-0.5 font-semibold text-[#171d19] dark:text-[#ecf3eb]">
+                  <span className="text-muted-foreground">
+                    Required Education
+                  </span>
+                  <p className="mt-0.5 font-semibold text-foreground">
                     {vacancy.requiredEducation
                       ? EDUCATION_LABELS[
                           vacancy.requiredEducation as EducationLevel
@@ -298,15 +307,12 @@ export function JobDetailClient({
 
               {vacancy.skills && vacancy.skills.length > 0 && (
                 <div>
-                  <span className="text-[#3f674f]">Required Skills</span>
+                  <span className="text-muted-foreground">Required Skills</span>
                   <div className="mt-1.5 flex flex-wrap gap-1.5">
                     {vacancy.skills.map((skill) => (
-                      <span
-                        key={skill}
-                        className="rounded-full bg-[#eff5ee] px-2.5 py-0.5 text-xs font-medium text-[#171d19] dark:bg-[#1d2b23] dark:text-[#ecf3eb]"
-                      >
+                      <Badge key={skill} variant="secondary">
                         {skill}
-                      </span>
+                      </Badge>
                     ))}
                   </div>
                 </div>
@@ -314,8 +320,8 @@ export function JobDetailClient({
 
               {vacancy.description && (
                 <div>
-                  <span className="text-[#3f674f]">Job Description</span>
-                  <p className="mt-1 whitespace-pre-line leading-relaxed text-[#3e4a41] dark:text-[#b7c6ba]">
+                  <span className="text-muted-foreground">Job Description</span>
+                  <p className="mt-1 whitespace-pre-line leading-relaxed text-foreground/90">
                     {vacancy.description}
                   </p>
                 </div>
@@ -323,10 +329,10 @@ export function JobDetailClient({
 
               {vacancy.qualifications && (
                 <div>
-                  <span className="text-[#3f674f]">
+                  <span className="text-muted-foreground">
                     Required Qualifications
                   </span>
-                  <p className="mt-1 whitespace-pre-line leading-relaxed text-[#3e4a41] dark:text-[#b7c6ba]">
+                  <p className="mt-1 whitespace-pre-line leading-relaxed text-foreground/90">
                     {vacancy.qualifications}
                   </p>
                 </div>
@@ -334,21 +340,21 @@ export function JobDetailClient({
 
               {vacancy.notes && (
                 <div>
-                  <span className="text-[#3f674f]">Candidate Notes</span>
-                  <p className="mt-1 whitespace-pre-line text-[#3e4a41] dark:text-[#b7c6ba]">
+                  <span className="text-muted-foreground">Candidate Notes</span>
+                  <p className="mt-1 whitespace-pre-line text-foreground/90">
                     {vacancy.notes}
                   </p>
                 </div>
               )}
-            </div>
+            </Card>
 
             {/* Linked Applications */}
-            <div className="elevation-1 space-y-3 rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] p-5 text-xs dark:border-[#24332a] dark:bg-[#111a15]">
-              <h2 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
+            <Card padding="md" className="space-y-3 text-xs">
+              <h2 className="text-section-title text-foreground">
                 Submitted Applications for This Vacancy
               </h2>
               {vacancy.applications.length === 0 ? (
-                <p className="text-[#3f674f]">
+                <p className="text-muted-foreground">
                   You have not submitted an application for this vacancy yet.
                   Click &ldquo;Record Submission&rdquo; once you apply.
                 </p>
@@ -358,10 +364,10 @@ export function JobDetailClient({
                     <Link
                       key={app.id}
                       href={`/applications/${app.id}`}
-                      className="elevation-2 flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] p-3 tabular-nums dark:border-[#24332a] dark:bg-[#17231c]"
+                      className="elevation-2 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-border bg-surface-subtle p-3 tabular-nums hover:bg-card"
                     >
                       <div className="flex items-center gap-2">
-                        <span className="font-mono font-semibold text-[#006a42] dark:text-[#86f9ba]">
+                        <span className="font-mono font-semibold text-primary-text">
                           {app.code}
                         </span>
                         <span>Attempt #{app.attemptNumber}</span>
@@ -378,7 +384,7 @@ export function JobDetailClient({
                   ))}
                 </div>
               )}
-            </div>
+            </Card>
           </div>
 
           {/* Right (40%): Suitability Evaluation Panel */}
@@ -417,6 +423,16 @@ export function JobDetailClient({
         sources={sources}
         defaultCurrency={vacancy.currency}
         onCreated={(appId) => router.push(`/applications/${appId}`)}
+      />
+
+      <ConfirmDialog
+        open={deleteOpen}
+        onOpenChange={setDeleteOpen}
+        title={`Delete job vacancy ${vacancy.code}?`}
+        description={`This will permanently delete "${vacancy.title}" and any linked evaluations. This action cannot be undone.`}
+        confirmLabel="Delete Vacancy"
+        pending={isPending}
+        onConfirm={handleConfirmDelete}
       />
     </div>
   );

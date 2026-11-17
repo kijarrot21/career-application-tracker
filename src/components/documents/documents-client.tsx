@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  ChevronRight,
   Download,
   Eye,
   FilePlus2,
@@ -17,7 +16,24 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
-import { SampleBadge } from "@/components/ui/badges";
+import {
+  Badge,
+  Button,
+  Card,
+  ConfirmDialog,
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  EmptyState,
+  FormField,
+  Input,
+  PageHeader,
+  SampleBadge,
+  Select,
+} from "@/components/ui";
 import {
   DOCUMENT_CATEGORIES,
   DOCUMENT_CATEGORY_LABELS,
@@ -66,11 +82,12 @@ export function DocumentsClient({ data }: { data: DocumentsData }) {
   );
   const [uploading, setUploading] = useState(false);
 
-  // Preview modal state
+  // Preview & Delete modal state
   const [previewVersion, setPreviewVersion] = useState<{
     version: VersionRow;
     docTitle: string;
   } | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<DocumentRow | null>(null);
 
   const filteredDocs = data.documents.filter((d) => {
     if (categoryFilter !== "all" && d.category !== categoryFilter) return false;
@@ -169,17 +186,13 @@ export function DocumentsClient({ data }: { data: DocumentsData }) {
     });
   }
 
-  function handleDeleteDocument(doc: DocumentRow) {
-    if (
-      !window.confirm(
-        `Delete "${doc.title}" and all ${doc.versions.length} version(s)?`,
-      )
-    )
-      return;
+  function handleConfirmDelete() {
+    if (!deleteTarget) return;
     startTransition(async () => {
       try {
-        await deleteDocumentAction(doc.id);
+        await deleteDocumentAction(deleteTarget.id);
         toast.success("Document deleted.");
+        setDeleteTarget(null);
         router.refresh();
       } catch (err) {
         toast.error(err instanceof Error ? err.message : "Could not delete");
@@ -189,351 +202,312 @@ export function DocumentsClient({ data }: { data: DocumentsData }) {
 
   return (
     <div className="mx-auto max-w-7xl space-y-6 text-xs">
-      {/* Header matching Stitch HTML 3 */}
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <div className="mb-1 flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider text-[#3f674f] dark:text-[#a5d1b4]">
-            <span>Career Assets</span>
-            <ChevronRight className="h-3.5 w-3.5" />
-            <span className="text-[#006a42] dark:text-[#69dca0]">
-              Vault & Version Control
-            </span>
-          </div>
-          <h1 className="text-headline-md text-[#171d19] dark:text-[#ecf3eb]">
-            Career Document Repository & Version Control
-          </h1>
-          <p className="mt-1 text-body-sm text-[#3f674f] dark:text-[#a5d1b4]">
-            Upload and version Master CVs, Customized CVs, Cover Letters,
-            Portfolios, Certificates, Transcripts, and Offers.
-          </p>
-        </div>
-
-        <button
-          type="button"
-          onClick={() => {
-            setTargetDocId("");
-            setTitle("");
-            setVersionLabel("v1.0");
-            setShowUploadPanel(!showUploadPanel);
-          }}
-          className="btn-primary h-10 px-4 text-xs"
-        >
-          <Plus className="h-4 w-4" />
-          {showUploadPanel ? "Close Uploader" : "Upload Document"}
-        </button>
-      </div>
+      <PageHeader
+        breadcrumbs={[
+          { label: "Career Assets" },
+          { label: "Vault & Version Control" },
+        ]}
+        title="Career Document Repository & Version Control"
+        description="Upload and version Master CVs, Customized CVs, Cover Letters, Portfolios, Certificates, Transcripts, and Offers."
+        actions={
+          <Button
+            variant="primary"
+            size="lg"
+            onClick={() => {
+              setTargetDocId("");
+              setTitle("");
+              setVersionLabel("v1.0");
+              setShowUploadPanel(!showUploadPanel);
+            }}
+          >
+            <Plus className="h-4 w-4" />
+            {showUploadPanel ? "Close Uploader" : "Upload Document"}
+          </Button>
+        }
+      />
 
       {/* Upload / New Version Panel */}
       {showUploadPanel && (
-        <form
-          onSubmit={handleUploadSubmit}
-          className="elevation-1 space-y-4 rounded-2xl border border-[#a5d1b4] bg-[#ffffff] p-6 dark:border-[#2d3d33] dark:bg-[#111a15]"
-        >
-          <div className="flex items-center justify-between border-b border-[#e3eae3] pb-3 dark:border-[#24332a]">
-            <div>
-              <h2 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
-                {targetDocId
-                  ? `Upload New Version for "${title}"`
-                  : "Upload Career Document"}
-              </h2>
-              <p className="text-[#3f674f] dark:text-[#a5d1b4]">
-                Supported file formats: PDF, PNG, JPEG, WebP, DOCX, TXT, and
-                Markdown (.md) up to 10 MB.
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={() => setShowUploadPanel(false)}
-              className="rounded-lg p-1.5 text-[#3e4a41] hover:bg-[#eff5ee] hover:text-[#006a42] dark:text-[#b7c6ba]"
-            >
-              <X className="h-4 w-4" />
-            </button>
-          </div>
-
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            <div>
-              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                Document Category *
-              </label>
-              <select
-                disabled={Boolean(targetDocId)}
-                value={category}
-                onChange={(e) =>
-                  setCategory(e.target.value as DocumentCategory)
-                }
-                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#eff5ee] px-3 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
+        <Card padding="lg" className="border-primary/30">
+          <form onSubmit={handleUploadSubmit} className="space-y-4">
+            <div className="flex items-center justify-between border-b border-border-subtle pb-3">
+              <div>
+                <h2 className="text-section-title text-foreground">
+                  {targetDocId
+                    ? `Upload New Version for "${title}"`
+                    : "Upload Career Document"}
+                </h2>
+                <p className="text-caption text-muted-foreground">
+                  Supported file formats: PDF, PNG, JPEG, WebP, DOCX, TXT, and
+                  Markdown (.md) up to 10 MB.
+                </p>
+              </div>
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                onClick={() => setShowUploadPanel(false)}
+                aria-label="Close upload panel"
               >
-                {DOCUMENT_CATEGORIES.map((c) => (
-                  <option key={c} value={c}>
-                    {DOCUMENT_CATEGORY_LABELS[c]}
-                  </option>
-                ))}
-              </select>
+                <X className="h-4 w-4" />
+              </Button>
             </div>
 
-            <div>
-              <label
-                htmlFor="doc-title"
-                className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]"
-              >
-                Document Title *
-              </label>
-              <input
-                id="doc-title"
-                type="text"
-                required
-                disabled={Boolean(targetDocId)}
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="Master CV - Senior Backend Engineer"
-                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#eff5ee] px-3 text-xs text-[#171d19] focus:bg-[#ffffff] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
-              />
-            </div>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+              <FormField label="Document Category" required>
+                <Select
+                  selectSize="lg"
+                  disabled={Boolean(targetDocId)}
+                  value={category}
+                  onChange={(e) =>
+                    setCategory(e.target.value as DocumentCategory)
+                  }
+                >
+                  {DOCUMENT_CATEGORIES.map((c) => (
+                    <option key={c} value={c}>
+                      {DOCUMENT_CATEGORY_LABELS[c]}
+                    </option>
+                  ))}
+                </Select>
+              </FormField>
 
-            <div>
-              <label
+              <FormField label="Document Title" htmlFor="doc-title" required>
+                <Input
+                  id="doc-title"
+                  type="text"
+                  inputSize="lg"
+                  required
+                  disabled={Boolean(targetDocId)}
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="Master CV - Senior Backend Engineer"
+                />
+              </FormField>
+
+              <FormField
+                label="Version Label"
                 htmlFor="doc-version-label"
-                className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]"
-              >
-                Version Label *
-              </label>
-              <input
-                id="doc-version-label"
-                type="text"
                 required
-                value={versionLabel}
-                onChange={(e) => setVersionLabel(e.target.value)}
-                placeholder="v1.0 (Fintech Tailored)"
-                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#eff5ee] px-3 text-xs text-[#171d19] focus:bg-[#ffffff] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
-              />
+              >
+                <Input
+                  id="doc-version-label"
+                  type="text"
+                  inputSize="lg"
+                  required
+                  value={versionLabel}
+                  onChange={(e) => setVersionLabel(e.target.value)}
+                  placeholder="v1.0 (Fintech Tailored)"
+                />
+              </FormField>
             </div>
-          </div>
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            <div>
-              <label
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+              <FormField
+                label="Attach File (PDF / Image / DOCX / TXT / MD)"
                 htmlFor="doc-file"
-                className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]"
               >
-                Attach File (PDF / Image / DOCX / TXT / MD)
-              </label>
-              <input
-                id="doc-file"
-                ref={fileInputRef}
-                type="file"
-                accept=".pdf,.png,.jpg,.jpeg,.webp,.docx,.txt,.md"
-                className="mt-1 block w-full rounded-xl border border-[#bdcabf]/70 bg-[#eff5ee] px-3 py-2 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
-              />
+                <input
+                  id="doc-file"
+                  ref={fileInputRef}
+                  type="file"
+                  accept=".pdf,.png,.jpg,.jpeg,.webp,.docx,.txt,.md"
+                  className="block h-10 w-full rounded-xl border border-input-border bg-input px-3 py-2 text-xs text-foreground transition-colors hover:border-border-strong focus-visible:border-primary focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring"
+                />
+              </FormField>
+
+              <FormField label="Associate with Application (Optional)">
+                <Select
+                  selectSize="lg"
+                  value={linkAppId}
+                  onChange={(e) => setLinkAppId(e.target.value)}
+                >
+                  <option value="">Do not link yet</option>
+                  {data.applications.map((a) => (
+                    <option key={a.id} value={a.id}>
+                      {a.code}: {a.jobTitle} at {a.companyName}
+                    </option>
+                  ))}
+                </Select>
+              </FormField>
+
+              <FormField label="Attachment Role">
+                <Select
+                  selectSize="lg"
+                  value={linkRole}
+                  onChange={(e) =>
+                    setLinkRole(
+                      e.target.value as "cv" | "cover_letter" | "other",
+                    )
+                  }
+                >
+                  <option value="cv">CV Version Used</option>
+                  <option value="cover_letter">Cover Letter Version</option>
+                  <option value="other">Supporting / Offer Document</option>
+                </Select>
+              </FormField>
             </div>
 
-            <div>
-              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                Associate with Application (Optional)
-              </label>
-              <select
-                value={linkAppId}
-                onChange={(e) => setLinkAppId(e.target.value)}
-                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#eff5ee] px-3 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <FormField label="Document Description">
+                <Input
+                  type="text"
+                  inputSize="lg"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  placeholder="Role focus or summary..."
+                />
+              </FormField>
+              <FormField label="Version Changelog / Notes">
+                <Input
+                  type="text"
+                  inputSize="lg"
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                  placeholder="What changed in this version..."
+                />
+              </FormField>
+            </div>
+
+            <div className="flex justify-end gap-2">
+              <Button
+                variant="secondary"
+                size="lg"
+                onClick={() => setShowUploadPanel(false)}
               >
-                <option value="">Do not link yet</option>
-                {data.applications.map((a) => (
-                  <option key={a.id} value={a.id}>
-                    {a.code}: {a.jobTitle} at {a.companyName}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                Attachment Role
-              </label>
-              <select
-                value={linkRole}
-                onChange={(e) =>
-                  setLinkRole(
-                    e.target.value as "cv" | "cover_letter" | "other",
-                  )
-                }
-                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#eff5ee] px-3 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                variant="primary"
+                size="lg"
+                disabled={uploading}
               >
-                <option value="cv">CV Version Used</option>
-                <option value="cover_letter">Cover Letter Version</option>
-                <option value="other">Supporting / Offer Document</option>
-              </select>
+                <FilePlus2 className="h-3.5 w-3.5" />
+                {uploading ? "Uploading..." : "Save Document Version"}
+              </Button>
             </div>
-          </div>
-
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div>
-              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                Document Description
-              </label>
-              <input
-                type="text"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder="Role focus or summary..."
-                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#eff5ee] px-3 text-xs text-[#171d19] focus:bg-[#ffffff] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
-              />
-            </div>
-            <div>
-              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                Version Changelog / Notes
-              </label>
-              <input
-                type="text"
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-                placeholder="What changed in this version..."
-                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#eff5ee] px-3 text-xs text-[#171d19] focus:bg-[#ffffff] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
-              />
-            </div>
-          </div>
-
-          <div className="flex justify-end gap-2">
-            <button
-              type="button"
-              onClick={() => setShowUploadPanel(false)}
-              className="btn-secondary h-10 px-4 text-xs"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={uploading}
-              className="btn-primary h-10 px-4 text-xs disabled:opacity-50"
-            >
-              <FilePlus2 className="h-3.5 w-3.5" />
-              {uploading ? "Uploading..." : "Save Document Version"}
-            </button>
-          </div>
-        </form>
+          </form>
+        </Card>
       )}
 
       {/* Search & Category Pills */}
       <div className="space-y-3">
-        <div className="elevation-1 flex flex-wrap items-center gap-3 rounded-2xl border border-[#bdcabf]/40 bg-[#ffffff] p-3.5 dark:border-[#24332a] dark:bg-[#111a15]">
+        <Card padding="sm" className="flex flex-wrap items-center gap-3">
           <div className="relative flex-1">
-            <Search className="pointer-events-none absolute top-3 left-3 h-4 w-4 text-[#3f674f] dark:text-[#a5d1b4]" />
-            <input
+            <Search className="pointer-events-none absolute top-3 left-3 h-4 w-4 text-muted-foreground" />
+            <Input
               type="text"
+              inputSize="lg"
+              tone="subtle"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
+              aria-label="Search documents"
               placeholder="Search documents by title, version label, or filename..."
-              className="h-10 w-full rounded-xl border border-transparent bg-[#eff5ee] pr-3 pl-9 text-xs text-[#171d19] placeholder:text-[#3f674f] focus:border-[#006a42] focus:bg-[#ffffff] dark:bg-[#17231c] dark:text-[#ecf3eb] dark:placeholder:text-[#a5d1b4]"
+              className="pl-9"
             />
           </div>
-          <span className="rounded-full bg-[#eff5ee] px-3 py-1 font-mono text-xs font-semibold text-[#3f674f] tabular-nums dark:bg-[#17231c] dark:text-[#a5d1b4]">
+          <Badge variant="secondary" className="font-mono tabular-nums">
             {filteredDocs.length} document(s)
-          </span>
-        </div>
+          </Badge>
+        </Card>
 
         <div className="flex flex-wrap gap-1.5">
-          <button
+          <Button
             type="button"
+            size="sm"
+            variant={categoryFilter === "all" ? "primary" : "secondary"}
             onClick={() => setCategoryFilter("all")}
-            className={`rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all ${
-              categoryFilter === "all"
-                ? "bg-[#006a42] text-white shadow-sm"
-                : "border border-[#bdcabf]/50 bg-[#ffffff] text-[#3e4a41] hover:bg-[#eff5ee] hover:text-[#006a42] dark:border-[#24332a] dark:bg-[#111a15] dark:text-[#b7c6ba]"
-            }`}
+            className="rounded-full px-3.5"
           >
             All Categories
-          </button>
+          </Button>
           {DOCUMENT_CATEGORIES.map((cat) => (
-            <button
+            <Button
               key={cat}
               type="button"
+              size="sm"
+              variant={categoryFilter === cat ? "primary" : "secondary"}
               onClick={() => setCategoryFilter(cat)}
-              className={`rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all ${
-                categoryFilter === cat
-                  ? "bg-[#006a42] text-white shadow-sm"
-                  : "border border-[#bdcabf]/50 bg-[#ffffff] text-[#3e4a41] hover:bg-[#eff5ee] hover:text-[#006a42] dark:border-[#24332a] dark:bg-[#111a15] dark:text-[#b7c6ba]"
-              }`}
+              className="rounded-full px-3.5"
             >
               {DOCUMENT_CATEGORY_LABELS[cat]}
-            </button>
+            </Button>
           ))}
         </div>
       </div>
 
-      {/* Document Cards matching Stitch HTML 3 */}
+      {/* Document Cards */}
       {filteredDocs.length === 0 ? (
-        <div className="elevation-1 flex flex-col items-center justify-center rounded-2xl border border-[#bdcabf]/40 bg-[#ffffff] py-14 text-center dark:border-[#24332a] dark:bg-[#111a15]">
-          <FileText className="h-8 w-8 text-[#3f674f]" />
-          <p className="mt-2 text-title-md text-[#171d19] dark:text-[#ecf3eb]">
-            No career documents in this category
-          </p>
-          <p className="mt-1 text-xs text-[#3f674f]">
-            Upload your Master CV, Customized CVs, Cover Letters, Portfolios, or
-            Certificates to track versions used per application.
-          </p>
-        </div>
+        <EmptyState
+          icon={FileText}
+          title="No career documents in this category"
+          description="Upload your Master CV, Customized CVs, Cover Letters, Portfolios, or Certificates to track versions used per application."
+        />
       ) : (
         <div className="space-y-4">
           {filteredDocs.map((doc) => (
-            <div
+            <Card
               key={doc.id}
+              elevation="interactive"
+              padding="lg"
               data-testid={`doc-card-${doc.category}`}
-              className="elevation-2 group relative space-y-4 overflow-hidden rounded-2xl border border-[#bdcabf]/40 bg-[#ffffff] p-6 dark:border-[#24332a] dark:bg-[#111a15]"
+              className="space-y-4"
             >
-              <div className="pointer-events-none absolute -top-8 -right-8 h-28 w-28 rounded-full bg-[#86f9ba]/20 blur-xl transition-transform group-hover:scale-125 dark:bg-[#006a42]/15" />
-
-              <div className="relative flex flex-wrap items-start justify-between gap-3">
+              <div className="flex flex-wrap items-start justify-between gap-3">
                 <div className="flex items-start gap-3.5">
-                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#c0edcf] text-[#006a42] shadow-2xs dark:bg-[#005232] dark:text-[#86f9ba]">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary-soft text-primary-on-soft">
                     <FileText className="h-5 w-5" />
                   </div>
                   <div className="space-y-1">
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="rounded-full bg-[#c0edcf] px-2.5 py-0.5 text-[11px] font-bold text-[#005232] dark:bg-[#005232] dark:text-[#86f9ba]">
+                      <Badge variant="primary">
                         {
                           DOCUMENT_CATEGORY_LABELS[
                             doc.category as DocumentCategory
                           ]
                         }
-                      </span>
-                      <h3 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
+                      </Badge>
+                      <h3 className="text-section-title text-foreground">
                         {doc.title}
                       </h3>
-                      <span className="inline-flex items-center gap-1 rounded-full bg-[#eff5ee] px-2.5 py-0.5 font-mono text-[11px] font-semibold text-[#3e4a41] tabular-nums dark:bg-[#17231c] dark:text-[#b7c6ba]">
+                      <Badge
+                        variant="secondary"
+                        className="font-mono tabular-nums"
+                      >
                         <Layers className="h-3 w-3" />
                         {doc.versions.length} version(s)
-                      </span>
+                      </Badge>
                       {doc.isSample && <SampleBadge />}
                     </div>
                     {doc.description && (
-                      <p className="text-[#3f674f] dark:text-[#a5d1b4]">
-                        {doc.description}
-                      </p>
+                      <p className="text-muted-foreground">{doc.description}</p>
                     )}
                   </div>
                 </div>
 
-                <div className="relative flex items-center gap-2">
-                  <button
-                    type="button"
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="secondary"
+                    size="sm"
                     onClick={() => openNewVersionModal(doc)}
-                    className="btn-secondary h-8 px-3 text-xs"
                   >
                     <Plus className="h-3.5 w-3.5" />
                     Add New Version
-                  </button>
-                  <button
-                    type="button"
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    size="icon-sm"
                     disabled={isPending}
-                    onClick={() => handleDeleteDocument(doc)}
-                    className="btn-destructive h-8 w-8 p-0"
+                    onClick={() => setDeleteTarget(doc)}
+                    aria-label={`Delete ${doc.title}`}
                     title="Delete document"
                   >
                     <Trash2 className="h-3.5 w-3.5" />
-                  </button>
+                  </Button>
                 </div>
               </div>
 
-              {/* Versions Table / List */}
-              <div className="divide-y divide-[#dde4dd] rounded-xl bg-[#eff5ee]/80 dark:divide-[#24332a] dark:bg-[#17231c]">
+              {/* Versions List */}
+              <div className="divide-y divide-border-subtle rounded-xl border border-border-subtle bg-surface-subtle">
                 {doc.versions.map((ver) => (
                   <div
                     key={ver.id}
@@ -541,49 +515,49 @@ export function DocumentsClient({ data }: { data: DocumentsData }) {
                   >
                     <div className="space-y-1">
                       <div className="flex flex-wrap items-center gap-2">
-                        <span className="rounded-lg bg-[#006a42] px-2 py-0.5 font-mono text-[11px] font-bold text-white tabular-nums">
+                        <span className="rounded-md bg-primary px-2 py-0.5 font-mono text-[11px] font-bold text-white tabular-nums">
                           v{ver.versionNo}
                         </span>
-                        <span className="font-semibold text-[#171d19] dark:text-[#ecf3eb]">
+                        <span className="font-semibold text-foreground">
                           {ver.label}
                         </span>
                         {ver.filename && (
-                          <span className="font-mono text-[11px] text-[#3e4a41] dark:text-[#b7c6ba]">
+                          <span className="font-mono text-[11px] text-muted-foreground">
                             ({ver.filename})
                           </span>
                         )}
-                        <span className="font-mono text-[11px] text-[#3f674f] tabular-nums dark:text-[#a5d1b4]">
+                        <span className="font-mono text-[11px] text-muted-foreground tabular-nums">
                           {formatBytes(ver.sizeBytes)}
                         </span>
                         {ver.sha256 && (
                           <span
                             title={`SHA-256: ${ver.sha256}`}
-                            className="font-mono text-[10px] text-[#6e7a71]"
+                            className="font-mono text-[10px] text-subtle-foreground"
                           >
                             sha256:{ver.sha256.slice(0, 10)}
                           </span>
                         )}
-                        <span className="text-[11px] text-[#3f674f] tabular-nums dark:text-[#a5d1b4]">
+                        <span className="text-[11px] text-muted-foreground tabular-nums">
                           Uploaded {formatDateTime(ver.createdAt)}
                         </span>
                       </div>
 
                       {ver.notes && (
-                        <p className="text-[11px] text-[#3f674f] dark:text-[#a5d1b4]">
+                        <p className="text-[11px] text-muted-foreground">
                           Note: {ver.notes}
                         </p>
                       )}
 
-                      {/* Associated Applications */}
                       {ver.linkedApplications.length > 0 && (
                         <div className="flex flex-wrap items-center gap-1.5 pt-1">
-                          <span className="text-[11px] text-[#3f674f] dark:text-[#a5d1b4]">
+                          <span className="text-[11px] text-muted-foreground">
                             Used in:
                           </span>
                           {ver.linkedApplications.map((la) => (
-                            <span
+                            <Badge
                               key={la.link.id}
-                              className="inline-flex items-center gap-1 rounded-full bg-[#c0edcf] px-2.5 py-0.5 text-[11px] font-semibold text-[#005232] dark:bg-[#005232] dark:text-[#86f9ba]"
+                              variant="primary"
+                              className="gap-1"
                             >
                               <Link
                                 href={`/applications/${la.appId}`}
@@ -603,23 +577,25 @@ export function DocumentsClient({ data }: { data: DocumentsData }) {
                                     router.refresh();
                                   })
                                 }
+                                aria-label={`Remove association with ${la.appCode}`}
                                 title="Remove association"
-                                className="ml-0.5 text-[#005232] hover:text-[#93000a]"
+                                className="ml-0.5 cursor-pointer text-primary-on-soft hover:text-destructive-on-soft"
                               >
                                 <X className="h-3 w-3" />
                               </button>
-                            </span>
+                            </Badge>
                           ))}
                         </div>
                       )}
                     </div>
 
                     <div className="flex flex-wrap items-center gap-2">
-                      {/* Associate with Application Dropdown */}
-                      <div className="flex items-center gap-1">
-                        <Link2 className="h-3.5 w-3.5 text-[#3f674f]" />
-                        <select
+                      <div className="flex items-center gap-1.5">
+                        <Link2 className="h-3.5 w-3.5 text-muted-foreground" />
+                        <Select
                           aria-label={`Associate ${ver.label} with application`}
+                          selectSize="sm"
+                          wrapperClassName="w-56"
                           defaultValue=""
                           onChange={(e) => {
                             const appId = e.target.value;
@@ -634,7 +610,6 @@ export function DocumentsClient({ data }: { data: DocumentsData }) {
                             handleLinkToApplication(ver.id, appId, role);
                             e.target.value = "";
                           }}
-                          className="h-8 rounded-xl border border-[#bdcabf]/60 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#111a15] dark:text-[#ecf3eb]"
                         >
                           <option value="">+ Link to Application...</option>
                           {data.applications.map((a) => (
@@ -642,98 +617,127 @@ export function DocumentsClient({ data }: { data: DocumentsData }) {
                               {a.code}: {a.jobTitle} at {a.companyName}
                             </option>
                           ))}
-                        </select>
+                        </Select>
                       </div>
 
                       {ver.storageKey && (
                         <>
-                          <button
-                            type="button"
+                          <Button
+                            variant="secondary"
+                            size="sm"
                             onClick={() =>
                               setPreviewVersion({
                                 version: ver,
                                 docTitle: doc.title,
                               })
                             }
-                            className="btn-secondary h-8 bg-[#ffffff] px-3 text-xs"
                           >
                             <Eye className="h-3.5 w-3.5" />
                             Preview
-                          </button>
+                          </Button>
 
-                          <a
-                            href={`/api/documents/versions/${ver.id}/file?download=1`}
-                            download
-                            className="btn-secondary h-8 bg-[#ffffff] px-3 text-xs"
-                          >
-                            <Download className="h-3.5 w-3.5" />
-                            Download
-                          </a>
+                          <Button variant="secondary" size="sm" asChild>
+                            <a
+                              href={`/api/documents/versions/${ver.id}/file?download=1`}
+                              download
+                            >
+                              <Download className="h-3.5 w-3.5" />
+                              Download
+                            </a>
+                          </Button>
                         </>
                       )}
                     </div>
                   </div>
                 ))}
               </div>
-            </div>
+            </Card>
           ))}
         </div>
       )}
 
       {/* In-App Document Preview Modal */}
-      {previewVersion && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#171d19]/45 p-4 backdrop-blur-[4px]">
-          <div className="elevation-4 flex h-[85vh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl border border-[#bdcabf]/60 bg-[#ffffff] dark:border-[#24332a] dark:bg-[#111a15]">
-            <div className="flex items-center justify-between border-b border-[#e3eae3] px-5 py-3.5 dark:border-[#24332a]">
-              <div>
-                <h3 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
-                  {previewVersion.docTitle} ({previewVersion.version.label})
-                </h3>
-                <p className="font-mono text-[11px] text-[#3f674f]">
-                  {previewVersion.version.filename} ·{" "}
-                  {previewVersion.version.mimeType}
-                </p>
-              </div>
-              <div className="flex items-center gap-2">
-                <a
-                  href={`/api/documents/versions/${previewVersion.version.id}/file?download=1`}
-                  download
-                  className="btn-secondary h-8 px-3 text-xs"
-                >
-                  <Download className="h-3.5 w-3.5" />
-                  Download
-                </a>
-                <button
-                  type="button"
-                  onClick={() => setPreviewVersion(null)}
-                  className="rounded-lg p-1.5 text-[#3e4a41] hover:bg-[#eff5ee] hover:text-[#006a42]"
-                >
-                  <X className="h-4 w-4" />
-                </button>
-              </div>
-            </div>
-
-            <div className="flex-1 bg-[#eff5ee] p-4 dark:bg-[#0b120e]">
-              {previewVersion.version.mimeType?.startsWith("image/") ? (
-                <div className="flex h-full items-center justify-center">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={`/api/documents/versions/${previewVersion.version.id}/file`}
-                    alt={previewVersion.docTitle}
-                    className="max-h-full max-w-full rounded-xl object-contain"
-                  />
+      <Dialog
+        open={Boolean(previewVersion)}
+        onOpenChange={(next) => !next && setPreviewVersion(null)}
+      >
+        <DialogContent
+          showCloseButton={false}
+          className="flex h-[85vh] max-w-4xl flex-col overflow-hidden p-0"
+        >
+          {previewVersion && (
+            <>
+              <DialogHeader className="mb-0 px-5 py-3.5 pr-5">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div>
+                    <DialogTitle>
+                      {previewVersion.docTitle} ({previewVersion.version.label})
+                    </DialogTitle>
+                    <DialogDescription className="font-mono text-[11px]">
+                      {previewVersion.version.filename} ·{" "}
+                      {previewVersion.version.mimeType}
+                    </DialogDescription>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <Button variant="secondary" size="sm" asChild>
+                      <a
+                        href={`/api/documents/versions/${previewVersion.version.id}/file?download=1`}
+                        download
+                      >
+                        <Download className="h-3.5 w-3.5" />
+                        Download
+                      </a>
+                    </Button>
+                    <DialogClose asChild>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon-sm"
+                        aria-label="Close dialog"
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </DialogClose>
+                  </div>
                 </div>
-              ) : (
-                <iframe
-                  title={`Preview ${previewVersion.docTitle}`}
-                  src={`/api/documents/versions/${previewVersion.version.id}/file`}
-                  className="h-full w-full rounded-xl border border-[#bdcabf]/50 bg-white"
-                />
-              )}
-            </div>
-          </div>
-        </div>
-      )}
+              </DialogHeader>
+
+              <div className="flex-1 bg-surface-subtle p-4">
+                {previewVersion.version.mimeType?.startsWith("image/") ? (
+                  <div className="flex h-full items-center justify-center">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={`/api/documents/versions/${previewVersion.version.id}/file`}
+                      alt={previewVersion.docTitle}
+                      className="max-h-full max-w-full rounded-xl object-contain"
+                    />
+                  </div>
+                ) : (
+                  <iframe
+                    title={`Preview ${previewVersion.docTitle}`}
+                    src={`/api/documents/versions/${previewVersion.version.id}/file`}
+                    className="h-full w-full rounded-xl border border-border bg-white"
+                  />
+                )}
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      <ConfirmDialog
+        open={Boolean(deleteTarget)}
+        onOpenChange={(next) => !next && setDeleteTarget(null)}
+        title={deleteTarget ? `Delete "${deleteTarget.title}"?` : "Delete document?"}
+        description={
+          deleteTarget
+            ? `This will permanently delete "${deleteTarget.title}" and all ${deleteTarget.versions.length} version(s).`
+            : ""
+        }
+        confirmLabel="Delete Document"
+        pending={isPending}
+        onConfirm={handleConfirmDelete}
+      />
     </div>
   );
 }

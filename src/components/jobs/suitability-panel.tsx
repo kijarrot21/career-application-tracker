@@ -4,7 +4,7 @@ import { Sparkles } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
-import { SuitabilityBadge } from "@/components/ui/badges";
+import { Button, Card, SuitabilityBadge } from "@/components/ui";
 import {
   CRITERIA,
   CRITERION_LABELS,
@@ -67,28 +67,28 @@ export function SuitabilityPanel({
   }
 
   return (
-    <div className="elevation-1 space-y-4 rounded-2xl border border-[#bdcabf]/40 bg-[#ffffff] p-6 dark:border-[#24332a] dark:bg-[#111a15]">
-      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#e3eae3] pb-3.5 dark:border-[#24332a]">
+    <Card padding="lg" className="space-y-4">
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border-subtle pb-3.5">
         <div>
           <div className="flex items-center gap-2">
-            <h3 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
+            <h3 className="text-section-title text-foreground">
               Job Suitability Evaluation (0 to 100%)
             </h3>
             <SuitabilityBadge score={liveOverall} />
           </div>
-          <p className="text-xs text-[#3f674f] dark:text-[#a5d1b4]">
+          <p className="text-caption text-muted-foreground">
             Weighted evaluation across 6 HR suitability criteria
           </p>
         </div>
 
-        <button
-          type="button"
+        <Button
+          variant="soft"
+          size="sm"
           onClick={handleApplySuggestions}
-          className="inline-flex items-center gap-1.5 rounded-xl bg-[#c0edcf] px-3 py-1.5 text-xs font-semibold text-[#005232] transition-colors hover:bg-[#006a42] hover:text-white dark:bg-[#005232] dark:text-[#86f9ba]"
         >
           <Sparkles className="h-3.5 w-3.5" />
           Apply Profile Suggestions
-        </button>
+        </Button>
       </div>
 
       <div className="space-y-3">
@@ -100,31 +100,33 @@ export function SuitabilityPanel({
           return (
             <div
               key={criterion}
-              className="rounded-xl bg-[#eff5ee] p-3.5 text-xs dark:bg-[#17231c]"
+              className="rounded-xl bg-surface-subtle p-3.5 text-xs"
             >
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div>
-                  <span className="font-semibold text-[#171d19] dark:text-[#ecf3eb]">
+                  <span className="font-semibold text-foreground">
                     {CRITERION_LABELS[criterion]}
                   </span>{" "}
-                  <span className="font-mono text-[11px] text-[#3f674f] tabular-nums dark:text-[#a5d1b4]">
+                  <span className="font-mono text-[11px] text-muted-foreground tabular-nums">
                     (weight {weight}%)
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="font-mono font-bold text-[#006a42] tabular-nums dark:text-[#69dca0]">
+                  <span className="font-mono font-bold text-primary-text tabular-nums">
                     {val != null ? `${val}%` : "Not rated"}
                   </span>
                   {val != null && (
-                    <button
+                    <Button
                       type="button"
+                      variant="link"
+                      size="xs"
                       onClick={() =>
                         setScores((p) => ({ ...p, [criterion]: null }))
                       }
-                      className="text-[11px] font-semibold text-[#3f674f] hover:text-[#171d19]"
+                      className="text-muted-foreground hover:text-foreground"
                     >
                       Clear
-                    </button>
+                    </Button>
                   )}
                 </div>
               </div>
@@ -143,12 +145,12 @@ export function SuitabilityPanel({
                       [criterion]: Number(e.target.value),
                     }))
                   }
-                  className="h-1.5 flex-1 cursor-pointer accent-[#006a42]"
+                  className="h-1.5 flex-1 cursor-pointer accent-primary"
                 />
               </div>
 
               {sug && (
-                <p className="mt-1.5 text-[11px] text-[#3f674f] tabular-nums dark:text-[#a5d1b4]">
+                <p className="mt-1.5 text-[11px] text-muted-foreground tabular-nums">
                   {sug.score != null ? `Suggested ${sug.score}%: ` : ""}
                   {sug.reason}
                 </p>
@@ -159,15 +161,15 @@ export function SuitabilityPanel({
       </div>
 
       <div className="flex justify-end pt-1">
-        <button
-          type="button"
+        <Button
+          variant="primary"
+          size="lg"
           disabled={isPending}
           onClick={handleSave}
-          className="btn-primary h-10 px-4 text-xs disabled:opacity-50"
         >
           {isPending ? "Saving..." : "Save Suitability Score"}
-        </button>
+        </Button>
       </div>
-    </div>
+    </Card>
   );
 }

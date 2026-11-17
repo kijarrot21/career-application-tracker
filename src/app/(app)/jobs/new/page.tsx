@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { PageHeader } from "@/components/ui";
 import { VacancyForm } from "@/components/jobs/vacancy-form";
 import { todayInTimeZone } from "@/lib/domain/business-days";
 import { requireUser } from "@/lib/session";
@@ -16,23 +17,19 @@ export default async function NewJobVacancyPage() {
 
   return (
     <div className="mx-auto max-w-4xl space-y-5">
-      <div className="flex items-center justify-between">
-        <div>
-          <Link
-            href="/jobs"
-            className="text-xs font-semibold text-[#006a42] hover:underline dark:text-[#69dca0]"
-          >
-            &larr; Back to Find Jobs
-          </Link>
-          <h1 className="text-headline-md mt-1.5 text-[#171d19] dark:text-[#ecf3eb]">
-            Add Job Vacancy
-          </h1>
-          <p className="text-[13px] text-[#3f674f] dark:text-[#a5d1b4]">
-            Save a job opportunity manually or from an external URL and
-            automatically calculate initial suitability.
-          </p>
-        </div>
+      <div>
+        <Link
+          href="/jobs"
+          className="text-xs font-semibold text-primary-text hover:underline"
+        >
+          &larr; Back to Find Jobs
+        </Link>
       </div>
+
+      <PageHeader
+        title="Add Job Vacancy"
+        description="Save a job opportunity manually or from an external URL and automatically calculate initial suitability."
+      />
 
       <VacancyForm
         sources={sources}

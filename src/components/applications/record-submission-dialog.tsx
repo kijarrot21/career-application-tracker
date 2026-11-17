@@ -1,9 +1,21 @@
 "use client";
 
-import { X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
+import {
+  Button,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  FormField,
+  Input,
+  Select,
+  Textarea,
+} from "@/components/ui";
 import {
   CURRENCIES,
   SUBMISSION_METHOD_LABELS,
@@ -94,8 +106,6 @@ export function RecordSubmissionDialog({
   const [reapplyReason, setReapplyReason] = useState("");
   const [error, setError] = useState<string | null>(null);
 
-  if (!open) return null;
-
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
@@ -145,80 +155,63 @@ export function RecordSubmissionDialog({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#171d19]/35 p-4 backdrop-blur-[3px]">
-      <div className="elevation-4 max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-[#bdcabf]/60 bg-[#ffffff] p-6 dark:border-[#24332a] dark:bg-[#111a15]">
-        <div className="mb-4 flex items-center justify-between border-b border-[#e3eae3] pb-3 dark:border-[#24332a]">
-          <div>
-            <h2 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
-              Record Submitted Job Application
-            </h2>
-            <p className="text-xs text-[#3f674f] dark:text-[#a5d1b4]">
-              Creates a unique Application ID, records initial status history,
-              and schedules your first follow-up.
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className="rounded-lg p-1 text-[#3e4a41] hover:bg-[#eff5ee] hover:text-[#006a42] dark:text-[#b7c6ba] dark:hover:bg-[#17231c]"
-          >
-            <X className="h-4 w-4" />
-          </button>
-        </div>
+    <Dialog open={open} onOpenChange={(next) => !next && onClose()}>
+      <DialogContent className="max-w-2xl">
+        <DialogHeader>
+          <DialogTitle>Record Submitted Job Application</DialogTitle>
+          <DialogDescription>
+            Creates a unique Application ID, records initial status history, and
+            schedules your first follow-up.
+          </DialogDescription>
+        </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4 text-xs">
           {error && (
-            <div className="rounded-xl border border-[#ba1a1a]/30 bg-[#ffdad6] px-3 py-2 text-xs text-[#93000a] dark:border-rose-900 dark:bg-rose-950/60 dark:text-rose-300">
+            <div
+              role="alert"
+              className="rounded-xl border border-destructive-border bg-destructive-soft px-3 py-2 text-xs text-destructive-on-soft"
+            >
               {error}
             </div>
           )}
 
           {preselectedVacancy ? (
-            <div className="rounded-xl border border-[#a5d1b4] bg-[#c0edcf]/50 p-3.5 dark:border-[#006a42]/40 dark:bg-[#006a42]/15">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#005232] tabular-nums dark:text-[#86f9ba]">
+            <div className="rounded-xl border border-primary/25 bg-primary-soft p-3.5">
+              <p className="text-label-xs uppercase text-primary-on-soft tabular-nums">
                 Selected Vacancy ({preselectedVacancy.code})
               </p>
-              <p className="mt-0.5 font-display text-sm font-semibold text-[#171d19] dark:text-[#ecf3eb]">
+              <p className="mt-0.5 text-card-title text-foreground">
                 {preselectedVacancy.title} at {preselectedVacancy.companyName}
               </p>
             </div>
           ) : (
-            <div className="space-y-3 rounded-xl bg-[#eff5ee] p-3.5 dark:bg-[#17231c]">
+            <div className="space-y-3 rounded-xl bg-surface-subtle p-3.5">
               <div className="flex gap-2">
-                <button
+                <Button
                   type="button"
+                  size="sm"
+                  variant={mode === "existing" ? "primary" : "secondary"}
                   onClick={() => setMode("existing")}
-                  className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors ${
-                    mode === "existing"
-                      ? "bg-[#006a42] text-white"
-                      : "bg-[#ffffff] text-[#3e4a41] hover:bg-[#e3eae3] dark:bg-[#111a15] dark:text-[#b7c6ba]"
-                  }`}
                 >
                   From saved vacancy
-                </button>
-                <button
+                </Button>
+                <Button
                   type="button"
+                  size="sm"
+                  variant={mode === "new" ? "primary" : "secondary"}
                   onClick={() => setMode("new")}
-                  className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors ${
-                    mode === "new"
-                      ? "bg-[#006a42] text-white"
-                      : "bg-[#ffffff] text-[#3e4a41] hover:bg-[#e3eae3] dark:bg-[#111a15] dark:text-[#b7c6ba]"
-                  }`}
                 >
                   Enter new position directly
-                </button>
+                </Button>
               </div>
 
               {mode === "existing" ? (
-                <div>
-                  <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                    Saved Job Vacancy
-                  </label>
-                  <select
+                <FormField label="Saved Job Vacancy" required>
+                  <Select
                     required
+                    selectSize="lg"
                     value={vacancyId}
                     onChange={(e) => setVacancyId(e.target.value)}
-                    className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
                   >
                     <option value="">Select a vacancy...</option>
                     {vacancyOptions.map((v) => (
@@ -231,68 +224,56 @@ export function RecordSubmissionDialog({
                             : ""}
                       </option>
                     ))}
-                  </select>
-                </div>
+                  </Select>
+                </FormField>
               ) : (
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                  <div>
-                    <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                      Company Name *
-                    </label>
-                    <input
+                  <FormField label="Company Name" required>
+                    <Input
                       type="text"
+                      inputSize="lg"
                       required
                       value={companyName}
                       onChange={(e) => setCompanyName(e.target.value)}
                       placeholder="PT Tokopedia"
-                      className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
                     />
-                  </div>
-                  <div>
-                    <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                      Job Position *
-                    </label>
-                    <input
+                  </FormField>
+                  <FormField label="Job Position" required>
+                    <Input
                       type="text"
+                      inputSize="lg"
                       required
                       value={title}
                       onChange={(e) => setTitle(e.target.value)}
                       placeholder="Senior Backend Engineer"
-                      className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
                     />
-                  </div>
-                  <div>
-                    <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                      Location
-                    </label>
-                    <input
+                  </FormField>
+                  <FormField label="Location">
+                    <Input
                       type="text"
+                      inputSize="lg"
                       value={location}
                       onChange={(e) => setLocation(e.target.value)}
                       placeholder="Jakarta / Hybrid"
-                      className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
                     />
-                  </div>
-                  <div>
-                    <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                      Job URL
-                    </label>
-                    <input
+                  </FormField>
+                  <FormField label="Job URL">
+                    <Input
                       type="url"
+                      inputSize="lg"
                       value={jobUrl}
                       onChange={(e) => setJobUrl(e.target.value)}
                       placeholder="https://www.linkedin.com/jobs/view/..."
-                      className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
                     />
-                  </div>
+                  </FormField>
                 </div>
               )}
             </div>
           )}
 
           {activeVacancy?.hasClosedApp && (
-            <div className="space-y-2 rounded-2xl border border-[#e8c084]/40 bg-[#ffdead]/60 p-3 dark:border-amber-800 dark:bg-amber-950/40">
-              <label className="flex items-center gap-2 font-semibold text-[#5d4211] dark:text-amber-200">
+            <div className="space-y-2 rounded-xl border border-warning-border bg-warning-soft p-3">
+              <label className="flex items-center gap-2 font-semibold text-warning-on-soft">
                 <input
                   type="checkbox"
                   checked={isIntentionalReapply}
@@ -302,40 +283,35 @@ export function RecordSubmissionDialog({
                 position
               </label>
               {isIntentionalReapply && (
-                <input
+                <Input
                   type="text"
+                  inputSize="lg"
                   required
                   value={reapplyReason}
                   onChange={(e) => setReapplyReason(e.target.value)}
                   placeholder="Reason for re-applying (e.g., Recruiter invited me for new opening)"
-                  className="h-10 w-full rounded-xl border border-[#e8c084]/40 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-amber-800 dark:bg-[#17231c]"
                 />
               )}
             </div>
           )}
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-            <div>
-              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                Application Date *
-              </label>
-              <input
+            <FormField label="Application Date" required>
+              <Input
                 type="date"
+                inputSize="lg"
                 required
                 value={submittedOn}
                 onChange={(e) => setSubmittedOn(e.target.value)}
-                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] tabular-nums dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
+                className="tabular-nums"
               />
-            </div>
+            </FormField>
 
-            <div>
-              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                Application Platform
-              </label>
-              <select
+            <FormField label="Application Platform">
+              <Select
+                selectSize="lg"
                 value={platformSourceId}
                 onChange={(e) => setPlatformSourceId(e.target.value)}
-                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
               >
                 <option value="">Auto-detect / Unspecified</option>
                 {sources.map((s) => (
@@ -343,210 +319,168 @@ export function RecordSubmissionDialog({
                     {s.name}
                   </option>
                 ))}
-              </select>
-            </div>
+              </Select>
+            </FormField>
 
-            <div>
-              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                Submission Method *
-              </label>
-              <select
+            <FormField label="Submission Method" required>
+              <Select
+                selectSize="lg"
                 value={submissionMethod}
                 onChange={(e) =>
                   setSubmissionMethod(e.target.value as SubmissionMethod)
                 }
-                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
               >
                 {SUBMISSION_METHODS.map((m) => (
                   <option key={m} value={m}>
                     {SUBMISSION_METHOD_LABELS[m]}
                   </option>
                 ))}
-              </select>
-            </div>
+              </Select>
+            </FormField>
           </div>
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            <div>
-              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                CV Version Used
-              </label>
-              <input
+            <FormField label="CV Version Used">
+              <Input
                 type="text"
+                inputSize="lg"
                 value={cvVersionLabel}
                 onChange={(e) => setCvVersionLabel(e.target.value)}
                 placeholder="e.g., CV_Backend_v3.pdf"
-                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
               />
-            </div>
+            </FormField>
 
-            <div>
-              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                Cover Letter Version
-              </label>
-              <input
+            <FormField label="Cover Letter Version">
+              <Input
                 type="text"
+                inputSize="lg"
                 value={coverLetterVersionLabel}
                 onChange={(e) => setCoverLetterVersionLabel(e.target.value)}
                 placeholder="Optional cover letter version"
-                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
               />
-            </div>
+            </FormField>
           </div>
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-            <div>
-              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                Expected Salary
-              </label>
-              <input
+            <FormField label="Expected Salary">
+              <Input
                 type="number"
+                inputSize="lg"
                 min={0}
                 value={expectedSalary}
                 onChange={(e) => setExpectedSalary(e.target.value)}
                 placeholder="25000000"
-                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] tabular-nums dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
+                className="tabular-nums"
               />
-            </div>
-            <div>
-              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                Currency
-              </label>
-              <select
+            </FormField>
+            <FormField label="Currency">
+              <Select
+                selectSize="lg"
                 value={currency}
                 onChange={(e) => setCurrency(e.target.value as Currency)}
-                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
               >
                 {CURRENCIES.map((c) => (
                   <option key={c} value={c}>
                     {c}
                   </option>
                 ))}
-              </select>
-            </div>
-            <div>
-              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                Job Category / Dept
-              </label>
-              <input
+              </Select>
+            </FormField>
+            <FormField label="Job Category / Dept">
+              <Input
                 type="text"
+                inputSize="lg"
                 value={jobCategory}
                 onChange={(e) => setJobCategory(e.target.value)}
                 placeholder="Engineering"
-                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
               />
-            </div>
+            </FormField>
           </div>
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-            <div>
-              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                External Application Ref ID
-              </label>
-              <input
+            <FormField label="External Application Ref ID">
+              <Input
                 type="text"
+                inputSize="lg"
                 value={externalReferenceId}
                 onChange={(e) => setExternalReferenceId(e.target.value)}
                 placeholder="Workday / LinkedIn ref ID"
-                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
               />
-            </div>
-            <div>
-              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                Confirmation Reference
-              </label>
-              <input
+            </FormField>
+            <FormField label="Confirmation Reference">
+              <Input
                 type="text"
+                inputSize="lg"
                 value={confirmationReference}
                 onChange={(e) => setConfirmationReference(e.target.value)}
                 placeholder="Email confirmation code"
-                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
               />
-            </div>
-            <div>
-              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                Application Portal URL
-              </label>
-              <input
+            </FormField>
+            <FormField label="Application Portal URL">
+              <Input
                 type="url"
+                inputSize="lg"
                 value={applicationUrl}
                 onChange={(e) => setApplicationUrl(e.target.value)}
                 placeholder="https://..."
-                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
               />
-            </div>
+            </FormField>
           </div>
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-            <div>
-              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                Recruiter Name
-              </label>
-              <input
+            <FormField label="Recruiter Name">
+              <Input
                 type="text"
+                inputSize="lg"
                 value={recruiterName}
                 onChange={(e) => setRecruiterName(e.target.value)}
                 placeholder="Recruiter / TA name"
-                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
               />
-            </div>
-            <div>
-              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                Recruiter Email
-              </label>
-              <input
+            </FormField>
+            <FormField label="Recruiter Email">
+              <Input
                 type="email"
+                inputSize="lg"
                 value={recruiterEmail}
                 onChange={(e) => setRecruiterEmail(e.target.value)}
                 placeholder="recruiter@company.com"
-                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
               />
-            </div>
-            <div>
-              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                Recruiter Phone / LinkedIn
-              </label>
-              <input
+            </FormField>
+            <FormField label="Recruiter Phone / LinkedIn">
+              <Input
                 type="text"
+                inputSize="lg"
                 value={recruiterContact}
                 onChange={(e) => setRecruiterContact(e.target.value)}
                 placeholder="+62..."
-                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
               />
-            </div>
+            </FormField>
           </div>
 
-          <div>
-            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-              Notes
-            </label>
-            <textarea
+          <FormField label="Notes">
+            <Textarea
               rows={2}
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Referral context, key talking points, or application notes..."
-              className="mt-1 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 py-2 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
             />
-          </div>
+          </FormField>
 
-          <div className="flex justify-end gap-2 border-t border-[#e3eae3] pt-3 dark:border-[#24332a]">
-            <button
-              type="button"
-              onClick={onClose}
-              className="btn-secondary h-10 px-4 text-xs"
-            >
+          <DialogFooter>
+            <Button variant="secondary" size="lg" onClick={onClose}>
               Cancel
-            </button>
-            <button
+            </Button>
+            <Button
               type="submit"
+              variant="primary"
+              size="lg"
               disabled={isPending}
-              className="btn-primary h-10 px-4 text-xs disabled:opacity-50"
             >
               {isPending ? "Recording..." : "Record Application"}
-            </button>
-          </div>
+            </Button>
+          </DialogFooter>
         </form>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }

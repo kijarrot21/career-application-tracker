@@ -16,10 +16,21 @@ import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { MoveStageDialog } from "@/components/applications/move-stage-dialog";
 import {
+  Badge,
+  Button,
+  Card,
+  ConfirmDialog,
+  FormField,
+  Input,
   OutcomeBadge,
   SampleBadge,
+  Select,
   StageBadge,
-} from "@/components/ui/badges";
+  Tabs,
+  TabsList,
+  TabsTrigger,
+  Textarea,
+} from "@/components/ui";
 import {
   COMM_CHANNEL_LABELS,
   COMM_CHANNELS,
@@ -59,6 +70,7 @@ import {
 import { addBusinessDays } from "@/lib/domain/business-days";
 import { isTerminal, isVacancyLevel } from "@/lib/domain/stages";
 import { formatDate, formatDateTime, formatMoney } from "@/lib/format";
+import { cn } from "@/lib/utils";
 import {
   completeFollowUpTaskAction,
   createFollowUpTaskAction,
@@ -107,6 +119,7 @@ export function ApplicationDetailClient({
   const initialTab = (searchParams.get("tab") as TabKey) || "overview";
   const [tab, setTab] = useState<TabKey>(initialTab);
   const [moveOpen, setMoveOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
   const [targetMoveStageId, setTargetMoveStageId] = useState<
     string | undefined
   >(undefined);
@@ -292,12 +305,12 @@ export function ApplicationDetailClient({
     });
   }
 
-  function handleDelete() {
-    if (!window.confirm(`Delete application ${app.code}?`)) return;
+  function handleConfirmDelete() {
     startTransition(async () => {
       try {
         await deleteApplicationAction(app.id);
         toast.success("Application deleted.");
+        setDeleteOpen(false);
         router.push("/applications");
       } catch (err) {
         toast.error(err instanceof Error ? err.message : "Could not delete");
@@ -305,7 +318,6 @@ export function ApplicationDetailClient({
     });
   }
 
-  // Reached stage IDs for visual pipeline progression
   const reachedStageIds = new Set(app.history.map((h) => h.toStageId));
   reachedStageIds.add(app.currentStageId);
   const activePipelineStages = app.allStages.filter(
@@ -317,48 +329,48 @@ export function ApplicationDetailClient({
       <div className="flex items-center justify-between">
         <Link
           href="/applications"
-          className="text-xs font-semibold text-[#006a42] hover:underline dark:text-[#86f9ba]"
+          className="text-xs font-semibold text-primary-text hover:underline"
         >
           &larr; Back to Applications
         </Link>
         <Link
           href={`/jobs/${app.vacancy.id}`}
-          className="text-xs font-semibold text-[#3e4a41] tabular-nums hover:text-[#006a42] hover:underline dark:text-[#a5d1b4]"
+          className="text-xs font-semibold text-muted-foreground tabular-nums hover:text-primary-text hover:underline"
         >
           View Underlying Vacancy ({app.vacancy.code}) &rarr;
         </Link>
       </div>
 
       {/* Header */}
-      <div className="elevation-1 space-y-4 rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] p-5 dark:border-[#24332a] dark:bg-[#111a15]">
+      <Card padding="md" className="space-y-4">
         <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-start">
           <div className="space-y-1.5">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="font-mono text-xs font-semibold text-[#006a42] tabular-nums dark:text-[#86f9ba]">
+              <span className="font-mono text-xs font-semibold text-primary-text tabular-nums">
                 {app.code}
               </span>
-              <h1 className="text-headline-md text-[#171d19] dark:text-[#ecf3eb]">
+              <h1 className="text-page-title text-foreground">
                 {app.vacancy.title}
               </h1>
               <StageBadge name={app.stage.name} color={app.stage.color} />
               <OutcomeBadge outcome={app.outcome} />
               {app.attemptNumber > 1 && (
-                <span className="rounded-full bg-[#eff5ee] px-2.5 py-0.5 font-mono text-[11px] font-semibold text-[#3e4a41] tabular-nums dark:bg-[#1d2b23] dark:text-[#b7c6ba]">
+                <Badge variant="secondary" className="font-mono tabular-nums">
                   Attempt #{app.attemptNumber}
-                </span>
+                </Badge>
               )}
               {app.isSample && <SampleBadge />}
             </div>
 
-            <p className="text-[14px] text-[#3e4a41] dark:text-[#b7c6ba]">
-              <strong className="font-semibold text-[#171d19] dark:text-[#ecf3eb]">
+            <p className="text-[14px] text-muted-foreground">
+              <strong className="font-semibold text-foreground">
                 {app.company.name}
               </strong>
               {app.jobCategory ? ` · ${app.jobCategory}` : ""}
               {app.vacancy.location ? ` · ${app.vacancy.location}` : ""}
             </p>
 
-            <div className="flex flex-wrap items-center gap-4 text-xs text-[#3f674f] tabular-nums">
+            <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground tabular-nums">
               <span>Submitted: {formatDate(app.submittedOn)}</span>
               {app.platform && <span>Platform: {app.platform.name}</span>}
               <span>
@@ -372,7 +384,7 @@ export function ApplicationDetailClient({
               {app.expectedSalary != null && (
                 <span>
                   Expected:{" "}
-                  <strong className="font-mono font-semibold text-[#171d19] dark:text-[#ecf3eb]">
+                  <strong className="font-mono font-semibold text-foreground">
                     {formatMoney(app.expectedSalary, app.currency)}
                   </strong>
                 </span>
@@ -382,7 +394,7 @@ export function ApplicationDetailClient({
                   href={app.applicationUrl ?? app.vacancy.url ?? "#"}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 font-semibold text-[#006a42] hover:underline dark:text-[#86f9ba]"
+                  className="inline-flex items-center gap-1 font-semibold text-primary-text hover:underline"
                 >
                   External Link <ExternalLink className="h-3 w-3" />
                 </a>
@@ -391,32 +403,32 @@ export function ApplicationDetailClient({
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            <button
-              type="button"
+            <Button
+              variant="primary"
+              size="lg"
               onClick={() => {
                 setTargetMoveStageId(undefined);
                 setMoveOpen(true);
               }}
-              className="btn-primary h-10 px-4 text-xs"
             >
               <ArrowRightLeft className="h-3.5 w-3.5" />
               Move Stage
-            </button>
+            </Button>
 
-            <button
-              type="button"
+            <Button
+              variant="destructive"
+              size="lg"
               disabled={isPending}
-              onClick={handleDelete}
-              className="btn-destructive h-10 px-4 text-xs disabled:opacity-50"
+              onClick={() => setDeleteOpen(true)}
             >
               <Trash2 className="h-3.5 w-3.5" />
               Delete
-            </button>
+            </Button>
           </div>
         </div>
 
         {/* Visual Pipeline Stepper */}
-        <div className="flex flex-wrap items-center gap-1.5 border-t border-[#bdcabf]/50 pt-3 dark:border-[#24332a]">
+        <div className="flex flex-wrap items-center gap-1.5 border-t border-border-subtle pt-3">
           {activePipelineStages.map((s) => {
             const isCurrent = s.id === app.currentStageId;
             const wasReached = reachedStageIds.has(s.id);
@@ -435,15 +447,16 @@ export function ApplicationDetailClient({
                     setMoveOpen(true);
                   }
                 }}
-                className={`rounded-full border px-3 py-1 text-[11px] font-semibold tracking-[0.02em] transition-colors ${
+                className={cn(
+                  "cursor-pointer rounded-full border px-3 py-1 text-[11px] font-semibold tracking-[0.02em] transition-colors",
                   isCurrent
-                    ? "border-[#006a42] bg-[#006a42] text-white"
+                    ? "border-primary bg-primary text-white"
                     : wasReached
-                      ? "border-[#10B981]/30 bg-[#c0edcf] text-[#005232] dark:border-emerald-900 dark:bg-emerald-950/50 dark:text-emerald-300"
+                      ? "border-success-border bg-success-soft text-success-on-soft"
                       : wasSkipped
-                        ? "border-dashed border-[#bdcabf]/70 bg-[#eff5ee] text-[#3f674f] line-through dark:border-[#2d3d33] dark:bg-[#111a15]"
-                        : "border-[#bdcabf]/70 bg-[#ffffff] text-[#3e4a41] hover:border-[#006a42] hover:bg-[#c0edcf]/60 hover:text-[#005232] dark:border-[#24332a] dark:bg-[#17231c] dark:text-[#a5d1b4]"
-                }`}
+                        ? "border-dashed border-border bg-surface-subtle text-muted-foreground line-through"
+                        : "border-border bg-card text-muted-foreground hover:border-primary hover:bg-primary-soft hover:text-primary-on-soft",
+                )}
               >
                 {s.name}
                 {wasSkipped ? " (skipped)" : ""}
@@ -454,325 +467,258 @@ export function ApplicationDetailClient({
 
         {/* No Response Suggestion Banner */}
         {app.noResponseSuggestion.shouldSuggest && noResponseStage && (
-          <div className="flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-[#e8c084]/40 bg-[#ffdead]/60 px-3.5 py-2.5 text-xs text-[#5d4211] dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-200">
+          <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-warning-border bg-warning-soft px-3.5 py-2.5 text-xs text-warning-on-soft">
             <div className="flex items-center gap-2">
               <Clock className="h-4 w-4 shrink-0" />
               <span>{app.noResponseSuggestion.reason}</span>
             </div>
-            <button
-              type="button"
+            <Button
+              variant="warning"
+              size="sm"
               onClick={() => {
                 setTargetMoveStageId(noResponseStage.id);
                 setMoveOpen(true);
               }}
-              className="rounded-xl bg-[#B45309] px-3 py-1 text-xs font-semibold text-white hover:bg-[#92400E]"
             >
               Confirm &ldquo;No Response&rdquo;
-            </button>
+            </Button>
           </div>
         )}
-      </div>
+      </Card>
 
       {/* Tabs Navigation */}
-      <div className="flex flex-wrap gap-1 border-b border-[#bdcabf]/50 dark:border-[#24332a]">
-        {(
-          [
-            { key: "overview", label: "Overview & Details" },
-            {
-              key: "timeline",
-              label: `Timeline & Status History (${app.history.length})`,
-            },
-            {
-              key: "communications",
-              label: `Communications (${app.communications.length})`,
-            },
-            {
-              key: "interviews",
-              label: `Interviews (${app.interviews.length})`,
-            },
-            {
-              key: "followups",
-              label: `Follow-up Tasks (${app.followUps.length})`,
-            },
-            {
-              key: "documents",
-              label: `Attached Documents (${careerExtras?.attachedDocuments.length ?? 0})`,
-            },
-            {
-              key: "offer",
-              label: careerExtras?.offer || app.offer ? "Offer & Result (Recorded)" : "Offer & Result",
-            },
-          ] as const
-        ).map((item) => (
-          <button
-            key={item.key}
-            type="button"
-            onClick={() => setTab(item.key)}
-            className={`border-b-2 px-3.5 py-2.5 text-xs font-semibold tabular-nums transition-colors ${
-              tab === item.key
-                ? "border-[#006a42] text-[#006a42] dark:border-[#B7C4FF] dark:text-[#86f9ba]"
-                : "border-transparent text-[#3f674f] hover:text-[#171d19] dark:hover:text-slate-200"
-            }`}
-          >
-            {item.label}
-          </button>
-        ))}
-      </div>
+      <Tabs value={tab} onValueChange={(v) => setTab(v as TabKey)}>
+        <TabsList>
+          <TabsTrigger value="overview">Overview & Details</TabsTrigger>
+          <TabsTrigger value="timeline" className="tabular-nums">
+            Timeline & Status History ({app.history.length})
+          </TabsTrigger>
+          <TabsTrigger value="communications" className="tabular-nums">
+            Communications ({app.communications.length})
+          </TabsTrigger>
+          <TabsTrigger value="interviews" className="tabular-nums">
+            Interviews ({app.interviews.length})
+          </TabsTrigger>
+          <TabsTrigger value="followups" className="tabular-nums">
+            Follow-up Tasks ({app.followUps.length})
+          </TabsTrigger>
+          <TabsTrigger value="documents" className="tabular-nums">
+            Attached Documents ({careerExtras?.attachedDocuments.length ?? 0})
+          </TabsTrigger>
+          <TabsTrigger value="offer">
+            {careerExtras?.offer || app.offer
+              ? "Offer & Result (Recorded)"
+              : "Offer & Result"}
+          </TabsTrigger>
+        </TabsList>
+      </Tabs>
 
       {/* Tab Content */}
       {tab === "overview" && (
-        <form
-          onSubmit={handleSaveOverview}
-          className="elevation-1 space-y-4 rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] p-5 text-xs dark:border-[#24332a] dark:bg-[#111a15]"
-        >
-          <h2 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
-            Application Record Details
-          </h2>
+        <Card padding="md">
+          <form onSubmit={handleSaveOverview} className="space-y-4 text-xs">
+            <h2 className="text-section-title text-foreground">
+              Application Record Details
+            </h2>
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            <div>
-              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                Application Date
-              </label>
-              <input
-                type="date"
-                value={submittedOn}
-                onChange={(e) => setSubmittedOn(e.target.value)}
-                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] tabular-nums dark:border-[#2d3d33] dark:bg-[#17231c]"
-              />
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+              <FormField label="Application Date">
+                <Input
+                  type="date"
+                  inputSize="lg"
+                  value={submittedOn}
+                  onChange={(e) => setSubmittedOn(e.target.value)}
+                  className="tabular-nums"
+                />
+              </FormField>
+
+              <FormField label="Application Platform">
+                <Select
+                  selectSize="lg"
+                  value={platformSourceId}
+                  onChange={(e) => setPlatformSourceId(e.target.value)}
+                >
+                  <option value="">Unspecified</option>
+                  {sources.map((s) => (
+                    <option key={s.id} value={s.id}>
+                      {s.name}
+                    </option>
+                  ))}
+                </Select>
+              </FormField>
+
+              <FormField label="Submission Method">
+                <Select
+                  selectSize="lg"
+                  value={submissionMethod}
+                  onChange={(e) =>
+                    setSubmissionMethod(e.target.value as SubmissionMethod)
+                  }
+                >
+                  {SUBMISSION_METHODS.map((m) => (
+                    <option key={m} value={m}>
+                      {SUBMISSION_METHOD_LABELS[m]}
+                    </option>
+                  ))}
+                </Select>
+              </FormField>
+
+              <FormField label="CV Version Used">
+                <Input
+                  type="text"
+                  inputSize="lg"
+                  value={cvVersionLabel}
+                  onChange={(e) => setCvVersionLabel(e.target.value)}
+                />
+              </FormField>
+
+              <FormField label="Cover Letter Version">
+                <Input
+                  type="text"
+                  inputSize="lg"
+                  value={coverLetterVersionLabel}
+                  onChange={(e) => setCoverLetterVersionLabel(e.target.value)}
+                />
+              </FormField>
+
+              <FormField label="Job Category / Department">
+                <Input
+                  type="text"
+                  inputSize="lg"
+                  value={jobCategory}
+                  onChange={(e) => setJobCategory(e.target.value)}
+                />
+              </FormField>
+
+              <FormField label="Expected Salary">
+                <Input
+                  type="number"
+                  inputSize="lg"
+                  min={0}
+                  value={expectedSalary}
+                  onChange={(e) => setExpectedSalary(e.target.value)}
+                  className="tabular-nums"
+                />
+              </FormField>
+
+              <FormField label="Currency">
+                <Select
+                  selectSize="lg"
+                  value={currency}
+                  onChange={(e) => setCurrency(e.target.value as Currency)}
+                >
+                  {CURRENCIES.map((c) => (
+                    <option key={c} value={c}>
+                      {c}
+                    </option>
+                  ))}
+                </Select>
+              </FormField>
+
+              <FormField label="Next Follow-up Date">
+                <Input
+                  type="date"
+                  inputSize="lg"
+                  value={nextFollowUpOn}
+                  onChange={(e) => setNextFollowUpOn(e.target.value)}
+                  className="tabular-nums"
+                />
+              </FormField>
+
+              <FormField label="External Application Ref ID">
+                <Input
+                  type="text"
+                  inputSize="lg"
+                  value={externalReferenceId}
+                  onChange={(e) => setExternalReferenceId(e.target.value)}
+                />
+              </FormField>
+
+              <FormField label="Confirmation Reference">
+                <Input
+                  type="text"
+                  inputSize="lg"
+                  value={confirmationReference}
+                  onChange={(e) => setConfirmationReference(e.target.value)}
+                />
+              </FormField>
+
+              <FormField label="Application Portal URL">
+                <Input
+                  type="url"
+                  inputSize="lg"
+                  value={applicationUrl}
+                  onChange={(e) => setApplicationUrl(e.target.value)}
+                />
+              </FormField>
+
+              <FormField label="Recruiter Name">
+                <Input
+                  type="text"
+                  inputSize="lg"
+                  value={recruiterName}
+                  onChange={(e) => setRecruiterName(e.target.value)}
+                />
+              </FormField>
+
+              <FormField label="Recruiter Email">
+                <Input
+                  type="email"
+                  inputSize="lg"
+                  value={recruiterEmail}
+                  onChange={(e) => setRecruiterEmail(e.target.value)}
+                />
+              </FormField>
+
+              <FormField label="Recruiter Phone / Contact">
+                <Input
+                  type="text"
+                  inputSize="lg"
+                  value={recruiterContact}
+                  onChange={(e) => setRecruiterContact(e.target.value)}
+                />
+              </FormField>
             </div>
 
-            <div>
-              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                Application Platform
-              </label>
-              <select
-                value={platformSourceId}
-                onChange={(e) => setPlatformSourceId(e.target.value)}
-                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
+            <FormField label="Application Notes">
+              <Textarea
+                rows={3}
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+              />
+            </FormField>
+
+            <div className="flex justify-end">
+              <Button
+                type="submit"
+                variant="primary"
+                size="lg"
+                disabled={isPending}
               >
-                <option value="">Unspecified</option>
-                {sources.map((s) => (
-                  <option key={s.id} value={s.id}>
-                    {s.name}
-                  </option>
-                ))}
-              </select>
+                {isPending ? "Saving..." : "Save Application Details"}
+              </Button>
             </div>
-
-            <div>
-              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                Submission Method
-              </label>
-              <select
-                value={submissionMethod}
-                onChange={(e) =>
-                  setSubmissionMethod(e.target.value as SubmissionMethod)
-                }
-                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
-              >
-                {SUBMISSION_METHODS.map((m) => (
-                  <option key={m} value={m}>
-                    {SUBMISSION_METHOD_LABELS[m]}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                CV Version Used
-              </label>
-              <input
-                type="text"
-                value={cvVersionLabel}
-                onChange={(e) => setCvVersionLabel(e.target.value)}
-                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
-              />
-            </div>
-
-            <div>
-              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                Cover Letter Version
-              </label>
-              <input
-                type="text"
-                value={coverLetterVersionLabel}
-                onChange={(e) => setCoverLetterVersionLabel(e.target.value)}
-                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
-              />
-            </div>
-
-            <div>
-              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                Job Category / Department
-              </label>
-              <input
-                type="text"
-                value={jobCategory}
-                onChange={(e) => setJobCategory(e.target.value)}
-                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
-              />
-            </div>
-
-            <div>
-              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                Expected Salary
-              </label>
-              <input
-                type="number"
-                min={0}
-                value={expectedSalary}
-                onChange={(e) => setExpectedSalary(e.target.value)}
-                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] tabular-nums dark:border-[#2d3d33] dark:bg-[#17231c]"
-              />
-            </div>
-
-            <div>
-              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                Currency
-              </label>
-              <select
-                value={currency}
-                onChange={(e) => setCurrency(e.target.value as Currency)}
-                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
-              >
-                {CURRENCIES.map((c) => (
-                  <option key={c} value={c}>
-                    {c}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                Next Follow-up Date
-              </label>
-              <input
-                type="date"
-                value={nextFollowUpOn}
-                onChange={(e) => setNextFollowUpOn(e.target.value)}
-                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] tabular-nums dark:border-[#2d3d33] dark:bg-[#17231c]"
-              />
-            </div>
-
-            <div>
-              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                External Application Ref ID
-              </label>
-              <input
-                type="text"
-                value={externalReferenceId}
-                onChange={(e) => setExternalReferenceId(e.target.value)}
-                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
-              />
-            </div>
-
-            <div>
-              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                Confirmation Reference
-              </label>
-              <input
-                type="text"
-                value={confirmationReference}
-                onChange={(e) => setConfirmationReference(e.target.value)}
-                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
-              />
-            </div>
-
-            <div>
-              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                Application Portal URL
-              </label>
-              <input
-                type="url"
-                value={applicationUrl}
-                onChange={(e) => setApplicationUrl(e.target.value)}
-                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
-              />
-            </div>
-
-            <div>
-              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                Recruiter Name
-              </label>
-              <input
-                type="text"
-                value={recruiterName}
-                onChange={(e) => setRecruiterName(e.target.value)}
-                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
-              />
-            </div>
-
-            <div>
-              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                Recruiter Email
-              </label>
-              <input
-                type="email"
-                value={recruiterEmail}
-                onChange={(e) => setRecruiterEmail(e.target.value)}
-                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
-              />
-            </div>
-
-            <div>
-              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                Recruiter Phone / Contact
-              </label>
-              <input
-                type="text"
-                value={recruiterContact}
-                onChange={(e) => setRecruiterContact(e.target.value)}
-                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-              Application Notes
-            </label>
-            <textarea
-              rows={3}
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              className="mt-1 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-3 py-2 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
-            />
-          </div>
-
-          <div className="flex justify-end">
-            <button
-              type="submit"
-              disabled={isPending}
-              className="btn-primary h-10 px-4 text-xs disabled:opacity-50"
-            >
-              {isPending ? "Saving..." : "Save Application Details"}
-            </button>
-          </div>
-        </form>
+          </form>
+        </Card>
       )}
 
       {tab === "timeline" && (
-        <div className="elevation-1 space-y-4 rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] p-5 text-xs dark:border-[#24332a] dark:bg-[#111a15]">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
-                Recruitment Stage Status History
-              </h2>
-              <p className="text-[#3f674f]">
-                Append-only audit trail of every recruitment stage transition
-                for {app.code}.
-              </p>
-            </div>
+        <Card padding="md" className="space-y-4 text-xs">
+          <div>
+            <h2 className="text-section-title text-foreground">
+              Recruitment Stage Status History
+            </h2>
+            <p className="text-muted-foreground">
+              Append-only audit trail of every recruitment stage transition for{" "}
+              {app.code}.
+            </p>
           </div>
 
           <div className="space-y-3">
             {app.history.map((item) => (
               <div
                 key={item.id}
-                className="flex flex-col justify-between gap-2 rounded-2xl border border-[#bdcabf]/50 bg-[#eff5ee] p-3.5 sm:flex-row sm:items-center dark:border-[#24332a] dark:bg-[#17231c]"
+                className="flex flex-col justify-between gap-2 rounded-xl border border-border-subtle bg-surface-subtle p-3.5 sm:flex-row sm:items-center"
               >
                 <div className="space-y-1">
                   <div className="flex flex-wrap items-center gap-2">
@@ -782,29 +728,33 @@ export function ApplicationDetailClient({
                           name={item.fromStage.name}
                           color={item.fromStage.color}
                         />
-                        <span className="text-[#3f674f]">&rarr;</span>
+                        <span className="text-muted-foreground">&rarr;</span>
                       </>
                     ) : (
-                      <span className="text-[#3f674f]">Initial &rarr;</span>
+                      <span className="text-muted-foreground">
+                        Initial &rarr;
+                      </span>
                     )}
                     <StageBadge
                       name={item.toStage.name}
                       color={item.toStage.color}
                     />
-                    <span className="rounded-full bg-[#E2E8F0] px-2.5 py-0.5 text-[11px] font-semibold text-[#3e4a41] dark:bg-[#1d2b23] dark:text-[#b7c6ba]">
+                    <Badge variant="secondary">
                       {HISTORY_SOURCE_LABELS[item.source as HistorySource] ??
                         item.source}
-                    </span>
+                    </Badge>
                   </div>
                   {item.reason && (
-                    <p className="text-[#3e4a41] dark:text-[#b7c6ba]">
+                    <p className="text-foreground/90">
                       <strong>Reason:</strong> {item.reason}
                     </p>
                   )}
-                  {item.note && <p className="text-[#3f674f]">{item.note}</p>}
+                  {item.note && (
+                    <p className="text-muted-foreground">{item.note}</p>
+                  )}
                 </div>
 
-                <div className="shrink-0 text-right font-mono text-[11px] text-[#3f674f] tabular-nums">
+                <div className="shrink-0 text-right font-mono text-[11px] text-muted-foreground tabular-nums">
                   <div>Effective: {formatDate(item.effectiveOn)}</div>
                   <div className="text-[10px]">
                     Recorded: {formatDateTime(item.recordedAt)}
@@ -813,18 +763,18 @@ export function ApplicationDetailClient({
               </div>
             ))}
           </div>
-        </div>
+        </Card>
       )}
 
       {tab === "communications" && (
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
           <div className="space-y-3 lg:col-span-7">
-            <div className="elevation-1 space-y-3 rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] p-5 text-xs dark:border-[#24332a] dark:bg-[#111a15]">
-              <h2 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
+            <Card padding="md" className="space-y-3 text-xs">
+              <h2 className="text-section-title text-foreground">
                 Communication History
               </h2>
               {app.communications.length === 0 ? (
-                <p className="py-6 text-[#3f674f]">
+                <p className="py-6 text-muted-foreground">
                   No correspondence logged yet. Log emails, recruiter messages,
                   or phone calls using the form.
                 </p>
@@ -833,24 +783,24 @@ export function ApplicationDetailClient({
                   {app.communications.map((c) => (
                     <div
                       key={c.id}
-                      className="space-y-1.5 rounded-2xl border border-[#bdcabf]/50 bg-[#eff5ee] p-3.5 dark:border-[#24332a] dark:bg-[#17231c]"
+                      className="space-y-1.5 rounded-xl border border-border-subtle bg-surface-subtle p-3.5"
                     >
                       <div className="flex flex-wrap items-center justify-between gap-2">
-                        <span className="font-semibold text-[#171d19] dark:text-[#ecf3eb]">
+                        <span className="font-semibold text-foreground">
                           {c.subject}
                         </span>
-                        <span className="font-mono text-[11px] text-[#3f674f] tabular-nums">
+                        <span className="font-mono text-[11px] text-muted-foreground tabular-nums">
                           {formatDateTime(c.occurredAt)}
                         </span>
                       </div>
-                      <div className="flex flex-wrap items-center gap-2 text-[11px] text-[#3f674f]">
-                        <span className="rounded-full bg-[#c0edcf]/60 px-2.5 py-0.5 font-semibold text-[#005232] dark:bg-[#006a42]/20 dark:text-[#86f9ba]">
+                      <div className="flex flex-wrap items-center gap-2 text-[11px] text-muted-foreground">
+                        <Badge variant="primary">
                           {
                             EMAIL_CLASSIFICATION_LABELS[
                               c.classification as EmailClassification
                             ]
                           }
-                        </span>
+                        </Badge>
                         <span>
                           {COMM_CHANNEL_LABELS[c.channel as CommChannel]} ·{" "}
                           {COMM_DIRECTION_LABELS[c.direction as CommDirection]}
@@ -858,7 +808,7 @@ export function ApplicationDetailClient({
                         {c.sender && <span>From: {c.sender}</span>}
                       </div>
                       {c.snippet && (
-                        <p className="mt-1 whitespace-pre-line text-[#3e4a41] dark:text-[#b7c6ba]">
+                        <p className="mt-1 whitespace-pre-line text-foreground/90">
                           {c.snippet}
                         </p>
                       )}
@@ -866,142 +816,124 @@ export function ApplicationDetailClient({
                   ))}
                 </div>
               )}
-            </div>
+            </Card>
           </div>
 
-          <form
-            onSubmit={handleLogCommunication}
-            className="elevation-1 space-y-3 rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] p-5 text-xs lg:col-span-5 dark:border-[#24332a] dark:bg-[#111a15]"
-          >
-            <div className="flex items-center gap-2">
-              <Mail className="h-4 w-4 text-[#006a42]" />
-              <h3 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
-                Log Recruitment Communication
-              </h3>
-            </div>
-            <p className="text-[11px] text-[#3f674f]">
-              Record emails, WhatsApp, LinkedIn messages, or calls. (Automated
-              Gmail/Outlook OAuth sync arrives in Phase 3.)
-            </p>
+          <Card padding="md" className="lg:col-span-5">
+            <form onSubmit={handleLogCommunication} className="space-y-3 text-xs">
+              <div className="flex items-center gap-2">
+                <Mail className="h-4 w-4 text-primary-text" />
+                <h3 className="text-section-title text-foreground">
+                  Log Recruitment Communication
+                </h3>
+              </div>
+              <p className="text-[11px] text-muted-foreground">
+                Record emails, WhatsApp, LinkedIn messages, or calls, or sync
+                automatically from the Email Center.
+              </p>
 
-            <div className="grid grid-cols-2 gap-2.5">
-              <div>
-                <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                  Channel
-                </label>
-                <select
-                  value={commChannel}
+              <div className="grid grid-cols-2 gap-2.5">
+                <FormField label="Channel">
+                  <Select
+                    selectSize="lg"
+                    value={commChannel}
+                    onChange={(e) =>
+                      setCommChannel(e.target.value as CommChannel)
+                    }
+                  >
+                    {COMM_CHANNELS.map((ch) => (
+                      <option key={ch} value={ch}>
+                        {COMM_CHANNEL_LABELS[ch]}
+                      </option>
+                    ))}
+                  </Select>
+                </FormField>
+                <FormField label="Direction">
+                  <Select
+                    selectSize="lg"
+                    value={commDirection}
+                    onChange={(e) =>
+                      setCommDirection(e.target.value as CommDirection)
+                    }
+                  >
+                    {COMM_DIRECTIONS.map((d) => (
+                      <option key={d} value={d}>
+                        {COMM_DIRECTION_LABELS[d]}
+                      </option>
+                    ))}
+                  </Select>
+                </FormField>
+              </div>
+
+              <FormField label="Recruitment Classification">
+                <Select
+                  selectSize="lg"
+                  value={commClass}
                   onChange={(e) =>
-                    setCommChannel(e.target.value as CommChannel)
+                    setCommClass(e.target.value as EmailClassification)
                   }
-                  className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
                 >
-                  {COMM_CHANNELS.map((ch) => (
-                    <option key={ch} value={ch}>
-                      {COMM_CHANNEL_LABELS[ch]}
+                  {EMAIL_CLASSIFICATIONS.map((cl) => (
+                    <option key={cl} value={cl}>
+                      {EMAIL_CLASSIFICATION_LABELS[cl]}
                     </option>
                   ))}
-                </select>
-              </div>
-              <div>
-                <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                  Direction
-                </label>
-                <select
-                  value={commDirection}
-                  onChange={(e) =>
-                    setCommDirection(e.target.value as CommDirection)
-                  }
-                  className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
-                >
-                  {COMM_DIRECTIONS.map((d) => (
-                    <option key={d} value={d}>
-                      {COMM_DIRECTION_LABELS[d]}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
+                </Select>
+              </FormField>
 
-            <div>
-              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                Recruitment Classification
-              </label>
-              <select
-                value={commClass}
-                onChange={(e) =>
-                  setCommClass(e.target.value as EmailClassification)
-                }
-                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
+              <FormField label="Sender / Contact">
+                <Input
+                  type="text"
+                  inputSize="lg"
+                  value={commSender}
+                  onChange={(e) => setCommSender(e.target.value)}
+                  placeholder="recruiter@company.com"
+                />
+              </FormField>
+
+              <FormField label="Subject / Summary" required>
+                <Input
+                  type="text"
+                  inputSize="lg"
+                  required
+                  value={commSubject}
+                  onChange={(e) => setCommSubject(e.target.value)}
+                  placeholder="Invitation to HR Interview"
+                />
+              </FormField>
+
+              <FormField label="Message Excerpt / Notes">
+                <Textarea
+                  rows={3}
+                  value={commSnippet}
+                  onChange={(e) => setCommSnippet(e.target.value)}
+                  placeholder="Key details from the email or call..."
+                />
+              </FormField>
+
+              <Button
+                type="submit"
+                variant="primary"
+                size="lg"
+                disabled={isPending}
+                className="w-full"
               >
-                {EMAIL_CLASSIFICATIONS.map((cl) => (
-                  <option key={cl} value={cl}>
-                    {EMAIL_CLASSIFICATION_LABELS[cl]}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                Sender / Contact
-              </label>
-              <input
-                type="text"
-                value={commSender}
-                onChange={(e) => setCommSender(e.target.value)}
-                placeholder="recruiter@company.com"
-                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
-              />
-            </div>
-
-            <div>
-              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                Subject / Summary *
-              </label>
-              <input
-                type="text"
-                required
-                value={commSubject}
-                onChange={(e) => setCommSubject(e.target.value)}
-                placeholder="Invitation to HR Interview"
-                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
-              />
-            </div>
-
-            <div>
-              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                Message Excerpt / Notes
-              </label>
-              <textarea
-                rows={3}
-                value={commSnippet}
-                onChange={(e) => setCommSnippet(e.target.value)}
-                placeholder="Key details from the email or call..."
-                className="mt-1 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 py-2 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
-              />
-            </div>
-
-            <button
-              type="submit"
-              disabled={isPending}
-              className="btn-primary h-10 w-full px-4 text-xs disabled:opacity-50"
-            >
-              {isPending ? "Saving..." : "Log Communication"}
-            </button>
-          </form>
+                {isPending ? "Saving..." : "Log Communication"}
+              </Button>
+            </form>
+          </Card>
         </div>
       )}
 
       {tab === "interviews" && (
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
           <div className="space-y-3 lg:col-span-7">
-            <div className="elevation-1 space-y-3 rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] p-5 text-xs dark:border-[#24332a] dark:bg-[#111a15]">
-              <h2 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
+            <Card padding="md" className="space-y-3 text-xs">
+              <h2 className="text-section-title text-foreground">
                 Interview Records
               </h2>
               {app.interviews.length === 0 ? (
-                <p className="py-6 text-[#3f674f]">
+                <p className="py-6 text-muted-foreground">
                   No interviews recorded for this application yet.
                 </p>
               ) : (
@@ -1015,160 +947,139 @@ export function ApplicationDetailClient({
                   ))}
                 </div>
               )}
-            </div>
+            </Card>
           </div>
 
-          <form
-            onSubmit={handleScheduleInterview}
-            className="elevation-1 space-y-3 rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] p-5 text-xs lg:col-span-5 dark:border-[#24332a] dark:bg-[#111a15]"
-          >
-            <div className="flex items-center gap-2">
-              <CalendarClock className="h-4 w-4 text-[#006a42]" />
-              <h3 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
-                Schedule Interview
-              </h3>
-            </div>
-
-            <div className="grid grid-cols-2 gap-2.5">
-              <div>
-                <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                  Interview Type
-                </label>
-                <select
-                  value={intType}
-                  onChange={(e) => setIntType(e.target.value as InterviewType)}
-                  className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
-                >
-                  {INTERVIEW_TYPES.map((t) => (
-                    <option key={t} value={t}>
-                      {INTERVIEW_TYPE_LABELS[t]}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                  Duration (min)
-                </label>
-                <input
-                  type="number"
-                  min={10}
-                  max={480}
-                  value={intDuration}
-                  onChange={(e) => setIntDuration(e.target.value)}
-                  className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] tabular-nums dark:border-[#2d3d33] dark:bg-[#17231c]"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                Date & Time *
-              </label>
-              <input
-                type="datetime-local"
-                required
-                value={intStartsAt}
-                onChange={(e) => setIntStartsAt(e.target.value)}
-                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] tabular-nums dark:border-[#2d3d33] dark:bg-[#17231c]"
-              />
-            </div>
-
-            <div>
-              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                Meeting Link (Zoom / Google Meet / Teams)
-              </label>
-              <input
-                type="url"
-                value={intMeetingUrl}
-                onChange={(e) => setIntMeetingUrl(e.target.value)}
-                placeholder="https://meet.google.com/..."
-                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
-              />
-            </div>
-
-            <div>
-              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                On-site Location (if applicable)
-              </label>
-              <input
-                type="text"
-                value={intLocation}
-                onChange={(e) => setIntLocation(e.target.value)}
-                placeholder="Office building / floor"
-                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-2.5">
-              <div>
-                <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                  Interviewer Name
-                </label>
-                <input
-                  type="text"
-                  value={intInterviewerName}
-                  onChange={(e) => setIntInterviewerName(e.target.value)}
-                  className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
-                />
-              </div>
-              <div>
-                <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                  Interviewer Position
-                </label>
-                <input
-                  type="text"
-                  value={intInterviewerPosition}
-                  onChange={(e) => setIntInterviewerPosition(e.target.value)}
-                  className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                Candidate Preparation Notes
-              </label>
-              <textarea
-                rows={2}
-                value={intPrepNotes}
-                onChange={(e) => setIntPrepNotes(e.target.value)}
-                className="mt-1 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 py-2 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
-              />
-            </div>
-
-            <div>
-              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                Questions to Ask / Expected Questions
-              </label>
-              <textarea
-                rows={2}
-                value={intQuestions}
-                onChange={(e) => setIntQuestions(e.target.value)}
-                className="mt-1 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 py-2 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
-              />
-            </div>
-
-            <button
-              type="submit"
-              disabled={isPending}
-              className="btn-primary h-10 w-full px-4 text-xs disabled:opacity-50"
+          <Card padding="md" className="lg:col-span-5">
+            <form
+              onSubmit={handleScheduleInterview}
+              className="space-y-3 text-xs"
             >
-              {isPending ? "Scheduling..." : "Save Interview"}
-            </button>
-          </form>
+              <div className="flex items-center gap-2">
+                <CalendarClock className="h-4 w-4 text-primary-text" />
+                <h3 className="text-section-title text-foreground">
+                  Schedule Interview
+                </h3>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2.5">
+                <FormField label="Interview Type">
+                  <Select
+                    selectSize="lg"
+                    value={intType}
+                    onChange={(e) =>
+                      setIntType(e.target.value as InterviewType)
+                    }
+                  >
+                    {INTERVIEW_TYPES.map((t) => (
+                      <option key={t} value={t}>
+                        {INTERVIEW_TYPE_LABELS[t]}
+                      </option>
+                    ))}
+                  </Select>
+                </FormField>
+                <FormField label="Duration (min)">
+                  <Input
+                    type="number"
+                    inputSize="lg"
+                    min={10}
+                    max={480}
+                    value={intDuration}
+                    onChange={(e) => setIntDuration(e.target.value)}
+                    className="tabular-nums"
+                  />
+                </FormField>
+              </div>
+
+              <FormField label="Date & Time" required>
+                <Input
+                  type="datetime-local"
+                  inputSize="lg"
+                  required
+                  value={intStartsAt}
+                  onChange={(e) => setIntStartsAt(e.target.value)}
+                  className="tabular-nums"
+                />
+              </FormField>
+
+              <FormField label="Meeting Link (Zoom / Google Meet / Teams)">
+                <Input
+                  type="url"
+                  inputSize="lg"
+                  value={intMeetingUrl}
+                  onChange={(e) => setIntMeetingUrl(e.target.value)}
+                  placeholder="https://meet.google.com/..."
+                />
+              </FormField>
+
+              <FormField label="On-site Location (if applicable)">
+                <Input
+                  type="text"
+                  inputSize="lg"
+                  value={intLocation}
+                  onChange={(e) => setIntLocation(e.target.value)}
+                  placeholder="Office building / floor"
+                />
+              </FormField>
+
+              <div className="grid grid-cols-2 gap-2.5">
+                <FormField label="Interviewer Name">
+                  <Input
+                    type="text"
+                    inputSize="lg"
+                    value={intInterviewerName}
+                    onChange={(e) => setIntInterviewerName(e.target.value)}
+                  />
+                </FormField>
+                <FormField label="Interviewer Position">
+                  <Input
+                    type="text"
+                    inputSize="lg"
+                    value={intInterviewerPosition}
+                    onChange={(e) => setIntInterviewerPosition(e.target.value)}
+                  />
+                </FormField>
+              </div>
+
+              <FormField label="Candidate Preparation Notes">
+                <Textarea
+                  rows={2}
+                  value={intPrepNotes}
+                  onChange={(e) => setIntPrepNotes(e.target.value)}
+                />
+              </FormField>
+
+              <FormField label="Questions to Ask / Expected Questions">
+                <Textarea
+                  rows={2}
+                  value={intQuestions}
+                  onChange={(e) => setIntQuestions(e.target.value)}
+                />
+              </FormField>
+
+              <Button
+                type="submit"
+                variant="primary"
+                size="lg"
+                disabled={isPending}
+                className="w-full"
+              >
+                {isPending ? "Scheduling..." : "Save Interview"}
+              </Button>
+            </form>
+          </Card>
         </div>
       )}
 
       {tab === "followups" && (
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
           <div className="space-y-3 lg:col-span-7">
-            <div className="elevation-1 space-y-3 rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] p-5 text-xs dark:border-[#24332a] dark:bg-[#111a15]">
-              <h2 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
+            <Card padding="md" className="space-y-3 text-xs">
+              <h2 className="text-section-title text-foreground">
                 Follow-up Tasks & Reminders
               </h2>
               {app.followUps.length === 0 ? (
-                <p className="py-6 text-[#3f674f]">
+                <p className="py-6 text-muted-foreground">
                   No follow-up tasks for this application.
                 </p>
               ) : (
@@ -1176,30 +1087,29 @@ export function ApplicationDetailClient({
                   {app.followUps.map((f) => (
                     <div
                       key={f.id}
-                      className="flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-[#bdcabf]/50 bg-[#eff5ee] p-3.5 dark:border-[#24332a] dark:bg-[#17231c]"
+                      className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-border-subtle bg-surface-subtle p-3.5"
                     >
                       <div>
-                        <p className="font-semibold text-[#171d19] dark:text-[#ecf3eb]">
+                        <p className="font-semibold text-foreground">
                           {f.title}
                         </p>
-                        <p className="text-[11px] text-[#3f674f] tabular-nums">
+                        <p className="text-[11px] text-muted-foreground tabular-nums">
                           {FOLLOW_UP_TYPE_LABELS[f.type as FollowUpType]} · Due{" "}
                           {formatDate(f.dueOn)} · Status:{" "}
-                          <strong className="uppercase text-[#3e4a41] dark:text-[#b7c6ba]">
+                          <strong className="uppercase text-foreground">
                             {f.status}
                           </strong>
                         </p>
                         {f.note && (
-                          <p className="mt-1 text-[#3e4a41] dark:text-[#a5d1b4]">
-                            {f.note}
-                          </p>
+                          <p className="mt-1 text-muted-foreground">{f.note}</p>
                         )}
                       </div>
 
                       {f.status === "open" && (
                         <div className="flex items-center gap-1.5">
-                          <button
-                            type="button"
+                          <Button
+                            variant="secondary"
+                            size="sm"
                             disabled={isPending}
                             onClick={() =>
                               startTransition(async () => {
@@ -1211,12 +1121,12 @@ export function ApplicationDetailClient({
                                 router.refresh();
                               })
                             }
-                            className="rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 py-1 text-[11px] font-semibold text-[#171d19] hover:border-[#6e7a71] hover:bg-[#eff5ee] dark:border-[#2d3d33] dark:bg-[#1d2b23] dark:text-[#b7c6ba]"
                           >
                             Snooze +3d
-                          </button>
-                          <button
-                            type="button"
+                          </Button>
+                          <Button
+                            variant="primary"
+                            size="sm"
                             disabled={isPending}
                             onClick={() =>
                               startTransition(async () => {
@@ -1225,96 +1135,86 @@ export function ApplicationDetailClient({
                                 router.refresh();
                               })
                             }
-                            className="btn-primary h-8 px-3 text-[11px]"
                           >
                             <CheckCircle2 className="h-3 w-3" />
                             Complete
-                          </button>
+                          </Button>
                         </div>
                       )}
                     </div>
                   ))}
                 </div>
               )}
-            </div>
+            </Card>
           </div>
 
-          <form
-            onSubmit={handleAddFollowUp}
-            className="elevation-1 space-y-3 rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] p-5 text-xs lg:col-span-5 dark:border-[#24332a] dark:bg-[#111a15]"
-          >
-            <div className="flex items-center gap-2">
-              <Plus className="h-4 w-4 text-[#006a42]" />
-              <h3 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
-                Add Follow-up Reminder
-              </h3>
-            </div>
-
-            <div className="grid grid-cols-2 gap-2.5">
-              <div>
-                <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                  Reminder Type
-                </label>
-                <select
-                  value={taskType}
-                  onChange={(e) => setTaskType(e.target.value as FollowUpType)}
-                  className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
-                >
-                  {FOLLOW_UP_TYPES.map((t) => (
-                    <option key={t} value={t}>
-                      {FOLLOW_UP_TYPE_LABELS[t]}
-                    </option>
-                  ))}
-                </select>
+          <Card padding="md" className="lg:col-span-5">
+            <form onSubmit={handleAddFollowUp} className="space-y-3 text-xs">
+              <div className="flex items-center gap-2">
+                <Plus className="h-4 w-4 text-primary-text" />
+                <h3 className="text-section-title text-foreground">
+                  Add Follow-up Reminder
+                </h3>
               </div>
-              <div>
-                <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                  Due Date *
-                </label>
-                <input
-                  type="date"
+
+              <div className="grid grid-cols-2 gap-2.5">
+                <FormField label="Reminder Type">
+                  <Select
+                    selectSize="lg"
+                    value={taskType}
+                    onChange={(e) =>
+                      setTaskType(e.target.value as FollowUpType)
+                    }
+                  >
+                    {FOLLOW_UP_TYPES.map((t) => (
+                      <option key={t} value={t}>
+                        {FOLLOW_UP_TYPE_LABELS[t]}
+                      </option>
+                    ))}
+                  </Select>
+                </FormField>
+                <FormField label="Due Date" required>
+                  <Input
+                    type="date"
+                    inputSize="lg"
+                    required
+                    value={taskDueOn}
+                    onChange={(e) => setTaskDueOn(e.target.value)}
+                    className="tabular-nums"
+                  />
+                </FormField>
+              </div>
+
+              <FormField label="Title" required>
+                <Input
+                  type="text"
+                  inputSize="lg"
                   required
-                  value={taskDueOn}
-                  onChange={(e) => setTaskDueOn(e.target.value)}
-                  className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] tabular-nums dark:border-[#2d3d33] dark:bg-[#17231c]"
+                  value={taskTitle}
+                  onChange={(e) => setTaskTitle(e.target.value)}
+                  placeholder="Check in with HR after technical interview"
                 />
-              </div>
-            </div>
+              </FormField>
 
-            <div>
-              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                Title *
-              </label>
-              <input
-                type="text"
-                required
-                value={taskTitle}
-                onChange={(e) => setTaskTitle(e.target.value)}
-                placeholder="Check in with HR after technical interview"
-                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
-              />
-            </div>
+              <FormField label="Note">
+                <Textarea
+                  rows={2}
+                  value={taskNote}
+                  onChange={(e) => setTaskNote(e.target.value)}
+                />
+              </FormField>
 
-            <div>
-              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                Note
-              </label>
-              <textarea
-                rows={2}
-                value={taskNote}
-                onChange={(e) => setTaskNote(e.target.value)}
-                className="mt-1 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 py-2 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
-              />
-            </div>
-
-            <button
-              type="submit"
-              disabled={isPending}
-              className="btn-primary h-10 w-full px-4 text-xs disabled:opacity-50"
-            >
-              Add Follow-up Task
-            </button>
-          </form>
+              <Button
+                type="submit"
+                variant="primary"
+                size="lg"
+                disabled={isPending}
+                className="w-full"
+              >
+                Add Follow-up Task
+              </Button>
+            </form>
+          </Card>
         </div>
       )}
 
@@ -1351,6 +1251,16 @@ export function ApplicationDetailClient({
         stages={app.allStages}
         source="manual"
         onMoved={() => router.refresh()}
+      />
+
+      <ConfirmDialog
+        open={deleteOpen}
+        onOpenChange={setDeleteOpen}
+        title={`Delete application ${app.code}?`}
+        description="This will permanently delete this application, its timeline history, interviews, and follow-up tasks."
+        confirmLabel="Delete Application"
+        pending={isPending}
+        onConfirm={handleConfirmDelete}
       />
     </div>
   );
@@ -1391,19 +1301,19 @@ function InterviewCard({
   }
 
   return (
-    <div className="space-y-2.5 rounded-2xl border border-[#bdcabf]/50 bg-[#eff5ee] p-3.5 dark:border-[#24332a] dark:bg-[#17231c]">
+    <div className="space-y-2.5 rounded-xl border border-border-subtle bg-surface-subtle p-3.5">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <span className="font-semibold text-[#171d19] dark:text-[#ecf3eb]">
+        <span className="font-semibold text-foreground">
           {INTERVIEW_TYPE_LABELS[interview.interviewType as InterviewType] ??
             interview.interviewType}
         </span>
-        <span className="font-mono font-semibold text-[#006a42] tabular-nums dark:text-[#86f9ba]">
+        <span className="font-mono font-semibold text-primary-text tabular-nums">
           {formatDateTime(interview.startsAt, interview.timezone)} (
           {interview.durationMinutes} min)
         </span>
       </div>
 
-      <div className="flex flex-wrap gap-3 text-[11px] text-[#3f674f]">
+      <div className="flex flex-wrap gap-3 text-[11px] text-muted-foreground">
         {interview.interviewerName && (
           <span>
             Interviewer: {interview.interviewerName}
@@ -1418,7 +1328,7 @@ function InterviewCard({
             href={interview.meetingUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="font-semibold text-[#006a42] hover:underline dark:text-[#86f9ba]"
+            className="font-semibold text-primary-text hover:underline"
           >
             Meeting Link
           </a>
@@ -1426,57 +1336,59 @@ function InterviewCard({
       </div>
 
       {interview.preparationNotes && (
-        <p className="text-[#3e4a41] dark:text-[#b7c6ba]">
+        <p className="text-foreground/90">
           <strong>Prep Notes:</strong> {interview.preparationNotes}
         </p>
       )}
       {interview.questions && (
-        <p className="text-[#3e4a41] dark:text-[#b7c6ba]">
+        <p className="text-foreground/90">
           <strong>Questions:</strong> {interview.questions}
         </p>
       )}
 
-      <div className="grid grid-cols-1 gap-2 border-t border-[#bdcabf]/50 pt-2.5 sm:grid-cols-3 dark:border-[#24332a]">
-        <select
+      <div className="grid grid-cols-1 gap-2 border-t border-border-subtle pt-2.5 sm:grid-cols-3">
+        <Select
+          aria-label="Interview status"
+          selectSize="md"
           value={status}
           onChange={(e) => setStatus(e.target.value as InterviewStatus)}
-          className="h-9 rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#111a15]"
         >
           {INTERVIEW_STATUSES.map((s) => (
             <option key={s} value={s}>
               Status: {INTERVIEW_STATUS_LABELS[s]}
             </option>
           ))}
-        </select>
+        </Select>
 
-        <select
+        <Select
+          aria-label="Interview result"
+          selectSize="md"
           value={result}
           onChange={(e) => setResult(e.target.value as InterviewResult)}
-          className="h-9 rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#111a15]"
         >
           {INTERVIEW_RESULTS.map((r) => (
             <option key={r} value={r}>
               Result: {INTERVIEW_RESULT_LABELS[r]}
             </option>
           ))}
-        </select>
+        </Select>
 
-        <button
-          type="button"
+        <Button
+          variant="primary"
+          size="md"
           disabled={isPending}
           onClick={handleSaveOutcome}
-          className="btn-primary h-10 px-3 text-xs"
         >
           Save Feedback & Result
-        </button>
+        </Button>
       </div>
 
-      <input
+      <Input
         type="text"
+        inputSize="md"
         value={feedback}
         onChange={(e) => setFeedback(e.target.value)}
         placeholder="Post-interview feedback or outcome notes..."
-        className="h-9 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#111a15]"
       />
     </div>
   );
@@ -1521,56 +1433,59 @@ function ApplicationDocumentsTab({
   return (
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
       <div className="space-y-4 lg:col-span-7">
-        <div className="elevation-1 rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] p-5 space-y-3 text-xs dark:border-[#24332a] dark:bg-[#111a15]">
+        <Card padding="md" className="space-y-3 text-xs">
           <div className="flex items-center justify-between">
-            <h2 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
+            <h2 className="text-section-title text-foreground">
               Documents Associated with This Application
             </h2>
             <Link
               href="/documents"
-              className="font-semibold text-[#006a42] hover:underline"
+              className="font-semibold text-primary-text hover:underline"
             >
               Open Document Repository &rarr;
             </Link>
           </div>
 
-          <div className="grid grid-cols-2 gap-3 rounded-xl bg-[#eff5ee] p-3 dark:bg-[#17231c]">
+          <div className="grid grid-cols-2 gap-3 rounded-xl bg-surface-subtle p-3">
             <div>
-              <span className="text-[#3f674f]">CV Version Recorded:</span>
-              <p className="mt-0.5 font-semibold text-[#171d19] dark:text-[#ecf3eb]">
+              <span className="text-muted-foreground">CV Version Recorded:</span>
+              <p className="mt-0.5 font-semibold text-foreground">
                 {cvVersionLabel || "Not specified"}
               </p>
             </div>
             <div>
-              <span className="text-[#3f674f]">Cover Letter Version:</span>
-              <p className="mt-0.5 font-semibold text-[#171d19] dark:text-[#ecf3eb]">
+              <span className="text-muted-foreground">
+                Cover Letter Version:
+              </span>
+              <p className="mt-0.5 font-semibold text-foreground">
                 {coverLetterVersionLabel || "Not specified"}
               </p>
             </div>
           </div>
 
           {!careerExtras || careerExtras.attachedDocuments.length === 0 ? (
-            <p className="py-4 text-[#3f674f]">
-              No repository document versions linked yet. Use the form on the right to link a CV, Cover Letter, or Offer document version.
+            <p className="py-4 text-muted-foreground">
+              No repository document versions linked yet. Use the form on the
+              right to link a CV, Cover Letter, or Offer document version.
             </p>
           ) : (
             <div className="space-y-2">
               {careerExtras.attachedDocuments.map((att) => (
                 <div
                   key={att.linkId}
-                  className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-[#bdcabf]/50 p-3 dark:border-[#24332a]"
+                  className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-border-subtle p-3"
                 >
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="rounded-full bg-[#c0edcf]/60 px-2.5 py-0.5 font-mono text-[10px] font-semibold uppercase text-[#005232]">
+                      <Badge variant="primary" className="font-mono uppercase">
                         {att.role}
-                      </span>
-                      <span className="font-semibold text-[#171d19] dark:text-[#ecf3eb]">
+                      </Badge>
+                      <span className="font-semibold text-foreground">
                         {att.document.title} ({att.version.label})
                       </span>
                     </div>
                     {att.version.filename && (
-                      <p className="mt-0.5 font-mono text-[11px] text-[#3f674f]">
+                      <p className="mt-0.5 font-mono text-[11px] text-muted-foreground">
                         {att.version.filename}
                       </p>
                     )}
@@ -1578,16 +1493,18 @@ function ApplicationDocumentsTab({
 
                   <div className="flex items-center gap-2">
                     {att.version.storageKey && (
-                      <a
-                        href={`/api/documents/versions/${att.version.id}/file?download=1`}
-                        download
-                        className="btn-secondary h-8 px-2.5 text-xs"
-                      >
-                        Download
-                      </a>
+                      <Button variant="secondary" size="sm" asChild>
+                        <a
+                          href={`/api/documents/versions/${att.version.id}/file?download=1`}
+                          download
+                        >
+                          Download
+                        </a>
+                      </Button>
                     )}
-                    <button
-                      type="button"
+                    <Button
+                      variant="destructive"
+                      size="sm"
                       disabled={isPending}
                       onClick={() =>
                         startTransition(async () => {
@@ -1599,70 +1516,64 @@ function ApplicationDocumentsTab({
                           router.refresh();
                         })
                       }
-                      className="btn-destructive h-8 px-3 text-xs"
                     >
                       Unlink
-                    </button>
+                    </Button>
                   </div>
                 </div>
               ))}
             </div>
           )}
-        </div>
+        </Card>
       </div>
 
-      <form
-        onSubmit={handleAttach}
-        className="elevation-1 rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] p-5 space-y-3.5 text-xs lg:col-span-5 dark:border-[#24332a] dark:bg-[#111a15]"
-      >
-        <h3 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
-          Associate Repository Document Version
-        </h3>
+      <Card padding="md" className="lg:col-span-5">
+        <form onSubmit={handleAttach} className="space-y-3.5 text-xs">
+          <h3 className="text-section-title text-foreground">
+            Associate Repository Document Version
+          </h3>
 
-        <div>
-          <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-            Select Document Version
-          </label>
-          <select
-            value={selectedVerId}
-            onChange={(e) => setSelectedVerId(e.target.value)}
-            className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
+          <FormField label="Select Document Version">
+            <Select
+              selectSize="lg"
+              value={selectedVerId}
+              onChange={(e) => setSelectedVerId(e.target.value)}
+            >
+              <option value="">Choose a document version...</option>
+              {(careerExtras?.availableVersions ?? []).map((item) => (
+                <option key={item.version.id} value={item.version.id}>
+                  {item.document.title} - v{item.version.versionNo} (
+                  {item.version.label})
+                </option>
+              ))}
+            </Select>
+          </FormField>
+
+          <FormField label="Role on This Application">
+            <Select
+              selectSize="lg"
+              value={role}
+              onChange={(e) =>
+                setRole(e.target.value as "cv" | "cover_letter" | "other")
+              }
+            >
+              <option value="cv">CV Version Used</option>
+              <option value="cover_letter">Cover Letter Version</option>
+              <option value="other">Supporting / Offer Document</option>
+            </Select>
+          </FormField>
+
+          <Button
+            type="submit"
+            variant="primary"
+            size="lg"
+            disabled={isPending || !selectedVerId}
+            className="w-full"
           >
-            <option value="">Choose a document version...</option>
-            {(careerExtras?.availableVersions ?? []).map((item) => (
-              <option key={item.version.id} value={item.version.id}>
-                {item.document.title} - v{item.version.versionNo} (
-                {item.version.label})
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div>
-          <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-            Role on This Application
-          </label>
-          <select
-            value={role}
-            onChange={(e) =>
-              setRole(e.target.value as "cv" | "cover_letter" | "other")
-            }
-            className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
-          >
-            <option value="cv">CV Version Used</option>
-            <option value="cover_letter">Cover Letter Version</option>
-            <option value="other">Supporting / Offer Document</option>
-          </select>
-        </div>
-
-        <button
-          type="submit"
-          disabled={isPending || !selectedVerId}
-          className="btn-primary h-10 w-full px-4 text-xs disabled:opacity-50"
-        >
-          Link Document Version
-        </button>
-      </form>
+            Link Document Version
+          </Button>
+        </form>
+      </Card>
     </div>
   );
 }
@@ -1736,179 +1647,161 @@ function ApplicationOfferTab({
   }
 
   return (
-    <form
-      onSubmit={handleSaveOffer}
-      className="elevation-1 rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] p-5 space-y-4 text-xs dark:border-[#24332a] dark:bg-[#111a15]"
-    >
-      <div>
-        <h2 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
-          Employment Offer & Recruitment Outcome Management
-        </h2>
-        <p className="text-[#3f674f]">
-          Record proposed salary, benefits, joining date, and offer decision. Accepting an offer transitions the application to Hired (Successful).
-        </p>
-      </div>
-
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+    <Card padding="md">
+      <form onSubmit={handleSaveOffer} className="space-y-4 text-xs">
         <div>
-          <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-            Offered Position Title *
-          </label>
-          <input
-            type="text"
-            required
-            value={positionTitle}
-            onChange={(e) => setPositionTitle(e.target.value)}
-            className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
-          />
+          <h2 className="text-section-title text-foreground">
+            Employment Offer & Recruitment Outcome Management
+          </h2>
+          <p className="text-muted-foreground">
+            Record proposed salary, benefits, joining date, and offer decision.
+            Accepting an offer transitions the application to Hired (Successful).
+          </p>
         </div>
 
-        <div>
-          <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-            Proposed Base Salary
-          </label>
-          <input
-            type="number"
-            min={0}
-            value={baseSalary}
-            onChange={(e) => setBaseSalary(e.target.value)}
-            placeholder="28500000"
-            className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] tabular-nums dark:border-[#2d3d33] dark:bg-[#17231c]"
-          />
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <FormField label="Offered Position Title" required>
+            <Input
+              type="text"
+              inputSize="lg"
+              required
+              value={positionTitle}
+              onChange={(e) => setPositionTitle(e.target.value)}
+            />
+          </FormField>
+
+          <FormField label="Proposed Base Salary">
+            <Input
+              type="number"
+              inputSize="lg"
+              min={0}
+              value={baseSalary}
+              onChange={(e) => setBaseSalary(e.target.value)}
+              placeholder="28500000"
+              className="tabular-nums"
+            />
+          </FormField>
+
+          <FormField label="Currency & Period">
+            <div className="flex gap-2">
+              <Select
+                aria-label="Offer currency"
+                selectSize="lg"
+                wrapperClassName="w-24 shrink-0"
+                value={currency}
+                onChange={(e) => setCurrency(e.target.value as Currency)}
+              >
+                {CURRENCIES.map((c) => (
+                  <option key={c} value={c}>
+                    {c}
+                  </option>
+                ))}
+              </Select>
+              <Select
+                aria-label="Offer salary period"
+                selectSize="lg"
+                value={salaryPeriod}
+                onChange={(e) =>
+                  setSalaryPeriod(e.target.value as SalaryPeriod)
+                }
+              >
+                {SALARY_PERIODS.map((p) => (
+                  <option key={p} value={p}>
+                    {SALARY_PERIOD_LABELS[p]}
+                  </option>
+                ))}
+              </Select>
+            </div>
+          </FormField>
+
+          <FormField label="Offer Received Date" required>
+            <Input
+              type="date"
+              inputSize="lg"
+              required
+              value={offerReceivedOn}
+              onChange={(e) => setOfferReceivedOn(e.target.value)}
+              className="tabular-nums"
+            />
+          </FormField>
+
+          <FormField label="Offer Response Deadline">
+            <Input
+              type="date"
+              inputSize="lg"
+              value={responseDeadline}
+              onChange={(e) => setResponseDeadline(e.target.value)}
+              className="tabular-nums"
+            />
+          </FormField>
+
+          <FormField label="Proposed Joining Date">
+            <Input
+              type="date"
+              inputSize="lg"
+              value={joiningDate}
+              onChange={(e) => setJoiningDate(e.target.value)}
+              className="tabular-nums"
+            />
+          </FormField>
         </div>
 
-        <div>
-          <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-            Currency & Period
-          </label>
-          <div className="mt-1 flex gap-2">
-            <select
-              value={currency}
-              onChange={(e) => setCurrency(e.target.value as Currency)}
-              className="h-10 w-24 rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <FormField label="Offer Decision">
+            <Select
+              selectSize="lg"
+              value={decision}
+              onChange={(e) => setDecision(e.target.value as OfferDecision)}
+              className="font-semibold"
             >
-              {CURRENCIES.map((c) => (
-                <option key={c} value={c}>
-                  {c}
+              {OFFER_DECISIONS.map((d) => (
+                <option key={d} value={d}>
+                  {OFFER_DECISION_LABELS[d]}
                 </option>
               ))}
-            </select>
-            <select
-              value={salaryPeriod}
-              onChange={(e) => setSalaryPeriod(e.target.value as SalaryPeriod)}
-              className="h-10 flex-1 rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
-            >
-              {SALARY_PERIODS.map((p) => (
-                <option key={p} value={p}>
-                  {SALARY_PERIOD_LABELS[p]}
-                </option>
-              ))}
-            </select>
+            </Select>
+          </FormField>
+
+          <div className="flex items-end pb-2">
+            <label className="inline-flex items-center gap-2 font-semibold text-foreground">
+              <input
+                type="checkbox"
+                checked={syncStage}
+                onChange={(e) => setSyncStage(e.target.checked)}
+              />
+              Automatically sync pipeline stage (Offer / Hired / Withdrawn)
+            </label>
           </div>
         </div>
 
-        <div>
-          <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-            Offer Received Date *
-          </label>
-          <input
-            type="date"
-            required
-            value={offerReceivedOn}
-            onChange={(e) => setOfferReceivedOn(e.target.value)}
-            className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] tabular-nums dark:border-[#2d3d33] dark:bg-[#17231c]"
+        <FormField label="Benefits & Compensation Package Breakdown">
+          <Textarea
+            rows={3}
+            value={benefits}
+            onChange={(e) => setBenefits(e.target.value)}
+            placeholder="THR, bonus structure, health insurance, equity/ESOP, leave days, remote allowance..."
           />
-        </div>
+        </FormField>
 
-        <div>
-          <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-            Offer Response Deadline
-          </label>
-          <input
-            type="date"
-            value={responseDeadline}
-            onChange={(e) => setResponseDeadline(e.target.value)}
-            className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] tabular-nums dark:border-[#2d3d33] dark:bg-[#17231c]"
+        <FormField label="Negotiation & Offer Notes">
+          <Textarea
+            rows={2}
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
           />
-        </div>
+        </FormField>
 
-        <div>
-          <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-            Proposed Joining Date
-          </label>
-          <input
-            type="date"
-            value={joiningDate}
-            onChange={(e) => setJoiningDate(e.target.value)}
-            className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] tabular-nums dark:border-[#2d3d33] dark:bg-[#17231c]"
-          />
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <div>
-          <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-            Offer Decision
-          </label>
-          <select
-            value={decision}
-            onChange={(e) => setDecision(e.target.value as OfferDecision)}
-            className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs font-semibold text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
+        <div className="flex justify-end">
+          <Button
+            type="submit"
+            variant="primary"
+            size="lg"
+            disabled={isPending}
           >
-            {OFFER_DECISIONS.map((d) => (
-              <option key={d} value={d}>
-                {OFFER_DECISION_LABELS[d]}
-              </option>
-            ))}
-          </select>
+            {isPending ? "Saving..." : "Save Employment Offer"}
+          </Button>
         </div>
-
-        <div className="flex items-end pb-2">
-          <label className="inline-flex items-center gap-2 font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-            <input
-              type="checkbox"
-              checked={syncStage}
-              onChange={(e) => setSyncStage(e.target.checked)}
-            />
-            Automatically sync pipeline stage (Offer / Hired / Withdrawn)
-          </label>
-        </div>
-      </div>
-
-      <div>
-        <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-          Benefits & Compensation Package Breakdown
-        </label>
-        <textarea
-          rows={3}
-          value={benefits}
-          onChange={(e) => setBenefits(e.target.value)}
-          placeholder="THR, bonus structure, health insurance, equity/ESOP, leave days, remote allowance..."
-          className="mt-1 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] p-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
-        />
-      </div>
-
-      <div>
-        <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-          Negotiation & Offer Notes
-        </label>
-        <textarea
-          rows={2}
-          value={notes}
-          onChange={(e) => setNotes(e.target.value)}
-          className="mt-1 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] p-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
-        />
-      </div>
-
-      <div className="flex justify-end">
-        <button
-          type="submit"
-          disabled={isPending}
-          className="btn-primary h-10 px-4 text-xs disabled:opacity-50"
-        >
-          {isPending ? "Saving..." : "Save Employment Offer"}
-        </button>
-      </div>
-    </form>
+      </form>
+    </Card>
   );
 }

@@ -4,6 +4,7 @@ import { AlertCircle, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { toast } from "sonner";
+import { Button } from "@/components/ui";
 import { removeSampleDataAction } from "@/server/actions/settings";
 
 export function SampleDataBanner({
@@ -37,9 +38,9 @@ export function SampleDataBanner({
   }
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#e8c084]/60 bg-[#ffdead]/45 px-4 py-2 text-xs text-[#5d4211] xl:px-8 dark:border-amber-900/60 dark:bg-amber-950/40 dark:text-amber-200">
+    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-warning-border bg-warning-soft px-4 py-2 text-xs text-warning-on-soft xl:px-8">
       <div className="flex items-center gap-2">
-        <AlertCircle className="h-4 w-4 shrink-0 text-[#745725] dark:text-amber-400" />
+        <AlertCircle className="h-4 w-4 shrink-0 text-warning" />
         <span className="tabular-nums">
           <strong>Sample data is loaded</strong> ({sampleJobsCount} sample jobs,{" "}
           {sampleAppsCount} sample applications, marked with a{" "}
@@ -49,15 +50,16 @@ export function SampleDataBanner({
             : " Add a real application or remove sample data at any time."}
         </span>
       </div>
-      <button
-        type="button"
+      <Button
+        variant="secondary"
+        size="sm"
         disabled={isPending}
         onClick={handleRemove}
-        className="inline-flex items-center gap-1.5 rounded-xl border border-[#e8c084] bg-[#ffffff] px-3 py-1 text-xs font-semibold text-[#5d4211] shadow-2xs transition-colors hover:bg-[#ffdead]/40 disabled:opacity-50 dark:border-amber-800 dark:bg-[#111a15] dark:text-amber-200"
+        className="border-warning-border text-warning-on-soft"
       >
         <Trash2 className="h-3.5 w-3.5" />
         {isPending ? "Removing..." : "Remove sample data"}
-      </button>
+      </Button>
     </div>
   );
 }

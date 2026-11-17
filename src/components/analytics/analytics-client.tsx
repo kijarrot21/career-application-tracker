@@ -24,35 +24,61 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { getStageColorStyle } from "@/components/ui/badges";
+import {
+  Badge,
+  Button,
+  Card,
+  DataTableBody,
+  DataTableCell,
+  DataTableContainer,
+  DataTableHead,
+  DataTableHeader,
+  DataTableRoot,
+  DataTableRow,
+  EmptyState,
+  FormField,
+  getStageColorStyle,
+  Input,
+  PageHeader,
+  Select,
+} from "@/components/ui";
+import { cn } from "@/lib/utils";
 import type { getAnalyticsData } from "@/server/queries/analytics";
 
 type AnalyticsData = Awaited<ReturnType<typeof getAnalyticsData>>;
 
 const OUTCOME_COLORS: Record<string, string> = {
-  active: "#006a42",
-  successful: "#008655",
-  unsuccessful: "#ba1a1a",
-  withdrawn: "#6e7a71",
-  no_response: "#8f6f3b",
+  active: "var(--primary)",
+  successful: "var(--success)",
+  unsuccessful: "var(--destructive)",
+  withdrawn: "var(--subtle-foreground)",
+  no_response: "var(--warning)",
 };
 
 const PLATFORM_PALETTE = [
-  "#006a42",
-  "#008655",
-  "#3f674f",
-  "#745725",
-  "#8f6f3b",
-  "#6e7a71",
+  "var(--primary)",
+  "var(--success)",
+  "var(--info)",
+  "var(--warning)",
+  "var(--destructive)",
+  "var(--subtle-foreground)",
 ];
 
 const FUNNEL_BAR_COLORS = [
-  "bg-[#006a42]",
-  "bg-[#008655]",
-  "bg-[#3f674f]",
-  "bg-[#8f6f3b]",
-  "bg-[#745725]",
+  "bg-primary",
+  "bg-success",
+  "bg-info",
+  "bg-warning",
+  "bg-subtle-foreground",
 ];
+
+const CHART_TOOLTIP_STYLE = {
+  backgroundColor: "var(--popover)",
+  borderColor: "var(--border)",
+  borderRadius: "0.75rem",
+  color: "var(--popover-foreground)",
+  fontSize: "12px",
+};
 
 export function AnalyticsClient({ data }: { data: AnalyticsData }) {
   const router = useRouter();
@@ -103,133 +129,102 @@ export function AnalyticsClient({ data }: { data: AnalyticsData }) {
 
   return (
     <div className="mx-auto max-w-7xl space-y-6 text-xs">
-      {/* Header & Report Actions */}
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <div className="mb-1 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-[#3f674f] dark:text-[#a5d1b4]">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#006a42] dark:bg-[#69dca0]" />
-            <span>Analytics Engine · Performance Velocity</span>
-          </div>
-          <div className="flex flex-wrap items-center gap-2.5">
-            <h1 className="text-headline-md text-[#171d19] dark:text-[#ecf3eb]">
-              Result & Career Performance Analytics
-            </h1>
-            <span
-              className={`rounded-full border px-3 py-0.5 text-[11px] font-semibold ${
-                data.includeSample
-                  ? "border-[#e8c084] bg-[#ffdead]/80 text-[#5d4211]"
-                  : "border-[#a5d1b4] bg-[#c0edcf] text-[#005232]"
-              }`}
+      <PageHeader
+        breadcrumbs={[
+          { label: "Analytics Engine" },
+          { label: "Performance Velocity" },
+        ]}
+        title="Result & Career Performance Analytics"
+        badge={
+          <Badge variant={data.includeSample ? "warning" : "primary"}>
+            {data.includeSample
+              ? "Dataset: Includes Sample Records"
+              : "Dataset: Actual User Records Only"}
+          </Badge>
+        }
+        description="Conversion rates, recruitment cycle durations, and company/platform/industry performance calculated strictly from database records."
+        actions={
+          <div className="no-print flex flex-wrap items-center gap-2">
+            <Button variant="secondary" size="lg" asChild>
+              <a href={exportCsvHref} download>
+                <Download className="h-3.5 w-3.5" />
+                Export Activity Report (CSV)
+              </a>
+            </Button>
+
+            <Button
+              variant="primary"
+              size="lg"
+              onClick={() => window.print()}
             >
-              {data.includeSample
-                ? "Dataset: Includes Sample Records"
-                : "Dataset: Actual User Records Only"}
-            </span>
+              <Printer className="h-3.5 w-3.5" />
+              Print / Save PDF Report
+            </Button>
           </div>
-          <p className="mt-1 text-body-sm text-[#3f674f] dark:text-[#a5d1b4]">
-            Conversion rates, recruitment cycle durations, and
-            company/platform/industry performance calculated strictly from
-            database records.
-          </p>
-        </div>
-
-        <div className="no-print flex flex-wrap items-center gap-2">
-          <a
-            href={exportCsvHref}
-            download
-            className="btn-secondary h-10 px-4 text-xs"
-          >
-            <Download className="h-3.5 w-3.5" />
-            Export Activity Report (CSV)
-          </a>
-
-          <button
-            type="button"
-            onClick={() => window.print()}
-            className="btn-primary h-10 px-4 text-xs"
-          >
-            <Printer className="h-3.5 w-3.5" />
-            Print / Save PDF Report
-          </button>
-        </div>
-      </div>
+        }
+      />
 
       {/* Filters Bar */}
-      <form
-        onSubmit={applyFilters}
-        className="no-print elevation-1 flex flex-wrap items-end gap-3 rounded-2xl border border-[#bdcabf]/40 bg-[#ffffff] p-4 dark:border-[#24332a] dark:bg-[#111a15]"
-      >
-        <div>
-          <label
-            htmlFor="analytics-from-date"
-            className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]"
-          >
-            From Date
-          </label>
-          <input
-            id="analytics-from-date"
-            type="date"
-            value={fromDate}
-            onChange={(e) => setFromDate(e.target.value)}
-            className="mt-1 h-10 rounded-xl border border-transparent bg-[#eff5ee] px-3 text-xs text-[#171d19] tabular-nums focus:border-[#006a42] focus:bg-[#ffffff] dark:bg-[#17231c] dark:text-[#ecf3eb]"
-          />
-        </div>
+      <Card padding="sm" className="no-print">
+        <form
+          onSubmit={applyFilters}
+          className="flex flex-wrap items-end gap-3"
+        >
+          <FormField label="From Date" htmlFor="analytics-from-date">
+            <Input
+              id="analytics-from-date"
+              type="date"
+              inputSize="lg"
+              tone="subtle"
+              value={fromDate}
+              onChange={(e) => setFromDate(e.target.value)}
+              className="tabular-nums"
+            />
+          </FormField>
 
-        <div>
-          <label
-            htmlFor="analytics-to-date"
-            className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]"
-          >
-            To Date
-          </label>
-          <input
-            id="analytics-to-date"
-            type="date"
-            value={toDate}
-            onChange={(e) => setToDate(e.target.value)}
-            className="mt-1 h-10 rounded-xl border border-transparent bg-[#eff5ee] px-3 text-xs text-[#171d19] tabular-nums focus:border-[#006a42] focus:bg-[#ffffff] dark:bg-[#17231c] dark:text-[#ecf3eb]"
-          />
-        </div>
+          <FormField label="To Date" htmlFor="analytics-to-date">
+            <Input
+              id="analytics-to-date"
+              type="date"
+              inputSize="lg"
+              tone="subtle"
+              value={toDate}
+              onChange={(e) => setToDate(e.target.value)}
+              className="tabular-nums"
+            />
+          </FormField>
 
-        <div>
-          <label
-            htmlFor="analytics-sample-mode"
-            className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]"
-          >
-            Sample Records
-          </label>
-          <select
-            id="analytics-sample-mode"
-            value={sampleMode}
-            onChange={(e) =>
-              setSampleMode(e.target.value as "auto" | "include" | "exclude")
-            }
-            className="mt-1 h-10 rounded-xl border border-transparent bg-[#eff5ee] px-3 text-xs text-[#171d19] dark:bg-[#17231c] dark:text-[#ecf3eb]"
-          >
-            <option value="auto">
-              Auto (Exclude once real applications exist)
-            </option>
-            <option value="exclude">Real User Records Only</option>
-            <option value="include">Include Sample Demonstration Data</option>
-          </select>
-        </div>
+          <FormField label="Sample Records" htmlFor="analytics-sample-mode">
+            <Select
+              id="analytics-sample-mode"
+              selectSize="lg"
+              tone="subtle"
+              value={sampleMode}
+              onChange={(e) =>
+                setSampleMode(e.target.value as "auto" | "include" | "exclude")
+              }
+            >
+              <option value="auto">
+                Auto (Exclude once real applications exist)
+              </option>
+              <option value="exclude">Real User Records Only</option>
+              <option value="include">Include Sample Demonstration Data</option>
+            </Select>
+          </FormField>
 
-        <button type="submit" className="btn-primary h-10 px-4 text-xs">
-          <Filter className="h-3.5 w-3.5" />
-          Apply Filters
-        </button>
+          <Button type="submit" variant="primary" size="lg">
+            <Filter className="h-3.5 w-3.5" />
+            Apply Filters
+          </Button>
 
-        {(fromDate || toDate || sampleMode !== "auto") && (
-          <button
-            type="button"
-            onClick={resetFilters}
-            className="btn-secondary h-10 px-3.5 text-xs"
-          >
-            <RotateCcw className="h-3.5 w-3.5" />
-            Reset
-          </button>
-        )}
-      </form>
+          {(fromDate || toDate || sampleMode !== "auto") && (
+            <Button variant="secondary" size="lg" onClick={resetFilters}>
+              <RotateCcw className="h-3.5 w-3.5" />
+              Reset
+            </Button>
+          )}
+        </form>
+      </Card>
 
       {/* Primary 10 KPIs */}
       <section aria-label="All 10 Key Performance Indicators" className="space-y-3">
@@ -360,34 +355,29 @@ export function AnalyticsClient({ data }: { data: AnalyticsData }) {
       </section>
 
       {kpi.totalApplicationsSubmitted === 0 ? (
-        <div className="elevation-1 flex flex-col items-center justify-center rounded-2xl border border-[#bdcabf]/40 bg-[#ffffff] py-14 text-center dark:border-[#24332a] dark:bg-[#111a15]">
-          <BarChart3 className="h-8 w-8 text-[#3f674f]" />
-          <p className="mt-2 text-title-md text-[#171d19] dark:text-[#ecf3eb]">
-            No submitted applications in this dataset yet
-          </p>
-          <p className="mt-1 text-xs text-[#3f674f]">
-            Record applications or adjust the date/sample filter to inspect
-            recruitment funnel and conversion charts.
-          </p>
-        </div>
+        <EmptyState
+          icon={BarChart3}
+          title="No submitted applications in this dataset yet"
+          description="Record applications or adjust the date/sample filter to inspect recruitment funnel and conversion charts."
+        />
       ) : (
         <>
-          {/* Charts Row 1: Pipeline Funnel (HTML 2 bar style), Applications by Stage, Application Outcomes */}
+          {/* Charts Row 1 */}
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
             {/* Chart 1: Application Pipeline Funnel */}
-            <div className="elevation-1 rounded-2xl border border-[#bdcabf]/40 bg-[#ffffff] p-6 dark:border-[#24332a] dark:bg-[#111a15]">
+            <Card padding="lg">
               <div className="mb-4 flex items-center justify-between">
                 <div>
-                  <h2 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
+                  <h2 className="text-section-title text-foreground">
                     Application Pipeline Funnel
                   </h2>
-                  <p className="text-[11px] text-[#3f674f] dark:text-[#a5d1b4]">
+                  <p className="text-[11px] text-muted-foreground">
                     Cumulative progression across recruitment stages
                   </p>
                 </div>
-                <span className="rounded-full bg-[#eff5ee] px-2.5 py-1 text-[11px] font-semibold text-[#3f674f] dark:bg-[#17231c] dark:text-[#a5d1b4]">
+                <Badge variant="secondary" className="tabular-nums">
                   {kpi.totalApplicationsSubmitted} leads
-                </span>
+                </Badge>
               </div>
               <div className="space-y-3.5">
                 {data.funnel.map((step, idx) => {
@@ -397,19 +387,22 @@ export function AnalyticsClient({ data }: { data: AnalyticsData }) {
                   return (
                     <div key={step.key} className="space-y-1">
                       <div className="flex justify-between">
-                        <span className="font-semibold text-[#171d19] dark:text-[#ecf3eb]">
+                        <span className="font-semibold text-foreground">
                           {step.label}
                         </span>
-                        <span className="font-mono text-[#3f674f] tabular-nums dark:text-[#a5d1b4]">
+                        <span className="font-mono text-muted-foreground tabular-nums">
                           {step.count}{" "}
-                          <span className="font-bold text-[#171d19] dark:text-[#ecf3eb]">
+                          <span className="font-bold text-foreground">
                             ({pct}%)
                           </span>
                         </span>
                       </div>
-                      <div className="flex h-6 w-full overflow-hidden rounded-lg bg-[#eff5ee] dark:bg-[#17231c]">
+                      <div className="flex h-6 w-full overflow-hidden rounded-lg bg-surface-subtle">
                         <div
-                          className={`flex h-full items-center justify-end rounded-lg px-2 font-mono text-[10px] font-bold text-white transition-all duration-500 ${barColor}`}
+                          className={cn(
+                            "flex h-full items-center justify-end rounded-lg px-2 font-mono text-[10px] font-bold text-white transition-all duration-500",
+                            barColor,
+                          )}
                           style={{
                             width: `${pct}%`,
                             minWidth: step.count > 0 ? "26px" : "0px",
@@ -422,14 +415,14 @@ export function AnalyticsClient({ data }: { data: AnalyticsData }) {
                   );
                 })}
               </div>
-            </div>
+            </Card>
 
             {/* Chart 2: Applications by Recruitment Stage */}
-            <div className="elevation-1 rounded-2xl border border-[#bdcabf]/40 bg-[#ffffff] p-6 dark:border-[#24332a] dark:bg-[#111a15]">
-              <h2 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
+            <Card padding="lg">
+              <h2 className="text-section-title text-foreground">
                 Applications by Recruitment Stage
               </h2>
-              <p className="mb-4 text-[11px] text-[#3f674f] dark:text-[#a5d1b4]">
+              <p className="mb-4 text-[11px] text-muted-foreground">
                 Current snapshot across active and terminal stages
               </p>
               <div className="space-y-2.5">
@@ -444,33 +437,33 @@ export function AnalyticsClient({ data }: { data: AnalyticsData }) {
                       key={st.id}
                       className="flex items-center gap-2.5 text-[11px]"
                     >
-                      <span className="w-36 truncate font-medium text-[#171d19] dark:text-[#ecf3eb]">
+                      <span className="w-36 truncate font-medium text-foreground">
                         {st.name}
                       </span>
-                      <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-[#eff5ee] dark:bg-[#17231c]">
+                      <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-surface-subtle">
                         <div
-                          className={`h-full rounded-full ${style.dot}`}
+                          className={cn("h-full rounded-full", style.dot)}
                           style={{ width: `${widthPct}%` }}
                         />
                       </div>
-                      <span className="w-6 text-right font-mono font-bold text-[#171d19] tabular-nums dark:text-[#ecf3eb]">
+                      <span className="w-6 text-right font-mono font-bold text-foreground tabular-nums">
                         {st.count}
                       </span>
                     </div>
                   );
                 })}
               </div>
-            </div>
+            </Card>
 
             {/* Chart 3: Application Outcomes */}
-            <div className="elevation-1 rounded-2xl border border-[#bdcabf]/40 bg-[#ffffff] p-6 dark:border-[#24332a] dark:bg-[#111a15]">
-              <h2 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
+            <Card padding="lg">
+              <h2 className="text-section-title text-foreground">
                 Application Outcomes
               </h2>
-              <p className="mb-4 text-[11px] text-[#3f674f] dark:text-[#a5d1b4]">
+              <p className="mb-4 text-[11px] text-muted-foreground">
                 Active vs closed recruitment outcomes
               </p>
-              <div className="flex items-center gap-4">
+              <div className="flex flex-wrap items-center gap-4">
                 <div className="h-44 w-44 shrink-0">
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
@@ -486,11 +479,13 @@ export function AnalyticsClient({ data }: { data: AnalyticsData }) {
                         {data.outcomeDistribution.map((entry) => (
                           <Cell
                             key={entry.key}
-                            fill={OUTCOME_COLORS[entry.key] ?? "#006a42"}
+                            fill={
+                              OUTCOME_COLORS[entry.key] ?? "var(--primary)"
+                            }
                           />
                         ))}
                       </Pie>
-                      <Tooltip />
+                      <Tooltip contentStyle={CHART_TOOLTIP_STYLE} />
                     </PieChart>
                   </ResponsiveContainer>
                 </div>
@@ -501,30 +496,29 @@ export function AnalyticsClient({ data }: { data: AnalyticsData }) {
                         className="h-2.5 w-2.5 shrink-0 rounded-full"
                         style={{
                           backgroundColor:
-                            OUTCOME_COLORS[item.key] ?? "#006a42",
+                            OUTCOME_COLORS[item.key] ?? "var(--primary)",
                         }}
                       />
-                      <span className="text-[#3e4a41] dark:text-[#b7c6ba]">
+                      <span className="text-muted-foreground">
                         {item.name}:
                       </span>
-                      <span className="font-mono font-bold text-[#171d19] tabular-nums dark:text-[#ecf3eb]">
+                      <span className="font-mono font-bold text-foreground tabular-nums">
                         {item.value}
                       </span>
                     </div>
                   ))}
                 </div>
               </div>
-            </div>
+            </Card>
           </div>
 
-          {/* Charts Row 2: Application Activity Over Time + Monthly Recruitment Performance */}
+          {/* Charts Row 2 */}
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-            {/* Chart 4 */}
-            <div className="elevation-1 rounded-2xl border border-[#bdcabf]/40 bg-[#ffffff] p-6 dark:border-[#24332a] dark:bg-[#111a15]">
-              <h2 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
+            <Card padding="lg">
+              <h2 className="text-section-title text-foreground">
                 Application Activity Over Time
               </h2>
-              <p className="mb-4 text-[11px] text-[#3f674f] dark:text-[#a5d1b4]">
+              <p className="mb-4 text-[11px] text-muted-foreground">
                 Monthly volume of submitted job applications
               </p>
               <div className="h-60 w-full">
@@ -533,25 +527,24 @@ export function AnalyticsClient({ data }: { data: AnalyticsData }) {
                     <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
                     <XAxis dataKey="month" tick={{ fontSize: 11 }} />
                     <YAxis allowDecimals={false} tick={{ fontSize: 11 }} />
-                    <Tooltip />
+                    <Tooltip contentStyle={CHART_TOOLTIP_STYLE} />
                     <Bar
                       dataKey="submitted"
                       name="Submitted Applications"
-                      fill="#006a42"
+                      fill="var(--primary)"
                       radius={[6, 6, 0, 0]}
                       isAnimationActive={false}
                     />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
-            </div>
+            </Card>
 
-            {/* Chart 5 */}
-            <div className="elevation-1 rounded-2xl border border-[#bdcabf]/40 bg-[#ffffff] p-6 dark:border-[#24332a] dark:bg-[#111a15]">
-              <h2 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
+            <Card padding="lg">
+              <h2 className="text-section-title text-foreground">
                 Monthly Recruitment Performance
               </h2>
-              <p className="mb-4 text-[11px] text-[#3f674f] dark:text-[#a5d1b4]">
+              <p className="mb-4 text-[11px] text-muted-foreground">
                 Submissions compared with interviews reached, offers, and hires
               </p>
               <div className="h-60 w-full">
@@ -560,50 +553,49 @@ export function AnalyticsClient({ data }: { data: AnalyticsData }) {
                     <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
                     <XAxis dataKey="month" tick={{ fontSize: 11 }} />
                     <YAxis allowDecimals={false} tick={{ fontSize: 11 }} />
-                    <Tooltip />
+                    <Tooltip contentStyle={CHART_TOOLTIP_STYLE} />
                     <Legend wrapperStyle={{ fontSize: 11 }} />
                     <Bar
                       dataKey="submitted"
                       name="Submitted"
-                      fill="#006a42"
+                      fill="var(--primary)"
                       radius={[6, 6, 0, 0]}
                       isAnimationActive={false}
                     />
                     <Bar
                       dataKey="interviewsReached"
                       name="Interviews"
-                      fill="#008655"
+                      fill="var(--info)"
                       radius={[6, 6, 0, 0]}
                       isAnimationActive={false}
                     />
                     <Bar
                       dataKey="offersReached"
                       name="Offers"
-                      fill="#8f6f3b"
+                      fill="var(--warning)"
                       radius={[6, 6, 0, 0]}
                       isAnimationActive={false}
                     />
                     <Bar
                       dataKey="hired"
                       name="Hired"
-                      fill="#005232"
+                      fill="var(--success)"
                       radius={[6, 6, 0, 0]}
                       isAnimationActive={false}
                     />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
-            </div>
+            </Card>
           </div>
 
-          {/* Charts Row 3: Interview Conversion Rate + Applications by Job Platform */}
+          {/* Charts Row 3 */}
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-            {/* Chart 6 */}
-            <div className="elevation-1 rounded-2xl border border-[#bdcabf]/40 bg-[#ffffff] p-6 dark:border-[#24332a] dark:bg-[#111a15]">
-              <h2 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
+            <Card padding="lg">
+              <h2 className="text-section-title text-foreground">
                 Interview Conversion Rate Trend (%)
               </h2>
-              <p className="mb-4 text-[11px] text-[#3f674f] dark:text-[#a5d1b4]">
+              <p className="mb-4 text-[11px] text-muted-foreground">
                 Share of eligible applications reaching interview or assessment
                 per month
               </p>
@@ -613,27 +605,26 @@ export function AnalyticsClient({ data }: { data: AnalyticsData }) {
                     <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
                     <XAxis dataKey="month" tick={{ fontSize: 11 }} />
                     <YAxis domain={[0, 100]} tick={{ fontSize: 11 }} unit="%" />
-                    <Tooltip />
+                    <Tooltip contentStyle={CHART_TOOLTIP_STYLE} />
                     <Line
                       type="monotone"
                       dataKey="interviewRate"
                       name="Interview Conversion (%)"
-                      stroke="#006a42"
+                      stroke="var(--primary)"
                       strokeWidth={2.5}
-                      dot={{ r: 4, fill: "#006a42" }}
+                      dot={{ r: 4, fill: "var(--primary)" }}
                       isAnimationActive={false}
                     />
                   </LineChart>
                 </ResponsiveContainer>
               </div>
-            </div>
+            </Card>
 
-            {/* Chart 7 */}
-            <div className="elevation-1 rounded-2xl border border-[#bdcabf]/40 bg-[#ffffff] p-6 dark:border-[#24332a] dark:bg-[#111a15]">
-              <h2 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
+            <Card padding="lg">
+              <h2 className="text-section-title text-foreground">
                 Applications by Job Platform
               </h2>
-              <p className="mb-4 text-[11px] text-[#3f674f] dark:text-[#a5d1b4]">
+              <p className="mb-4 text-[11px] text-muted-foreground">
                 Application distribution and interview yield across channels
               </p>
               <div className="h-60 w-full">
@@ -655,7 +646,7 @@ export function AnalyticsClient({ data }: { data: AnalyticsData }) {
                       width={110}
                       tick={{ fontSize: 11 }}
                     />
-                    <Tooltip />
+                    <Tooltip contentStyle={CHART_TOOLTIP_STYLE} />
                     <Bar
                       dataKey="applicationsCount"
                       name="Applications"
@@ -665,142 +656,154 @@ export function AnalyticsClient({ data }: { data: AnalyticsData }) {
                       {data.platformDistribution.map((entry, idx) => (
                         <Cell
                           key={entry.platformName}
-                          fill={PLATFORM_PALETTE[idx % PLATFORM_PALETTE.length]}
+                          fill={
+                            PLATFORM_PALETTE[idx % PLATFORM_PALETTE.length]
+                          }
                         />
                       ))}
                     </Bar>
                   </BarChart>
                 </ResponsiveContainer>
               </div>
-            </div>
+            </Card>
           </div>
 
-          {/* Breakdown Tables: Response Rate by Company, Platform & Industry */}
+          {/* Breakdown Tables */}
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
-            {/* Response Rate by Company */}
-            <div className="elevation-1 overflow-hidden rounded-2xl border border-[#bdcabf]/40 bg-[#ffffff] p-6 lg:col-span-7 dark:border-[#24332a] dark:bg-[#111a15]">
+            <Card padding="lg" className="overflow-hidden lg:col-span-7">
               <div className="mb-4">
-                <h2 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
+                <h2 className="text-section-title text-foreground">
                   Response Rate by Company
                 </h2>
-                <p className="text-[11px] text-[#3f674f] dark:text-[#a5d1b4]">
+                <p className="text-[11px] text-muted-foreground">
                   Employer responsiveness and average days to first reply
                 </p>
               </div>
-              <div className="overflow-x-auto">
-                <table className="w-full border-collapse text-left text-xs">
-                  <thead>
-                    <tr className="rounded-xl bg-[#eff5ee]/80 text-[11px] font-semibold uppercase tracking-wider text-[#3f674f] dark:bg-[#17231c] dark:text-[#a5d1b4]">
-                      <th className="rounded-l-xl px-4 py-3">Company</th>
-                      <th className="px-4 py-3 text-right">Submitted</th>
-                      <th className="px-4 py-3 text-right">Responded</th>
-                      <th className="px-4 py-3 text-right">Response Rate</th>
-                      <th className="px-4 py-3 text-right">Avg Reply</th>
-                      <th className="rounded-r-xl px-4 py-3 text-right">
+              <DataTableContainer className="border-0 shadow-none">
+                <DataTableRoot className="text-xs">
+                  <DataTableHeader>
+                    <tr>
+                      <DataTableHead>Company</DataTableHead>
+                      <DataTableHead className="text-right">
+                        Submitted
+                      </DataTableHead>
+                      <DataTableHead className="text-right">
+                        Responded
+                      </DataTableHead>
+                      <DataTableHead className="text-right">
+                        Response Rate
+                      </DataTableHead>
+                      <DataTableHead className="text-right">
+                        Avg Reply
+                      </DataTableHead>
+                      <DataTableHead className="text-right">
                         Interviews
-                      </th>
+                      </DataTableHead>
                     </tr>
-                  </thead>
-                  <tbody className="divide-y divide-[#e3eae3]/70 dark:divide-[#24332a]">
+                  </DataTableHeader>
+                  <DataTableBody>
                     {data.companyResponseRates.map((row) => (
-                      <tr
-                        key={row.companyName}
-                        className="transition-colors hover:bg-[#eff5ee]/50 dark:hover:bg-[#17231c]/50"
-                      >
-                        <td className="px-4 py-3 font-semibold text-[#171d19] dark:text-[#ecf3eb]">
+                      <DataTableRow key={row.companyName}>
+                        <DataTableCell className="py-3 font-semibold text-foreground">
                           {row.companyName}
-                        </td>
-                        <td className="px-4 py-3 text-right font-mono tabular-nums">
+                        </DataTableCell>
+                        <DataTableCell className="py-3 text-right font-mono tabular-nums">
                           {row.submittedCount}
-                        </td>
-                        <td className="px-4 py-3 text-right font-mono tabular-nums">
+                        </DataTableCell>
+                        <DataTableCell className="py-3 text-right font-mono tabular-nums">
                           {row.respondedCount}
-                        </td>
-                        <td className="px-4 py-3 text-right font-mono font-bold text-[#006a42] tabular-nums dark:text-[#69dca0]">
+                        </DataTableCell>
+                        <DataTableCell className="py-3 text-right font-mono font-bold text-primary-text tabular-nums">
                           {row.responseRate != null
                             ? `${row.responseRate}%`
                             : "N/A"}
-                        </td>
-                        <td className="px-4 py-3 text-right font-mono text-[#3f674f] tabular-nums dark:text-[#a5d1b4]">
+                        </DataTableCell>
+                        <DataTableCell className="py-3 text-right font-mono text-muted-foreground tabular-nums">
                           {row.averageResponseDays != null
                             ? `${row.averageResponseDays}d`
                             : "-"}
-                        </td>
-                        <td className="px-4 py-3 text-right font-mono font-semibold text-[#008655] tabular-nums dark:text-[#86f9ba]">
+                        </DataTableCell>
+                        <DataTableCell className="py-3 text-right font-mono font-semibold text-primary-text tabular-nums">
                           {row.interviewCount}
-                        </td>
-                      </tr>
+                        </DataTableCell>
+                      </DataTableRow>
                     ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
+                  </DataTableBody>
+                </DataTableRoot>
+              </DataTableContainer>
+            </Card>
 
             {/* Platform & Industry Distributions */}
             <div className="space-y-6 lg:col-span-5">
-              <div className="elevation-1 overflow-hidden rounded-2xl border border-[#bdcabf]/40 bg-[#ffffff] p-6 dark:border-[#24332a] dark:bg-[#111a15]">
-                <h2 className="mb-3 text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
+              <Card padding="lg" className="overflow-hidden">
+                <h2 className="mb-3 text-section-title text-foreground">
                   Application Distribution by Platform
                 </h2>
                 <div className="space-y-2.5">
                   {data.platformDistribution.map((p) => (
                     <div
                       key={p.platformName}
-                      className="flex flex-col gap-1.5 rounded-xl bg-[#eff5ee] p-3 dark:bg-[#17231c]"
+                      className="flex flex-col gap-1.5 rounded-xl bg-surface-subtle p-3"
                     >
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="font-semibold text-[#171d19] dark:text-[#ecf3eb]">
+                          <p className="font-semibold text-foreground">
                             {p.platformName}
                           </p>
-                          <p className="text-[11px] text-[#3f674f] tabular-nums dark:text-[#a5d1b4]">
+                          <p className="text-[11px] text-muted-foreground tabular-nums">
                             {p.interviewsReached} interview(s) ·{" "}
                             {p.interviewConversionRate != null
                               ? `${p.interviewConversionRate}% conversion`
                               : "N/A"}
                           </p>
                         </div>
-                        <span className="rounded-full bg-[#c0edcf] px-2.5 py-0.5 font-mono text-[11px] font-bold text-[#005232] tabular-nums dark:bg-[#005232] dark:text-[#86f9ba]">
+                        <Badge
+                          variant="primary"
+                          className="font-mono tabular-nums"
+                        >
                           {p.applicationsCount} ({p.sharePercent ?? 0}%)
-                        </span>
+                        </Badge>
                       </div>
-                      <div className="h-1.5 w-full overflow-hidden rounded-full bg-[#dde4dd] dark:bg-[#23342a]">
+                      <div className="h-1.5 w-full overflow-hidden rounded-full bg-border-subtle">
                         <div
-                          className="h-full rounded-full bg-[#006a42] dark:bg-[#69dca0]"
+                          className="h-full rounded-full bg-primary"
                           style={{ width: `${p.sharePercent ?? 0}%` }}
                         />
                       </div>
                     </div>
                   ))}
                 </div>
-              </div>
+              </Card>
 
-              <div className="elevation-1 overflow-hidden rounded-2xl border border-[#bdcabf]/40 bg-[#ffffff] p-6 dark:border-[#24332a] dark:bg-[#111a15]">
-                <h2 className="mb-3 text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
+              <Card padding="lg" className="overflow-hidden">
+                <h2 className="mb-3 text-section-title text-foreground">
                   Application Distribution by Industry
                 </h2>
                 <div className="space-y-2">
                   {data.industryDistribution.map((ind) => (
                     <div
                       key={ind.industry}
-                      className="flex items-center justify-between rounded-xl bg-[#eff5ee] p-3 dark:bg-[#17231c]"
+                      className="flex items-center justify-between rounded-xl bg-surface-subtle p-3"
                     >
                       <div>
-                        <p className="font-semibold text-[#171d19] dark:text-[#ecf3eb]">
+                        <p className="font-semibold text-foreground">
                           {ind.industry}
                         </p>
-                        <p className="text-[11px] text-[#3f674f] tabular-nums dark:text-[#a5d1b4]">
+                        <p className="text-[11px] text-muted-foreground tabular-nums">
                           {ind.interviewsReached} interview(s) ·{" "}
                           {ind.hiredCount} hired
                         </p>
                       </div>
-                      <span className="rounded-full bg-[#dde4dd] px-2.5 py-0.5 font-mono text-[11px] font-bold text-[#171d19] tabular-nums dark:bg-[#23342a] dark:text-[#ecf3eb]">
+                      <Badge
+                        variant="secondary"
+                        className="font-mono tabular-nums"
+                      >
                         {ind.applicationsCount} ({ind.sharePercent ?? 0}%)
-                      </span>
+                      </Badge>
                     </div>
                   ))}
                 </div>
-              </div>
+              </Card>
             </div>
           </div>
         </>
@@ -820,20 +823,18 @@ function KpiTile({
 }) {
   const valueColor =
     accent === "blue" || accent === "emerald"
-      ? "text-[#006a42] dark:text-[#69dca0]"
+      ? "text-primary-text"
       : accent === "amber"
-        ? "text-[#745725] dark:text-[#e8c084]"
+        ? "text-warning-on-soft"
         : accent === "rose"
-          ? "text-[#ba1a1a] dark:text-rose-400"
-          : "text-[#171d19] dark:text-[#ecf3eb]";
+          ? "text-destructive-on-soft"
+          : "text-foreground";
 
   return (
-    <div className="elevation-1 rounded-2xl border border-[#bdcabf]/40 bg-[#ffffff] p-5 transition-shadow hover:shadow-md dark:border-[#24332a] dark:bg-[#111a15]">
-      <p className="text-label-xs uppercase text-[#3f674f] dark:text-[#a5d1b4]">
-        {label}
-      </p>
-      <p className={`mt-2 text-metric-num ${valueColor}`}>{value}</p>
-    </div>
+    <Card padding="md" className="transition-shadow hover:shadow-md">
+      <p className="text-label-xs uppercase text-muted-foreground">{label}</p>
+      <p className={cn("text-metric-num mt-2", valueColor)}>{value}</p>
+    </Card>
   );
 }
 
@@ -847,16 +848,14 @@ function MetricShell({
   sub: string;
 }) {
   return (
-    <div className="elevation-1 rounded-2xl border border-[#bdcabf]/40 bg-[#ffffff] p-4 dark:border-[#24332a] dark:bg-[#111a15]">
-      <p className="text-label-xs uppercase text-[#3f674f] dark:text-[#a5d1b4]">
-        {label}
-      </p>
-      <p className="mt-1.5 font-display text-lg font-bold text-[#171d19] tabular-nums dark:text-[#ecf3eb]">
+    <Card padding="sm">
+      <p className="text-label-xs uppercase text-muted-foreground">{label}</p>
+      <p className="mt-1.5 font-display text-lg font-bold text-foreground tabular-nums">
         {value}
       </p>
-      <p className="mt-0.5 text-[11px] text-[#3f674f] tabular-nums dark:text-[#a5d1b4]">
+      <p className="mt-0.5 text-[11px] text-muted-foreground tabular-nums">
         {sub}
       </p>
-    </div>
+    </Card>
   );
 }

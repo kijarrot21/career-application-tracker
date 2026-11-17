@@ -16,12 +16,19 @@ import {
   type VacancyOptionForSubmission,
 } from "@/components/applications/record-submission-dialog";
 import {
+  Badge,
+  Button,
+  Card,
+  EmptyState,
+  Input,
+  PageHeader,
   PriorityBadge,
   SampleBadge,
+  Select,
   StageBadge,
   SuitabilityBadge,
   TriageBadge,
-} from "@/components/ui/badges";
+} from "@/components/ui";
 import {
   EMPLOYMENT_TYPE_LABELS,
   JOB_PRIORITIES,
@@ -135,50 +142,50 @@ export function JobsListClient({
 
   return (
     <div className="mx-auto max-w-7xl space-y-5">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <div className="mb-1 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-[#3f674f] dark:text-[#a5d1b4]">
-            <span>Career Assets</span>
-            <span>/</span>
-            <span className="text-[#006a42] dark:text-[#69dca0]">
-              Opportunity Discovery
-            </span>
-          </div>
-          <h1 className="text-headline-md text-[#171d19] dark:text-[#ecf3eb]">
-            Find & Discover Job Opportunities
-          </h1>
-          <p className="mt-0.5 text-[13px] text-[#3f674f] dark:text-[#a5d1b4]">
-            Organize vacancies by industry, position, location, salary, and
-            suitability score before applying.
-          </p>
-        </div>
-
-        <Link href="/jobs/new" className="btn-primary h-10 px-4 text-xs">
-          <Plus className="h-3.5 w-3.5" />
-          Add Job Vacancy
-        </Link>
-      </div>
+      <PageHeader
+        breadcrumbs={[
+          { label: "Career Assets" },
+          { label: "Opportunity Discovery" },
+        ]}
+        title="Find & Discover Job Opportunities"
+        description="Organize vacancies by industry, position, location, salary, and suitability score before applying."
+        actions={
+          <Button variant="primary" size="lg" asChild>
+            <Link href="/jobs/new">
+              <Plus className="h-3.5 w-3.5" />
+              Add Job Vacancy
+            </Link>
+          </Button>
+        }
+      />
 
       {/* Filters Bar */}
-      <div className="elevation-1 grid grid-cols-1 gap-2.5 rounded-2xl border border-[#bdcabf]/40 bg-[#ffffff] p-3.5 sm:grid-cols-2 lg:grid-cols-6 dark:border-[#24332a] dark:bg-[#111a15]">
+      <Card
+        padding="sm"
+        className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-6"
+      >
         <div className="relative sm:col-span-2">
-          <Search className="pointer-events-none absolute top-3 left-3 h-4 w-4 text-[#3f674f] dark:text-[#a5d1b4]" />
-          <input
+          <Search className="pointer-events-none absolute top-3 left-3 h-4 w-4 text-muted-foreground" />
+          <Input
             type="text"
+            inputSize="lg"
+            tone="subtle"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
+            aria-label="Search vacancies"
             placeholder="Search position, company, industry, skill, or JOB ID..."
-            className="h-10 w-full rounded-xl border border-transparent bg-[#eff5ee] pr-3 pl-9 text-xs text-[#171d19] outline-none placeholder:text-[#3f674f] focus:border-[#006a42] focus:bg-[#ffffff] dark:bg-[#17231c] dark:text-[#ecf3eb]"
+            className="pl-9"
           />
         </div>
 
-        <select
+        <Select
           aria-label="Filter by triage status"
+          selectSize="lg"
+          tone="subtle"
           value={triageFilter}
           onChange={(e) =>
             setTriageFilter(e.target.value as TriageStatus | "all")
           }
-          className="h-10 rounded-xl border border-transparent bg-[#eff5ee] px-3 text-xs font-medium text-[#171d19] dark:bg-[#17231c] dark:text-[#ecf3eb]"
         >
           <option value="all">All Triage Statuses</option>
           {TRIAGE_STATUSES.map((s) => (
@@ -186,15 +193,16 @@ export function JobsListClient({
               {TRIAGE_LABELS[s]}
             </option>
           ))}
-        </select>
+        </Select>
 
-        <select
+        <Select
           aria-label="Filter by priority"
+          selectSize="lg"
+          tone="subtle"
           value={priorityFilter}
           onChange={(e) =>
             setPriorityFilter(e.target.value as JobPriority | "all")
           }
-          className="h-10 rounded-xl border border-transparent bg-[#eff5ee] px-3 text-xs font-medium text-[#171d19] dark:bg-[#17231c] dark:text-[#ecf3eb]"
         >
           <option value="all">All Priorities</option>
           {JOB_PRIORITIES.map((p) => (
@@ -202,13 +210,14 @@ export function JobsListClient({
               {PRIORITY_LABELS[p]} Priority
             </option>
           ))}
-        </select>
+        </Select>
 
-        <select
+        <Select
           aria-label="Filter by platform source"
+          selectSize="lg"
+          tone="subtle"
           value={sourceFilter}
           onChange={(e) => setSourceFilter(e.target.value)}
-          className="h-10 rounded-xl border border-transparent bg-[#eff5ee] px-3 text-xs font-medium text-[#171d19] dark:bg-[#17231c] dark:text-[#ecf3eb]"
         >
           <option value="all">All Platforms</option>
           {sources.map((s) => (
@@ -216,10 +225,12 @@ export function JobsListClient({
               {s.name}
             </option>
           ))}
-        </select>
+        </Select>
 
-        <select
+        <Select
           aria-label="Sort vacancies"
+          selectSize="lg"
+          tone="subtle"
           value={sortBy}
           onChange={(e) =>
             setSortBy(
@@ -230,54 +241,50 @@ export function JobsListClient({
                 | "salary_desc",
             )
           }
-          className="h-10 rounded-xl border border-transparent bg-[#eff5ee] px-3 text-xs font-medium text-[#171d19] dark:bg-[#17231c] dark:text-[#ecf3eb]"
         >
           <option value="newest">Sort: Date Discovered</option>
           <option value="score_desc">Sort: Suitability Score</option>
           <option value="deadline_asc">Sort: Application Deadline</option>
           <option value="salary_desc">Sort: Highest Salary</option>
-        </select>
-      </div>
+        </Select>
+      </Card>
 
       {/* Work Arrangement Pills */}
       <div className="flex flex-wrap items-center gap-1.5 text-xs">
-        <span className="font-semibold text-[#3f674f] dark:text-[#a5d1b4]">
+        <span className="font-semibold text-muted-foreground">
           Work Arrangement:
         </span>
         {(["all", ...WORK_ARRANGEMENTS] as const).map((arr) => (
-          <button
+          <Button
             key={arr}
             type="button"
+            size="xs"
+            variant={arrangementFilter === arr ? "primary" : "secondary"}
             onClick={() => setArrangementFilter(arr)}
-            className={`rounded-full px-3.5 py-1 text-xs font-semibold transition-all ${
-              arrangementFilter === arr
-                ? "bg-[#006a42] text-white shadow-sm"
-                : "border border-[#bdcabf]/50 bg-[#ffffff] text-[#3e4a41] hover:bg-[#eff5ee] hover:text-[#006a42] dark:border-[#24332a] dark:bg-[#111a15] dark:text-[#b7c6ba]"
-            }`}
+            className="rounded-full px-3.5 py-1"
           >
             {arr === "all" ? "All" : WORK_ARRANGEMENT_LABELS[arr]}
-          </button>
+          </Button>
         ))}
-        <span className="ml-auto rounded-full bg-[#eff5ee] px-3 py-1 font-mono text-xs font-semibold text-[#3f674f] tabular-nums dark:bg-[#17231c] dark:text-[#a5d1b4]">
+        <Badge variant="secondary" className="ml-auto font-mono tabular-nums">
           {filtered.length} {filtered.length === 1 ? "vacancy" : "vacancies"}
-        </span>
+        </Badge>
       </div>
 
       {filtered.length === 0 ? (
-        <div className="elevation-1 flex flex-col items-center justify-center rounded-2xl border border-[#bdcabf]/40 bg-[#ffffff] py-14 text-center dark:border-[#24332a] dark:bg-[#111a15]">
-          <Briefcase className="h-7 w-7 text-[#3f674f]" />
-          <p className="mt-2 font-display text-sm font-semibold text-[#171d19] dark:text-[#ecf3eb]">
-            No job vacancies match your current filters
-          </p>
-          <p className="mt-1 text-xs text-[#3f674f]">
-            Add a job opportunity manually or paste a job URL from LinkedIn,
-            JobStreet, Glints, or Kalibrr.
-          </p>
-          <Link href="/jobs/new" className="btn-primary mt-4 h-10 px-4 text-xs">
-            <Plus className="h-3.5 w-3.5" />
-            Add First Vacancy
-          </Link>
-        </div>
+        <EmptyState
+          icon={Briefcase}
+          title="No job vacancies match your current filters"
+          description="Add a job opportunity manually or paste a job URL from LinkedIn, JobStreet, Glints, or Kalibrr."
+          action={
+            <Button variant="primary" size="lg" asChild>
+              <Link href="/jobs/new">
+                <Plus className="h-3.5 w-3.5" />
+                Add First Vacancy
+              </Link>
+            </Button>
+          }
+        />
       ) : (
         <div className="space-y-3">
           {filtered.map((v) => {
@@ -289,22 +296,24 @@ export function JobsListClient({
             );
 
             return (
-              <div
+              <Card
                 key={v.id}
-                className="elevation-2 rounded-2xl border border-[#bdcabf]/40 bg-[#ffffff] p-5 transition-all dark:border-[#24332a] dark:bg-[#111a15]"
+                elevation="interactive"
+                padding="md"
+                className="transition-all"
               >
                 <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-start">
                   <div className="min-w-0 space-y-1.5">
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#006a42] font-display text-[11px] font-bold text-white">
+                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-primary font-display text-[11px] font-bold text-white">
                         {getCompanyInitials(v.company.name)}
                       </span>
-                      <span className="font-mono text-xs text-[#3f674f] tabular-nums dark:text-[#a5d1b4]">
+                      <span className="font-mono text-xs text-muted-foreground tabular-nums">
                         {v.code}
                       </span>
                       <Link
                         href={`/jobs/${v.id}`}
-                        className="text-headline-sm text-[#171d19] transition-colors hover:text-[#006a42] dark:text-[#ecf3eb] dark:hover:text-[#69dca0]"
+                        className="text-section-title text-foreground transition-colors hover:text-primary-text"
                       >
                         {v.title}
                       </Link>
@@ -314,8 +323,8 @@ export function JobsListClient({
                       {v.isSample && <SampleBadge />}
                     </div>
 
-                    <p className="text-[13px] text-[#3f674f] dark:text-[#a5d1b4]">
-                      <span className="font-semibold text-[#171d19] dark:text-[#ecf3eb]">
+                    <p className="text-[13px] text-muted-foreground">
+                      <span className="font-semibold text-foreground">
                         {v.company.name}
                       </span>
                       {v.department ? ` · ${v.department}` : ""}
@@ -329,15 +338,18 @@ export function JobsListClient({
                         : ""}
                     </p>
 
-                    <div className="flex flex-wrap items-center gap-3 pt-1 text-xs text-[#3f674f] tabular-nums dark:text-[#a5d1b4]">
-                      <span className="rounded-full bg-[#eff5ee] px-2.5 py-0.5 font-mono font-semibold text-[#171d19] dark:bg-[#17231c] dark:text-[#ecf3eb]">
+                    <div className="flex flex-wrap items-center gap-3 pt-1 text-xs text-muted-foreground tabular-nums">
+                      <Badge
+                        variant="secondary"
+                        className="font-mono font-semibold text-foreground"
+                      >
                         {formatSalaryRange(
                           v.salaryMin,
                           v.salaryMax,
                           v.currency,
                           v.salaryPeriod,
                         )}
-                      </span>
+                      </Badge>
                       {v.source && <span>Platform: {v.source.name}</span>}
                       {v.deadline && (
                         <span>Deadline: {formatDate(v.deadline)}</span>
@@ -348,7 +360,7 @@ export function JobsListClient({
                           href={v.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 font-semibold text-[#006a42] hover:underline dark:text-[#69dca0]"
+                          className="inline-flex items-center gap-1 font-semibold text-primary-text hover:underline"
                         >
                           Job Posting
                           <ExternalLink className="h-3 w-3" />
@@ -359,12 +371,9 @@ export function JobsListClient({
                     {v.skills && v.skills.length > 0 && (
                       <div className="flex flex-wrap gap-1.5 pt-1">
                         {v.skills.map((skill) => (
-                          <span
-                            key={skill}
-                            className="rounded-full bg-[#e3eae3] px-2.5 py-0.5 text-[11px] font-medium text-[#3e4a41] dark:bg-[#1d2b23] dark:text-[#b7c6ba]"
-                          >
+                          <Badge key={skill} variant="secondary">
                             {skill}
-                          </span>
+                          </Badge>
                         ))}
                       </div>
                     )}
@@ -372,26 +381,29 @@ export function JobsListClient({
 
                   {/* Quick Actions */}
                   <div className="flex shrink-0 flex-wrap items-center gap-2">
-                    <select
+                    <Select
                       aria-label={`Change triage status for ${v.title}`}
+                      selectSize="lg"
+                      tone="subtle"
+                      wrapperClassName="w-auto"
                       disabled={isPending}
                       value={v.triageStatus}
                       onChange={(e) =>
                         handleTriage(v.id, e.target.value as TriageStatus)
                       }
-                      className="h-9 rounded-xl border border-[#bdcabf]/60 bg-[#eff5ee] px-3 text-xs font-semibold text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
+                      className="font-semibold"
                     >
                       {TRIAGE_STATUSES.map((s) => (
                         <option key={s} value={s}>
                           Save as: {TRIAGE_LABELS[s]}
                         </option>
                       ))}
-                    </select>
+                    </Select>
 
                     {activeApp ? (
                       <Link
                         href={`/applications/${activeApp.id}`}
-                        className="inline-flex h-9 items-center gap-1.5 rounded-xl border border-[#a5d1b4] bg-[#c0edcf]/60 px-3 text-xs font-semibold text-[#005232] tabular-nums dark:border-[#006a42]/40 dark:bg-[#006a42]/20 dark:text-[#86f9ba]"
+                        className="inline-flex h-10 items-center gap-1.5 rounded-lg border border-primary/25 bg-primary-soft px-3 text-xs font-semibold text-primary-on-soft tabular-nums"
                       >
                         <span>{activeApp.code}:</span>
                         <StageBadge
@@ -400,8 +412,9 @@ export function JobsListClient({
                         />
                       </Link>
                     ) : (
-                      <button
-                        type="button"
+                      <Button
+                        variant="primary"
+                        size="lg"
                         onClick={() =>
                           setApplyTarget({
                             id: v.id,
@@ -415,22 +428,18 @@ export function JobsListClient({
                             hasClosedApp: Boolean(closedApp),
                           })
                         }
-                        className="btn-primary h-10 px-4 text-xs"
                       >
                         <Send className="h-3 w-3" />
                         {closedApp ? "Re-apply" : "Record Submission"}
-                      </button>
+                      </Button>
                     )}
 
-                    <Link
-                      href={`/jobs/${v.id}`}
-                      className="btn-secondary h-10 px-4 text-xs"
-                    >
-                      Evaluate & Details
-                    </Link>
+                    <Button variant="secondary" size="lg" asChild>
+                      <Link href={`/jobs/${v.id}`}>Evaluate & Details</Link>
+                    </Button>
                   </div>
                 </div>
-              </div>
+              </Card>
             );
           })}
         </div>

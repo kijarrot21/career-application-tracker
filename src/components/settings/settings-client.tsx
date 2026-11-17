@@ -14,7 +14,17 @@ import {
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
-import { StageBadge } from "@/components/ui/badges";
+import {
+  Badge,
+  Button,
+  Card,
+  ConfirmDialog,
+  FormField,
+  Input,
+  PageHeader,
+  Select,
+  StageBadge,
+} from "@/components/ui";
 import {
   CURRENCIES,
   SEARCH_STATUS_LABELS,
@@ -25,12 +35,12 @@ import {
   type Currency,
   type SearchStatus,
 } from "@/lib/constants";
+import { INDONESIAN_HOLIDAY_PRESETS } from "@/lib/domain/business-days";
 import {
   CUSTOM_STAGE_TYPES,
   STAGE_COLORS,
   type StageColor,
 } from "@/lib/domain/stages";
-import { INDONESIAN_HOLIDAY_PRESETS } from "@/lib/domain/business-days";
 import {
   CRITERIA,
   CRITERION_LABELS,
@@ -135,6 +145,7 @@ export function SettingsClient({
 
   // 5. Account deletion state
   const [deletePassword, setDeletePassword] = useState("");
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   function toggleArrangement(arr: WorkArrangement) {
     setPreferredArrangements((prev) =>
@@ -245,23 +256,29 @@ export function SettingsClient({
     const [moved] = orderedIds.splice(index, 1);
     orderedIds.splice(nextIdx, 0, moved);
     startTransition(async () => {
-      await reorderStagesAction(orderedIds);
-      router.refresh();
+      try {
+        await reorderStagesAction(orderedIds);
+        router.refresh();
+      } catch (err) {
+        toast.error(
+          err instanceof Error ? err.message : "Could not reorder stages",
+        );
+      }
     });
   }
 
-  function handleDeleteAccount(e: React.FormEvent) {
+  function handleRequestDeleteAccount(e: React.FormEvent) {
     e.preventDefault();
-    if (
-      !window.confirm(
-        "Permanently delete your account and all job vacancies, applications, and history? This cannot be undone.",
-      )
-    )
-      return;
+    if (!deletePassword) return;
+    setDeleteDialogOpen(true);
+  }
+
+  function handleConfirmDeleteAccount() {
     startTransition(async () => {
       try {
         await deleteAccountWithPasswordAction(deletePassword);
         toast.success("Your account and data have been permanently deleted.");
+        setDeleteDialogOpen(false);
         router.push("/sign-in");
       } catch (err) {
         toast.error(
@@ -273,226 +290,197 @@ export function SettingsClient({
 
   return (
     <div className="mx-auto max-w-5xl space-y-6 text-xs">
-      <div>
-        <h1 className="text-headline-md text-[#171d19] dark:text-[#ecf3eb]">
-          Settings, Pipeline Customization & Data Privacy
-        </h1>
-        <p className="text-[13px] text-[#3f674f]">
-          Configure your candidate profile, recruitment stages, follow-up rules,
-          suitability weights, and privacy controls.
-        </p>
-      </div>
+      <PageHeader
+        title="Settings, Pipeline Customization & Data Privacy"
+        description="Configure your candidate profile, recruitment stages, follow-up rules, suitability weights, and privacy controls."
+      />
 
       {/* 1. Candidate Profile & Locale */}
-      <form
-        onSubmit={handleSaveProfile}
-        className="elevation-1 space-y-4 rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] p-5 dark:border-[#24332a] dark:bg-[#111a15]"
-      >
-        <h2 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
-          1. Candidate Profile & Preferences
-        </h2>
-        <p className="text-[#3f674f]">
-          Used to auto-suggest suitability scores when evaluating job vacancies.
-        </p>
+      <Card padding="md">
+        <form onSubmit={handleSaveProfile} className="space-y-4">
+          <h2 className="text-section-title text-foreground">
+            1. Candidate Profile & Preferences
+          </h2>
+          <p className="text-muted-foreground">
+            Used to auto-suggest suitability scores when evaluating job
+            vacancies.
+          </p>
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-          <div>
-            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-              Timezone
-            </label>
-            <select
-              value={timezone}
-              onChange={(e) => setTimezone(e.target.value)}
-              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
-            >
-              {TIMEZONES.map((tz) => (
-                <option key={tz} value={tz}>
-                  {tz}
-                </option>
-              ))}
-            </select>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <FormField label="Timezone">
+              <Select
+                selectSize="lg"
+                value={timezone}
+                onChange={(e) => setTimezone(e.target.value)}
+              >
+                {TIMEZONES.map((tz) => (
+                  <option key={tz} value={tz}>
+                    {tz}
+                  </option>
+                ))}
+              </Select>
+            </FormField>
+
+            <FormField label="Default Currency">
+              <Select
+                selectSize="lg"
+                value={currency}
+                onChange={(e) => setCurrency(e.target.value as Currency)}
+              >
+                {CURRENCIES.map((c) => (
+                  <option key={c} value={c}>
+                    {c}
+                  </option>
+                ))}
+              </Select>
+            </FormField>
+
+            <FormField label="Job Search Status">
+              <Select
+                selectSize="lg"
+                value={searchStatus}
+                onChange={(e) =>
+                  setSearchStatus(e.target.value as SearchStatus)
+                }
+              >
+                {SEARCH_STATUSES.map((s) => (
+                  <option key={s} value={s}>
+                    {SEARCH_STATUS_LABELS[s]}
+                  </option>
+                ))}
+              </Select>
+            </FormField>
           </div>
 
-          <div>
-            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-              Default Currency
-            </label>
-            <select
-              value={currency}
-              onChange={(e) => setCurrency(e.target.value as Currency)}
-              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
-            >
-              {CURRENCIES.map((c) => (
-                <option key={c} value={c}>
-                  {c}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-              Job Search Status
-            </label>
-            <select
-              value={searchStatus}
-              onChange={(e) => setSearchStatus(e.target.value as SearchStatus)}
-              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
-            >
-              {SEARCH_STATUSES.map((s) => (
-                <option key={s} value={s}>
-                  {SEARCH_STATUS_LABELS[s]}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-          <div>
-            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-              Target Headline / Role
-            </label>
-            <input
-              type="text"
-              value={headline}
-              onChange={(e) => setHeadline(e.target.value)}
-              placeholder="Full-Stack Software Engineer"
-              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
-            />
-          </div>
-
-          <div>
-            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-              Years of Experience
-            </label>
-            <input
-              type="number"
-              min={0}
-              max={50}
-              value={yearsExperience}
-              onChange={(e) => setYearsExperience(e.target.value)}
-              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] tabular-nums dark:border-[#2d3d33] dark:bg-[#17231c]"
-            />
-          </div>
-
-          <div>
-            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-              Highest Education Level
-            </label>
-            <select
-              value={educationLevel}
-              onChange={(e) =>
-                setEducationLevel(e.target.value as EducationLevel)
-              }
-              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
-            >
-              {EDUCATION_LEVELS.map((lvl) => (
-                <option key={lvl} value={lvl}>
-                  {EDUCATION_LABELS[lvl]}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-
-        <div>
-          <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-            Your Skills (comma-separated)
-          </label>
-          <input
-            type="text"
-            value={skillsText}
-            onChange={(e) => setSkillsText(e.target.value)}
-            placeholder="TypeScript, React, Next.js, Node.js, PostgreSQL, Tailwind CSS"
-            className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
-          />
-        </div>
-
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-          <div>
-            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-              Expected Monthly Salary Min ({currency})
-            </label>
-            <input
-              type="number"
-              min={0}
-              value={expectedSalaryMin}
-              onChange={(e) => setExpectedSalaryMin(e.target.value)}
-              placeholder="22000000"
-              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] tabular-nums dark:border-[#2d3d33] dark:bg-[#17231c]"
-            />
-          </div>
-          <div>
-            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-              Expected Monthly Salary Max ({currency})
-            </label>
-            <input
-              type="number"
-              min={0}
-              value={expectedSalaryMax}
-              onChange={(e) => setExpectedSalaryMax(e.target.value)}
-              placeholder="32000000"
-              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] tabular-nums dark:border-[#2d3d33] dark:bg-[#17231c]"
-            />
-          </div>
-          <div>
-            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-              Preferred Locations (comma-separated)
-            </label>
-            <input
-              type="text"
-              value={preferredLocationsText}
-              onChange={(e) => setPreferredLocationsText(e.target.value)}
-              placeholder="Jakarta, Bandung, Remote"
-              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
-            />
-          </div>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-3">
-          <span className="font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-            Preferred Work Arrangements:
-          </span>
-          {WORK_ARRANGEMENTS.map((arr) => (
-            <label
-              key={arr}
-              className="inline-flex items-center gap-1.5 font-medium text-[#171d19] dark:text-[#ecf3eb]"
-            >
-              <input
-                type="checkbox"
-                checked={preferredArrangements.includes(arr)}
-                onChange={() => toggleArrangement(arr)}
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <FormField label="Target Headline / Role">
+              <Input
+                type="text"
+                inputSize="lg"
+                value={headline}
+                onChange={(e) => setHeadline(e.target.value)}
+                placeholder="Full-Stack Software Engineer"
               />
-              <span>{WORK_ARRANGEMENT_LABELS[arr]}</span>
-            </label>
-          ))}
-        </div>
+            </FormField>
 
-        <div className="flex justify-end">
-          <button
-            type="submit"
-            disabled={isPending}
-            className="btn-primary h-10 px-4 text-xs disabled:opacity-50"
-          >
-            Save Profile & Preferences
-          </button>
-        </div>
-      </form>
+            <FormField label="Years of Experience">
+              <Input
+                type="number"
+                inputSize="lg"
+                min={0}
+                max={50}
+                value={yearsExperience}
+                onChange={(e) => setYearsExperience(e.target.value)}
+                className="tabular-nums"
+              />
+            </FormField>
+
+            <FormField label="Highest Education Level">
+              <Select
+                selectSize="lg"
+                value={educationLevel}
+                onChange={(e) =>
+                  setEducationLevel(e.target.value as EducationLevel)
+                }
+              >
+                {EDUCATION_LEVELS.map((lvl) => (
+                  <option key={lvl} value={lvl}>
+                    {EDUCATION_LABELS[lvl]}
+                  </option>
+                ))}
+              </Select>
+            </FormField>
+          </div>
+
+          <FormField label="Your Skills (comma-separated)">
+            <Input
+              type="text"
+              inputSize="lg"
+              value={skillsText}
+              onChange={(e) => setSkillsText(e.target.value)}
+              placeholder="TypeScript, React, Next.js, Node.js, PostgreSQL, Tailwind CSS"
+            />
+          </FormField>
+
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <FormField label={`Expected Monthly Salary Min (${currency})`}>
+              <Input
+                type="number"
+                inputSize="lg"
+                min={0}
+                value={expectedSalaryMin}
+                onChange={(e) => setExpectedSalaryMin(e.target.value)}
+                placeholder="22000000"
+                className="tabular-nums"
+              />
+            </FormField>
+            <FormField label={`Expected Monthly Salary Max (${currency})`}>
+              <Input
+                type="number"
+                inputSize="lg"
+                min={0}
+                value={expectedSalaryMax}
+                onChange={(e) => setExpectedSalaryMax(e.target.value)}
+                placeholder="32000000"
+                className="tabular-nums"
+              />
+            </FormField>
+            <FormField label="Preferred Locations (comma-separated)">
+              <Input
+                type="text"
+                inputSize="lg"
+                value={preferredLocationsText}
+                onChange={(e) => setPreferredLocationsText(e.target.value)}
+                placeholder="Jakarta, Bandung, Remote"
+              />
+            </FormField>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-3">
+            <span className="font-semibold text-foreground">
+              Preferred Work Arrangements:
+            </span>
+            {WORK_ARRANGEMENTS.map((arr) => (
+              <label
+                key={arr}
+                className="inline-flex items-center gap-1.5 font-medium text-foreground"
+              >
+                <input
+                  type="checkbox"
+                  checked={preferredArrangements.includes(arr)}
+                  onChange={() => toggleArrangement(arr)}
+                />
+                <span>{WORK_ARRANGEMENT_LABELS[arr]}</span>
+              </label>
+            ))}
+          </div>
+
+          <div className="flex justify-end">
+            <Button
+              type="submit"
+              variant="primary"
+              size="lg"
+              disabled={isPending}
+            >
+              Save Profile & Preferences
+            </Button>
+          </div>
+        </form>
+      </Card>
 
       {/* 2. Recruitment Pipeline Stages */}
-      <div className="elevation-1 space-y-4 rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] p-5 dark:border-[#24332a] dark:bg-[#111a15]">
+      <Card padding="md" className="space-y-4">
         <div>
-          <h2 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
+          <h2 className="text-section-title text-foreground">
             2. Recruitment Pipeline Stages
           </h2>
-          <p className="text-[#3f674f]">
+          <p className="text-muted-foreground">
             Reorder, hide, or add custom recruitment stages while preserving
             standard HR stage classifications.
           </p>
         </div>
 
-        <div className="divide-y divide-[#dde4dd]/70 rounded-2xl border border-[#bdcabf]/50 dark:divide-[#24332a] dark:border-[#24332a]">
+        <div className="divide-y divide-border-subtle rounded-xl border border-border">
           {stages.map((st, idx) => (
             <div
               key={st.id}
@@ -500,37 +488,36 @@ export function SettingsClient({
             >
               <div className="flex items-center gap-2.5">
                 <StageBadge name={st.name} color={st.color} />
-                <span className="font-mono text-[11px] text-[#3f674f]">
+                <span className="font-mono text-[11px] text-muted-foreground">
                   type: {st.stageType}
                 </span>
-                {st.isHidden && (
-                  <span className="rounded-full bg-[#eff5ee] px-2 py-0.5 text-[10px] font-semibold text-[#3f674f] dark:bg-[#1d2b23]">
-                    Hidden
-                  </span>
-                )}
+                {st.isHidden && <Badge variant="secondary">Hidden</Badge>}
               </div>
 
               <div className="flex items-center gap-1">
-                <button
-                  type="button"
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
                   disabled={isPending || idx === 0}
                   onClick={() => handleMoveStageOrder(idx, -1)}
+                  aria-label={`Move ${st.name} earlier`}
                   title="Move stage earlier"
-                  className="rounded-xl p-1 text-[#3f674f] hover:bg-[#c0edcf]/60 hover:text-[#006a42] disabled:opacity-30 dark:hover:bg-slate-800"
                 >
                   <ArrowUp className="h-3.5 w-3.5" />
-                </button>
-                <button
-                  type="button"
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
                   disabled={isPending || idx === stages.length - 1}
                   onClick={() => handleMoveStageOrder(idx, 1)}
+                  aria-label={`Move ${st.name} later`}
                   title="Move stage later"
-                  className="rounded-xl p-1 text-[#3f674f] hover:bg-[#c0edcf]/60 hover:text-[#006a42] disabled:opacity-30 dark:hover:bg-slate-800"
                 >
                   <ArrowDown className="h-3.5 w-3.5" />
-                </button>
-                <button
-                  type="button"
+                </Button>
+                <Button
+                  variant="secondary"
+                  size="xs"
                   disabled={isPending}
                   onClick={() =>
                     startTransition(async () => {
@@ -546,7 +533,6 @@ export function SettingsClient({
                       }
                     })
                   }
-                  className="inline-flex items-center gap-1 rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 py-0.5 text-[11px] font-semibold text-[#3e4a41] hover:border-[#6e7a71] hover:bg-[#eff5ee] dark:border-[#2d3d33] dark:bg-[#1d2b23] dark:text-[#b7c6ba]"
                 >
                   {st.isHidden ? (
                     <>
@@ -557,7 +543,7 @@ export function SettingsClient({
                       <EyeOff className="h-3 w-3" /> Hide
                     </>
                   )}
-                </button>
+                </Button>
               </div>
             </div>
           ))}
@@ -567,320 +553,338 @@ export function SettingsClient({
           onSubmit={handleAddStage}
           className="flex flex-wrap items-end gap-2.5 pt-2"
         >
-          <div className="flex-1">
-            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-              Add Custom Stage Name
-            </label>
-            <input
+          <FormField label="Add Custom Stage Name" className="min-w-[200px] flex-1">
+            <Input
               type="text"
+              inputSize="lg"
               value={newStageName}
               onChange={(e) => setNewStageName(e.target.value)}
               placeholder="e.g., Live Coding Pair Session"
-              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
             />
-          </div>
+          </FormField>
 
-          <div>
-            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-              Stage Classification
-            </label>
-            <select
+          <FormField label="Stage Classification">
+            <Select
+              selectSize="lg"
               value={newStageType}
               onChange={(e) => setNewStageType(e.target.value)}
-              className="mt-1 h-10 rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
             >
               {CUSTOM_STAGE_TYPES.map((t) => (
                 <option key={t} value={t}>
                   {t}
                 </option>
               ))}
-            </select>
-          </div>
+            </Select>
+          </FormField>
 
-          <div>
-            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-              Badge Color
-            </label>
-            <select
+          <FormField label="Badge Color">
+            <Select
+              selectSize="lg"
               value={newStageColor}
               onChange={(e) => setNewStageColor(e.target.value as StageColor)}
-              className="mt-1 h-10 rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
             >
               {STAGE_COLORS.map((c) => (
                 <option key={c} value={c}>
                   {c}
                 </option>
               ))}
-            </select>
-          </div>
+            </Select>
+          </FormField>
 
-          <button
+          <Button
             type="submit"
+            variant="primary"
+            size="lg"
             disabled={isPending}
-            className="btn-primary h-10 px-4 text-xs"
           >
             <Plus className="h-3.5 w-3.5" />
             Add Stage
-          </button>
+          </Button>
         </form>
-      </div>
+      </Card>
 
       {/* 3. Follow-up & No Response Rules */}
-      <form
-        onSubmit={handleSaveFollowUp}
-        className="elevation-1 space-y-4 rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] p-5 dark:border-[#24332a] dark:bg-[#111a15]"
-      >
-        <h2 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
-          3. Follow-up & &ldquo;No Response&rdquo; Intervals
-        </h2>
-        <p className="text-[#3f674f]">
-          Operational defaults for follow-up task scheduling. Applications are
-          never automatically marked as Rejected or No Response without your
-          confirmation.
-        </p>
+      <Card padding="md">
+        <form onSubmit={handleSaveFollowUp} className="space-y-4">
+          <h2 className="text-section-title text-foreground">
+            3. Follow-up & &ldquo;No Response&rdquo; Intervals
+          </h2>
+          <p className="text-muted-foreground">
+            Operational defaults for follow-up task scheduling. Applications are
+            never automatically marked as Rejected or No Response without your
+            confirmation.
+          </p>
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">
-          <div>
-            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-              1st Follow-up (Business Days)
-            </label>
-            <input
-              type="number"
-              min={1}
-              max={60}
-              value={followUpFirstDays}
-              onChange={(e) => setFollowUpFirstDays(e.target.value)}
-              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] tabular-nums dark:border-[#2d3d33] dark:bg-[#17231c]"
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">
+            <FormField label="1st Follow-up (Business Days)">
+              <Input
+                type="number"
+                inputSize="lg"
+                min={1}
+                max={60}
+                value={followUpFirstDays}
+                onChange={(e) => setFollowUpFirstDays(e.target.value)}
+                className="tabular-nums"
+              />
+            </FormField>
+
+            <FormField label="2nd Follow-up (Business Days)">
+              <Input
+                type="number"
+                inputSize="lg"
+                min={1}
+                max={60}
+                value={followUpSecondDays}
+                onChange={(e) => setFollowUpSecondDays(e.target.value)}
+                className="tabular-nums"
+              />
+            </FormField>
+
+            <FormField label="Final Follow-up (Business Days)">
+              <Input
+                type="number"
+                inputSize="lg"
+                min={0}
+                max={90}
+                value={followUpFinalDays}
+                onChange={(e) => setFollowUpFinalDays(e.target.value)}
+                className="tabular-nums"
+              />
+            </FormField>
+
+            <FormField label="No Response Suggestion (Days)">
+              <Input
+                type="number"
+                inputSize="lg"
+                min={7}
+                max={365}
+                value={noResponseDays}
+                onChange={(e) => setNoResponseDays(e.target.value)}
+                className="tabular-nums"
+              />
+            </FormField>
+          </div>
+
+          <div className="space-y-1.5">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <label
+                htmlFor="settings-holidays"
+                className="font-semibold text-foreground"
+              >
+                Public Holidays Excluded from Business-Day Follow-up
+                Calculations (YYYY-MM-DD, comma-separated)
+              </label>
+              <Button
+                variant="soft"
+                size="xs"
+                onClick={() =>
+                  setHolidaysText(INDONESIAN_HOLIDAY_PRESETS.join(", "))
+                }
+              >
+                Load Indonesian Public Holidays (2026-2027)
+              </Button>
+            </div>
+            <Input
+              id="settings-holidays"
+              type="text"
+              inputSize="lg"
+              value={holidaysText}
+              onChange={(e) => setHolidaysText(e.target.value)}
+              placeholder="2026-01-01, 2026-03-20, 2026-08-17, 2026-12-25"
+              className="font-mono"
             />
           </div>
 
-          <div>
-            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-              2nd Follow-up (Business Days)
-            </label>
-            <input
-              type="number"
-              min={1}
-              max={60}
-              value={followUpSecondDays}
-              onChange={(e) => setFollowUpSecondDays(e.target.value)}
-              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] tabular-nums dark:border-[#2d3d33] dark:bg-[#17231c]"
-            />
-          </div>
-
-          <div>
-            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-              Final Follow-up (Business Days)
-            </label>
-            <input
-              type="number"
-              min={0}
-              max={90}
-              value={followUpFinalDays}
-              onChange={(e) => setFollowUpFinalDays(e.target.value)}
-              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] tabular-nums dark:border-[#2d3d33] dark:bg-[#17231c]"
-            />
-          </div>
-
-          <div>
-            <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-              No Response Suggestion (Days)
-            </label>
-            <input
-              type="number"
-              min={7}
-              max={365}
-              value={noResponseDays}
-              onChange={(e) => setNoResponseDays(e.target.value)}
-              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] tabular-nums dark:border-[#2d3d33] dark:bg-[#17231c]"
-            />
-          </div>
-        </div>
-
-        <div className="space-y-1.5">
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <label className="font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-              Public Holidays Excluded from Business-Day Follow-up Calculations (YYYY-MM-DD, comma-separated)
-            </label>
-            <button
-              type="button"
-              onClick={() =>
-                setHolidaysText(INDONESIAN_HOLIDAY_PRESETS.join(", "))
-              }
-              className="rounded-xl border border-[#a5d1b4] bg-[#c0edcf]/60 px-2.5 py-1 text-[11px] font-semibold text-[#005232] hover:bg-[#c0edcf]"
+          <div className="flex justify-end">
+            <Button
+              type="submit"
+              variant="primary"
+              size="lg"
+              disabled={isPending}
             >
-              Load Indonesian Public Holidays (2026-2027)
-            </button>
+              Save Follow-up Rules
+            </Button>
           </div>
-          <input
-            type="text"
-            value={holidaysText}
-            onChange={(e) => setHolidaysText(e.target.value)}
-            placeholder="2026-01-01, 2026-03-20, 2026-08-17, 2026-12-25"
-            className="h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 font-mono text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
-          />
-        </div>
-
-        <div className="flex justify-end">
-          <button
-            type="submit"
-            disabled={isPending}
-            className="btn-primary h-10 px-4 text-xs"
-          >
-            Save Follow-up Rules
-          </button>
-        </div>
-      </form>
+        </form>
+      </Card>
 
       {/* 4. Suitability Weights */}
-      <form
-        onSubmit={handleSaveWeights}
-        className="elevation-1 space-y-4 rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] p-5 dark:border-[#24332a] dark:bg-[#111a15]"
-      >
-        <h2 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
-          4. Job Suitability Evaluation Weights
-        </h2>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-          {CRITERIA.map((c) => (
-            <div key={c}>
-              <label className="block truncate font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                {CRITERION_LABELS[c]}
-              </label>
-              <input
-                type="number"
-                min={0}
-                max={100}
-                value={weights[c]}
-                onChange={(e) =>
-                  setWeights((prev) => ({
-                    ...prev,
-                    [c]: Number(e.target.value) || 0,
-                  }))
-                }
-                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] tabular-nums dark:border-[#2d3d33] dark:bg-[#17231c]"
-              />
-            </div>
-          ))}
-        </div>
-        <div className="flex justify-end">
-          <button
-            type="submit"
-            disabled={isPending}
-            className="btn-primary h-10 px-4 text-xs"
-          >
-            Save Suitability Weights
-          </button>
-        </div>
-      </form>
+      <Card padding="md">
+        <form onSubmit={handleSaveWeights} className="space-y-4">
+          <h2 className="text-section-title text-foreground">
+            4. Job Suitability Evaluation Weights
+          </h2>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+            {CRITERIA.map((c) => (
+              <FormField key={c} label={CRITERION_LABELS[c]}>
+                <Input
+                  type="number"
+                  inputSize="lg"
+                  min={0}
+                  max={100}
+                  value={weights[c]}
+                  onChange={(e) =>
+                    setWeights((prev) => ({
+                      ...prev,
+                      [c]: Number(e.target.value) || 0,
+                    }))
+                  }
+                  className="tabular-nums"
+                />
+              </FormField>
+            ))}
+          </div>
+          <div className="flex justify-end">
+            <Button
+              type="submit"
+              variant="primary"
+              size="lg"
+              disabled={isPending}
+            >
+              Save Suitability Weights
+            </Button>
+          </div>
+        </form>
+      </Card>
 
       {/* 5. Sample Demonstration Data */}
-      <div className="elevation-1 space-y-3 rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] p-5 dark:border-[#24332a] dark:bg-[#111a15]">
+      <Card padding="md" className="space-y-3">
         <div className="flex items-center gap-2">
-          <Database className="h-4 w-4 text-[#8f6f3b]" />
-          <h2 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
+          <Database className="h-4 w-4 text-warning" />
+          <h2 className="text-section-title text-foreground">
             5. Sample Demonstration Records
           </h2>
         </div>
-        <p className="text-[#3f674f]">
+        <p className="text-muted-foreground">
           Sample records are clearly labeled with a SAMPLE badge and kept
           strictly separate from your real applications.
         </p>
 
         <div className="flex flex-wrap gap-2">
           {!sampleStatus.hasSampleData ? (
-            <button
-              type="button"
+            <Button
+              variant="outline"
+              size="lg"
               disabled={isPending}
               onClick={() =>
                 startTransition(async () => {
-                  await loadSampleDataAction();
-                  toast.success("Sample demonstration data loaded.");
-                  router.refresh();
+                  try {
+                    await loadSampleDataAction();
+                    toast.success("Sample demonstration data loaded.");
+                    router.refresh();
+                  } catch (err) {
+                    toast.error(
+                      err instanceof Error
+                        ? err.message
+                        : "Failed to load sample data",
+                    );
+                  }
                 })
               }
-              className="inline-flex h-10 items-center gap-1.5 rounded-lg border border-[#e8c084]/60 bg-[#ffdead]/60 px-4 text-xs font-semibold text-[#5d4211] hover:bg-[#ffdead] dark:border-amber-800 dark:bg-amber-950/60 dark:text-amber-200"
+              className="border-warning-border bg-warning-soft text-warning-on-soft"
             >
               <Database className="h-3.5 w-3.5" />
               Load Sample Data
-            </button>
+            </Button>
           ) : (
-            <button
-              type="button"
+            <Button
+              variant="secondary"
+              size="lg"
               disabled={isPending}
               onClick={() =>
                 startTransition(async () => {
-                  await removeSampleDataAction();
-                  toast.success("All sample records removed.");
-                  router.refresh();
+                  try {
+                    await removeSampleDataAction();
+                    toast.success("All sample records removed.");
+                    router.refresh();
+                  } catch (err) {
+                    toast.error(
+                      err instanceof Error
+                        ? err.message
+                        : "Failed to remove sample data",
+                    );
+                  }
                 })
               }
-              className="btn-secondary h-10 px-4 text-xs tabular-nums"
+              className="tabular-nums"
             >
               <Trash2 className="h-3.5 w-3.5" />
               Remove Sample Data ({sampleStatus.sampleJobsCount} jobs,{" "}
               {sampleStatus.sampleAppsCount} applications)
-            </button>
+            </Button>
           )}
         </div>
-      </div>
+      </Card>
 
       {/* 6. Data Export & Account Deletion (UU PDP) */}
-      <div className="elevation-1 space-y-4 rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] p-5 dark:border-[#24332a] dark:bg-[#111a15]">
+      <Card padding="md" className="space-y-4">
         <div className="flex items-center gap-2">
-          <ShieldAlert className="h-4 w-4 text-[#006a42]" />
-          <h2 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
+          <ShieldAlert className="h-4 w-4 text-primary-text" />
+          <h2 className="text-section-title text-foreground">
             6. Data Portability & Account Deletion (Privacy / UU PDP)
           </h2>
         </div>
 
         <div className="flex flex-wrap gap-2">
-          <a
-            href="/api/export/account"
-            download
-            className="btn-secondary h-10 px-4 text-xs"
-          >
-            <Download className="h-3.5 w-3.5" />
-            Export All Account Data (JSON)
-          </a>
+          <Button variant="secondary" size="lg" asChild>
+            <a href="/api/export/account" download>
+              <Download className="h-3.5 w-3.5" />
+              Export All Account Data (JSON)
+            </a>
+          </Button>
 
-          <a
-            href="/api/export/applications"
-            download
-            className="btn-secondary h-10 px-4 text-xs"
-          >
-            <Download className="h-3.5 w-3.5" />
-            Export Applications (CSV)
-          </a>
+          <Button variant="secondary" size="lg" asChild>
+            <a href="/api/export/applications" download>
+              <Download className="h-3.5 w-3.5" />
+              Export Applications (CSV)
+            </a>
+          </Button>
         </div>
 
         <form
-          onSubmit={handleDeleteAccount}
-          className="mt-4 flex flex-wrap items-end gap-3 border-t border-[#ba1a1a]/20 pt-4 dark:border-rose-950"
+          onSubmit={handleRequestDeleteAccount}
+          className="mt-4 flex flex-wrap items-end gap-3 border-t border-destructive-border pt-4"
         >
-          <div className="flex-1">
-            <label className="block font-semibold text-[#93000a] dark:text-rose-400">
+          <div className="min-w-[240px] flex-1">
+            <label
+              htmlFor="delete-account-password"
+              className="block font-semibold text-destructive-on-soft"
+            >
               Confirm Password to Permanently Delete Account & All Data
             </label>
-            <input
+            <Input
+              id="delete-account-password"
               type="password"
+              inputSize="lg"
               required
               value={deletePassword}
               onChange={(e) => setDeletePassword(e.target.value)}
               placeholder="Enter your password"
-              className="mt-1 h-10 w-full rounded-xl border border-[#ba1a1a]/40 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-rose-900 dark:bg-[#17231c]"
+              className="mt-1 border-destructive-border"
             />
           </div>
 
-          <button
+          <Button
             type="submit"
+            variant="destructive"
+            size="lg"
             disabled={isPending || !deletePassword}
-            className="btn-destructive h-10 px-4 text-xs disabled:opacity-50"
           >
             <Trash2 className="h-3.5 w-3.5" />
             Delete Account Permanently
-          </button>
+          </Button>
         </form>
-      </div>
+      </Card>
+
+      <ConfirmDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        title="Permanently delete your account?"
+        description="This will permanently erase your account and all job vacancies, applications, documents, emails, and history. This cannot be undone."
+        confirmLabel="Delete Account Permanently"
+        pending={isPending}
+        onConfirm={handleConfirmDeleteAccount}
+      />
     </div>
   );
 }

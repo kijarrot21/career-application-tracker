@@ -19,7 +19,23 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
-import { SampleBadge, StageBadge } from "@/components/ui/badges";
+import {
+  Badge,
+  Button,
+  Card,
+  ConfirmDialog,
+  EmptyState,
+  FormField,
+  Input,
+  PageHeader,
+  SampleBadge,
+  Select,
+  StageBadge,
+  Tabs,
+  TabsList,
+  TabsTrigger,
+  Textarea,
+} from "@/components/ui";
 import {
   COMM_CHANNEL_LABELS,
   COMM_CHANNELS,
@@ -83,6 +99,11 @@ export function EmailCenterClient({
   const [recEmail, setRecEmail] = useState("");
   const [recPhone, setRecPhone] = useState("");
 
+  const [disconnectId, setDisconnectId] = useState<string | null>(null);
+  const [deleteRecruiterId, setDeleteRecruiterId] = useState<string | null>(
+    null,
+  );
+
   const filteredEmails = data.emails.filter((e) => {
     if (classFilter !== "all" && e.classification !== classFilter) return false;
     if (linkFilter !== "all" && e.linkStatus !== linkFilter) return false;
@@ -145,14 +166,30 @@ export function EmailCenterClient({
     });
   }
 
-  function handleDisconnectAccount(accountId: string) {
+  function handleConfirmDisconnect() {
+    if (!disconnectId) return;
     startTransition(async () => {
       try {
-        await disconnectEmailAccountAction(accountId);
+        await disconnectEmailAccountAction(disconnectId);
         toast.success("Email account disconnected.");
+        setDisconnectId(null);
         router.refresh();
       } catch (err) {
         toast.error(err instanceof Error ? err.message : "Disconnect failed");
+      }
+    });
+  }
+
+  function handleConfirmDeleteRecruiter() {
+    if (!deleteRecruiterId) return;
+    startTransition(async () => {
+      try {
+        await deleteRecruiterContactAction(deleteRecruiterId);
+        toast.success("Contact removed.");
+        setDeleteRecruiterId(null);
+        router.refresh();
+      } catch (err) {
+        toast.error(err instanceof Error ? err.message : "Delete failed");
       }
     });
   }
@@ -175,7 +212,9 @@ export function EmailCenterClient({
         );
         router.refresh();
       } catch (err) {
-        toast.error(err instanceof Error ? err.message : "Could not update link");
+        toast.error(
+          err instanceof Error ? err.message : "Could not update link",
+        );
       }
     });
   }
@@ -222,126 +261,128 @@ export function EmailCenterClient({
         toast.success("Recruiter contact added.");
         router.refresh();
       } catch (err) {
-        toast.error(err instanceof Error ? err.message : "Could not add contact");
+        toast.error(
+          err instanceof Error ? err.message : "Could not add contact",
+        );
       }
     });
   }
 
   return (
     <div className="mx-auto max-w-7xl space-y-5 text-xs">
-      {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-headline-md text-[#171d19] dark:text-[#ecf3eb]">
-            Recruitment Email Center & Correspondence Classifier
-          </h1>
-          <p className="mt-0.5 text-body-sm text-[#3f674f]">
-            Connect Gmail or Outlook via read-only OAuth 2.0, classify recruitment emails, and confirm application stage updates.
-          </p>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-2">
-          <button
-            type="button"
-            onClick={() => setShowSetupGuide(!showSetupGuide)}
-            className="btn-secondary h-10 px-4 text-xs"
-          >
-            <HelpCircle className="h-3.5 w-3.5" />
-            {showSetupGuide ? "Hide OAuth Setup Guide" : "OAuth 2.0 Setup Guide"}
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setActiveTab("analyzer")}
-            className="btn-primary h-10 px-4 text-xs"
-          >
-            <Sparkles className="h-3.5 w-3.5" />
-            Analyze / Log Email
-          </button>
-        </div>
-      </div>
+      <PageHeader
+        title="Recruitment Email Center & Correspondence Classifier"
+        description="Connect Gmail or Outlook via read-only OAuth 2.0, classify recruitment emails, and confirm application stage updates."
+        actions={
+          <div className="flex flex-wrap items-center gap-2">
+            <Button
+              variant="secondary"
+              size="lg"
+              onClick={() => setShowSetupGuide(!showSetupGuide)}
+            >
+              <HelpCircle className="h-3.5 w-3.5" />
+              {showSetupGuide
+                ? "Hide OAuth Setup Guide"
+                : "OAuth 2.0 Setup Guide"}
+            </Button>
+            <Button
+              variant="primary"
+              size="lg"
+              onClick={() => setActiveTab("analyzer")}
+            >
+              <Sparkles className="h-3.5 w-3.5" />
+              Analyze / Log Email
+            </Button>
+          </div>
+        }
+      />
 
       {oauthError && (
-        <div className="rounded-2xl border border-[#ba1a1a]/25 bg-[#ffdad6]/70 px-4 py-2.5 text-[#93000a] dark:border-rose-900 dark:bg-rose-950/50 dark:text-rose-200">
+        <div
+          role="alert"
+          className="rounded-xl border border-destructive-border bg-destructive-soft px-4 py-2.5 text-destructive-on-soft"
+        >
           OAuth connection notice: {oauthError}
         </div>
       )}
 
       {connectedProvider && (
-        <div className="rounded-2xl border border-[#86f9ba] bg-[#c0edcf] px-4 py-2.5 text-[#005232] dark:border-emerald-900 dark:bg-emerald-950/50 dark:text-emerald-200">
-          Connected {connectedProvider.toUpperCase()} account with read-only OAuth 2.0 permissions.
+        <div className="rounded-xl border border-success-border bg-success-soft px-4 py-2.5 text-success-on-soft">
+          Connected {connectedProvider.toUpperCase()} account with read-only
+          OAuth 2.0 permissions.
         </div>
       )}
 
       {/* OAuth 2.0 Connection Bar */}
-      <div className="elevation-1 rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] p-4 space-y-3 dark:border-[#24332a] dark:bg-[#111a15]">
+      <Card padding="sm" className="space-y-3">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-wrap items-center gap-2">
-            <ShieldCheck className="h-4 w-4 text-[#006a42]" />
-            <span className="font-semibold text-[#171d19] dark:text-[#ecf3eb]">
+            <ShieldCheck className="h-4 w-4 text-primary-text" />
+            <span className="font-semibold text-foreground">
               Email Account Connections (Read-Only OAuth 2.0)
             </span>
-            <span className="text-[#3f674f]">
-              Never sends, modifies, or deletes emails. Refresh tokens are encrypted with AES-256-GCM.
+            <span className="text-muted-foreground">
+              Never sends, modifies, or deletes emails. Refresh tokens are
+              encrypted with AES-256-GCM.
             </span>
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
             {data.oauthStatus.gmailConfigured ? (
-              <a
-                href="/api/email/oauth/gmail/start"
-                className="btn-secondary h-10 px-4 text-xs"
-              >
-                <Mail className="h-3.5 w-3.5 text-[#ba1a1a]" />
-                Connect Gmail
-              </a>
+              <Button variant="secondary" size="lg" asChild>
+                <a href="/api/email/oauth/gmail/start">
+                  <Mail className="h-3.5 w-3.5 text-destructive" />
+                  Connect Gmail
+                </a>
+              </Button>
             ) : (
-              <button
-                type="button"
+              <Button
+                variant="outline"
+                size="lg"
                 onClick={() => setShowSetupGuide(true)}
-                className="inline-flex h-10 items-center gap-1.5 rounded-lg border border-dashed border-[#E2E8F0] px-3.5 font-semibold text-[#727973] transition-colors hover:border-[#08945F] hover:text-[#08945F] dark:border-[#2d3d33] dark:text-[#b7c6ba]"
+                className="border-dashed text-muted-foreground"
               >
                 <Mail className="h-3.5 w-3.5" />
                 Configure Gmail OAuth
-              </button>
+              </Button>
             )}
 
             {data.oauthStatus.outlookConfigured ? (
-              <a
-                href="/api/email/oauth/outlook/start"
-                className="btn-secondary h-10 px-4 text-xs"
-              >
-                <Mail className="h-3.5 w-3.5 text-[#006a42]" />
-                Connect Outlook
-              </a>
+              <Button variant="secondary" size="lg" asChild>
+                <a href="/api/email/oauth/outlook/start">
+                  <Mail className="h-3.5 w-3.5 text-primary-text" />
+                  Connect Outlook
+                </a>
+              </Button>
             ) : (
-              <button
-                type="button"
+              <Button
+                variant="outline"
+                size="lg"
                 onClick={() => setShowSetupGuide(true)}
-                className="inline-flex h-10 items-center gap-1.5 rounded-lg border border-dashed border-[#E2E8F0] px-3.5 font-semibold text-[#727973] transition-colors hover:border-[#08945F] hover:text-[#08945F] dark:border-[#2d3d33] dark:text-[#b7c6ba]"
+                className="border-dashed text-muted-foreground"
               >
                 <Mail className="h-3.5 w-3.5" />
                 Configure Outlook OAuth
-              </button>
+              </Button>
             )}
           </div>
         </div>
 
         {data.accounts.length > 0 && (
-          <div className="divide-y divide-[#dde4dd]/70 border-t border-[#bdcabf]/50 pt-2 dark:divide-[#24332a] dark:border-[#24332a]">
+          <div className="divide-y divide-border-subtle border-t border-border-subtle pt-2">
             {data.accounts.map((acc) => (
               <div
                 key={acc.id}
                 className="flex flex-wrap items-center justify-between gap-2 py-2"
               >
                 <div className="flex items-center gap-2">
-                  <span className="rounded-full bg-[#c0edcf]/60 px-2.5 py-0.5 font-mono text-[10px] font-semibold uppercase text-[#005232] dark:bg-[#006a42]/20 dark:text-[#86f9ba]">
+                  <Badge variant="primary" className="font-mono uppercase">
                     {acc.provider}
-                  </span>
-                  <span className="font-semibold text-[#171d19] dark:text-[#ecf3eb]">
+                  </Badge>
+                  <span className="font-semibold text-foreground">
                     {acc.email}
                   </span>
-                  <span className="text-[#3f674f] tabular-nums">
+                  <span className="text-muted-foreground tabular-nums">
                     Last synced:{" "}
                     {acc.lastSyncedAt
                       ? formatDateTime(acc.lastSyncedAt)
@@ -350,24 +391,24 @@ export function EmailCenterClient({
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <button
-                    type="button"
+                  <Button
+                    variant="secondary"
+                    size="sm"
                     disabled={isPending}
                     onClick={() => handleSyncAccount(acc.id)}
-                    className="btn-secondary h-8 px-2.5 text-xs"
                   >
                     <RefreshCw className="h-3 w-3" />
                     Sync Now
-                  </button>
-                  <button
-                    type="button"
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    size="sm"
                     disabled={isPending}
-                    onClick={() => handleDisconnectAccount(acc.id)}
-                    className="btn-destructive h-8 px-3 text-xs"
+                    onClick={() => setDisconnectId(acc.id)}
                   >
                     <Trash2 className="h-3 w-3" />
                     Disconnect
-                  </button>
+                  </Button>
                 </div>
               </div>
             ))}
@@ -375,115 +416,109 @@ export function EmailCenterClient({
         )}
 
         {showSetupGuide && (
-          <div className="rounded-2xl border border-[#a5d1b4] bg-[#c0edcf]/60/60 p-4 space-y-2.5 text-xs dark:border-[#2d3d33] dark:bg-[#17231c]">
-            <h3 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
+          <div className="space-y-2.5 rounded-xl border border-primary/25 bg-primary-soft/50 p-4 text-xs">
+            <h3 className="text-section-title text-foreground">
               How to Configure Gmail & Microsoft Outlook OAuth 2.0 Credentials
             </h3>
-            <p className="text-[#3e4a41] dark:text-[#b7c6ba]">
-              Until you add OAuth credentials to <code>.env.local</code>, use the <strong>Analyze / Log Email</strong> tab to classify and link recruitment correspondence with the exact same classification engine.
+            <p className="text-muted-foreground">
+              Until you add OAuth credentials to <code>.env.local</code>, use
+              the <strong>Analyze / Log Email</strong> tab to classify and link
+              recruitment correspondence with the exact same classification
+              engine.
             </p>
             <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-              <div className="rounded-xl border border-[#bdcabf]/50 bg-[#ffffff] p-3 space-y-1 dark:border-[#24332a] dark:bg-[#111a15]">
-                <p className="font-semibold text-[#171d19] dark:text-[#ecf3eb]">
+              <Card padding="sm" className="space-y-1">
+                <p className="font-semibold text-foreground">
                   1. Google Cloud (Gmail API)
                 </p>
-                <p className="text-[#3f674f]">
-                  Enable the Gmail API in Google Cloud Console and create an OAuth 2.0 Web Client with Redirect URI:
+                <p className="text-muted-foreground">
+                  Enable the Gmail API in Google Cloud Console and create an
+                  OAuth 2.0 Web Client with Redirect URI:
                 </p>
-                <code className="block rounded-xl bg-[#eff5ee] p-1.5 font-mono text-[11px] text-[#171d19] dark:bg-[#17231c] dark:text-[#ecf3eb]">
+                <code className="block rounded-lg bg-surface-subtle p-1.5 font-mono text-[11px] text-foreground">
                   {data.oauthStatus.gmailRedirectUri}
                 </code>
-                <p className="text-[#3f674f]">
-                  Scope: <code>https://www.googleapis.com/auth/gmail.readonly</code>
+                <p className="text-muted-foreground">
+                  Scope:{" "}
+                  <code>https://www.googleapis.com/auth/gmail.readonly</code>
                 </p>
-                <p className="text-[#3f674f]">
-                  Set <code>GOOGLE_CLIENT_ID</code> and <code>GOOGLE_CLIENT_SECRET</code> in <code>.env.local</code>.
+                <p className="text-muted-foreground">
+                  Set <code>GOOGLE_CLIENT_ID</code> and{" "}
+                  <code>GOOGLE_CLIENT_SECRET</code> in <code>.env.local</code>.
                 </p>
-              </div>
+              </Card>
 
-              <div className="rounded-xl border border-[#bdcabf]/50 bg-[#ffffff] p-3 space-y-1 dark:border-[#24332a] dark:bg-[#111a15]">
-                <p className="font-semibold text-[#171d19] dark:text-[#ecf3eb]">
+              <Card padding="sm" className="space-y-1">
+                <p className="font-semibold text-foreground">
                   2. Microsoft Entra ID (Outlook / Graph)
                 </p>
-                <p className="text-[#3f674f]">
-                  Register an application in Microsoft Entra admin center with Web Redirect URI:
+                <p className="text-muted-foreground">
+                  Register an application in Microsoft Entra admin center with
+                  Web Redirect URI:
                 </p>
-                <code className="block rounded-xl bg-[#eff5ee] p-1.5 font-mono text-[11px] text-[#171d19] dark:bg-[#17231c] dark:text-[#ecf3eb]">
+                <code className="block rounded-lg bg-surface-subtle p-1.5 font-mono text-[11px] text-foreground">
                   {data.oauthStatus.outlookRedirectUri}
                 </code>
-                <p className="text-[#3f674f]">
-                  Delegated Scopes: <code>Mail.Read User.Read offline_access</code>
+                <p className="text-muted-foreground">
+                  Delegated Scopes:{" "}
+                  <code>Mail.Read User.Read offline_access</code>
                 </p>
-                <p className="text-[#3f674f]">
-                  Set <code>MICROSOFT_CLIENT_ID</code> and <code>MICROSOFT_CLIENT_SECRET</code> in <code>.env.local</code>.
+                <p className="text-muted-foreground">
+                  Set <code>MICROSOFT_CLIENT_ID</code> and{" "}
+                  <code>MICROSOFT_CLIENT_SECRET</code> in{" "}
+                  <code>.env.local</code>.
                 </p>
-              </div>
+              </Card>
             </div>
           </div>
         )}
-      </div>
+      </Card>
 
       {/* Tabs */}
-      <div className="flex flex-wrap gap-1 border-b border-[#bdcabf]/50 dark:border-[#24332a]">
-        <button
-          type="button"
-          onClick={() => setActiveTab("inbox")}
-          className={`border-b-2 px-4 py-2.5 text-xs font-semibold transition-colors ${
-            activeTab === "inbox"
-              ? "border-[#006a42] text-[#006a42] dark:border-[#69dca0] dark:text-[#86f9ba]"
-              : "border-transparent text-[#3f674f] hover:text-[#171d19] dark:hover:text-slate-200"
-          }`}
-        >
-          Recruitment Inbox ({data.emails.length})
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setActiveTab("analyzer")}
-          className={`border-b-2 px-4 py-2.5 text-xs font-semibold transition-colors ${
-            activeTab === "analyzer"
-              ? "border-[#006a42] text-[#006a42] dark:border-[#69dca0] dark:text-[#86f9ba]"
-              : "border-transparent text-[#3f674f] hover:text-[#171d19] dark:hover:text-slate-200"
-          }`}
-        >
-          Analyze / Log Email
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setActiveTab("recruiters")}
-          className={`border-b-2 px-4 py-2.5 text-xs font-semibold transition-colors ${
-            activeTab === "recruiters"
-              ? "border-[#006a42] text-[#006a42] dark:border-[#69dca0] dark:text-[#86f9ba]"
-              : "border-transparent text-[#3f674f] hover:text-[#171d19] dark:hover:text-slate-200"
-          }`}
-        >
-          Recruiter Contacts ({data.recruiterDirectory.length})
-        </button>
-      </div>
+      <Tabs
+        value={activeTab}
+        onValueChange={(v) =>
+          setActiveTab(v as "inbox" | "analyzer" | "recruiters")
+        }
+      >
+        <TabsList>
+          <TabsTrigger value="inbox">
+            Recruitment Inbox ({data.emails.length})
+          </TabsTrigger>
+          <TabsTrigger value="analyzer">Analyze / Log Email</TabsTrigger>
+          <TabsTrigger value="recruiters">
+            Recruiter Contacts ({data.recruiterDirectory.length})
+          </TabsTrigger>
+        </TabsList>
+      </Tabs>
 
       {/* TAB 1: Classified Recruitment Inbox */}
       {activeTab === "inbox" && (
         <div className="space-y-4">
-          <div className="elevation-1 grid grid-cols-1 gap-2.5 rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] p-3.5 sm:grid-cols-4 dark:border-[#24332a] dark:bg-[#111a15]">
+          <Card
+            padding="sm"
+            className="grid grid-cols-1 gap-2.5 sm:grid-cols-4"
+          >
             <div className="relative sm:col-span-2">
-              <Search className="pointer-events-none absolute top-3 left-3 h-4 w-4 text-[#6e7a71]" />
-              <input
+              <Search className="pointer-events-none absolute top-3 left-3 h-4 w-4 text-muted-foreground" />
+              <Input
                 type="text"
+                inputSize="lg"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
+                aria-label="Search recruitment emails"
                 placeholder="Search email subject, sender, company, or snippet..."
-                className="h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] pr-3 pl-9 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
+                className="pl-9"
               />
             </div>
 
-            <select
+            <Select
               aria-label="Filter by email classification"
+              selectSize="lg"
               value={classFilter}
               onChange={(e) =>
                 setClassFilter(e.target.value as EmailClassification | "all")
               }
-              className="h-10 rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
             >
               <option value="all">All Classifications</option>
               {EMAIL_CLASSIFICATIONS.map((c) => (
@@ -491,10 +526,11 @@ export function EmailCenterClient({
                   {EMAIL_CLASSIFICATION_LABELS[c]}
                 </option>
               ))}
-            </select>
+            </Select>
 
-            <select
+            <Select
               aria-label="Filter by link status"
+              selectSize="lg"
               value={linkFilter}
               onChange={(e) =>
                 setLinkFilter(
@@ -505,67 +541,65 @@ export function EmailCenterClient({
                     | "unlinked",
                 )
               }
-              className="h-10 rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c] dark:text-[#ecf3eb]"
             >
               <option value="all">All Link Statuses</option>
               <option value="suggested">Suggested Link (Needs Review)</option>
               <option value="confirmed">Confirmed Link</option>
               <option value="unlinked">Unlinked</option>
-            </select>
-          </div>
+            </Select>
+          </Card>
 
           {filteredEmails.length === 0 ? (
-            <div className="elevation-1 flex flex-col items-center justify-center rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] py-12 text-center dark:border-[#24332a] dark:bg-[#111a15]">
-              <Mail className="h-7 w-7 text-[#3f674f]" />
-              <p className="mt-2 text-title-md text-[#171d19] dark:text-[#ecf3eb]">
-                No recruitment correspondence matches your filters
-              </p>
-              <p className="mt-1 text-xs text-[#3f674f]">
-                Click &ldquo;Analyze / Log Email&rdquo; to classify a recruitment email and link it to an application.
-              </p>
-            </div>
+            <EmptyState
+              icon={Mail}
+              title="No recruitment correspondence matches your filters"
+              description='Click "Analyze / Log Email" to classify a recruitment email and link it to an application.'
+            />
           ) : (
             <div className="space-y-3">
               {filteredEmails.map((email) => (
-                <div
+                <Card
                   key={email.id}
+                  elevation="interactive"
+                  padding="sm"
                   data-testid={`email-card-${email.classification}`}
-                  className="elevation-2 rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] p-4 space-y-3 dark:border-[#24332a] dark:bg-[#111a15]"
+                  className="space-y-3"
                 >
                   <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-start">
                     <div className="space-y-1">
                       <div className="flex flex-wrap items-center gap-2">
-                        <span className="rounded-full border border-[#a5d1b4] bg-[#c0edcf]/60 px-2.5 py-[2px] text-[11px] font-semibold text-[#005232] dark:border-[#006a42]/40 dark:bg-[#006a42]/20 dark:text-[#86f9ba]">
+                        <Badge variant="primary">
                           {
                             EMAIL_CLASSIFICATION_LABELS[
                               email.classification as EmailClassification
                             ]
                           }
-                        </span>
+                        </Badge>
                         {email.confidence != null && (
-                          <span className="font-mono text-[11px] text-[#3f674f] tabular-nums">
+                          <span className="font-mono text-[11px] text-muted-foreground tabular-nums">
                             {email.confidence}% confidence
                           </span>
                         )}
-                        <span
-                          className={`rounded-full px-2.5 py-[2px] font-mono text-[10px] font-semibold uppercase tracking-[0.04em] ${
+                        <Badge
+                          variant={
                             email.linkStatus === "suggested"
-                              ? "bg-[#ffdead]/60 text-[#5d4211] dark:bg-amber-950 dark:text-amber-300"
+                              ? "warning"
                               : email.linkStatus === "confirmed"
-                                ? "bg-[#c0edcf] text-[#005232] dark:bg-emerald-950 dark:text-emerald-300"
-                                : "bg-[#eff5ee] text-[#3f674f] dark:bg-[#1d2b23]"
-                          }`}
+                                ? "success"
+                                : "secondary"
+                          }
+                          className="font-mono uppercase"
                         >
                           {email.linkStatus}
-                        </span>
+                        </Badge>
                         {email.isSample && <SampleBadge />}
                       </div>
 
-                      <h3 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
+                      <h3 className="text-section-title text-foreground">
                         {email.subject}
                       </h3>
 
-                      <div className="flex flex-wrap items-center gap-3 text-[12px] text-[#3f674f]">
+                      <div className="flex flex-wrap items-center gap-3 text-[12px] text-muted-foreground">
                         {email.sender && <span>From: {email.sender}</span>}
                         <span>
                           {COMM_CHANNEL_LABELS[email.channel as CommChannel]} ·{" "}
@@ -578,7 +612,7 @@ export function EmailCenterClient({
                         {email.detectedCompany && (
                           <span>
                             Detected Company:{" "}
-                            <strong className="text-[#171d19] dark:text-[#ecf3eb]">
+                            <strong className="text-foreground">
                               {email.detectedCompany}
                             </strong>
                           </span>
@@ -586,7 +620,7 @@ export function EmailCenterClient({
                         {email.detectedPosition && (
                           <span>
                             Detected Role:{" "}
-                            <strong className="text-[#171d19] dark:text-[#ecf3eb]">
+                            <strong className="text-foreground">
                               {email.detectedPosition}
                             </strong>
                           </span>
@@ -594,30 +628,29 @@ export function EmailCenterClient({
                       </div>
                     </div>
 
-                    <span className="shrink-0 font-mono text-[11px] text-[#3f674f] tabular-nums">
+                    <span className="shrink-0 font-mono text-[11px] text-muted-foreground tabular-nums">
                       {formatDateTime(email.occurredAt)}
                     </span>
                   </div>
 
                   {email.snippet && (
-                    <p className="rounded-xl bg-[#eff5ee] p-3 whitespace-pre-line text-[#3e4a41] dark:bg-[#17231c] dark:text-[#b7c6ba]">
+                    <p className="rounded-xl bg-surface-subtle p-3 whitespace-pre-line text-foreground/90">
                       {email.snippet}
                     </p>
                   )}
 
                   {email.classifierReasons &&
                     email.classifierReasons.length > 0 && (
-                      <p className="text-[11px] text-[#3f674f]">
+                      <p className="text-[11px] text-muted-foreground">
                         Classifier notes: {email.classifierReasons.join(" · ")}
                       </p>
                     )}
 
-                  {/* User-Confirmed Stage Transition Prompt */}
                   {email.linkedApplication && email.suggestedStage && (
-                    <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-[#a5d1b4] bg-[#c0edcf]/60 px-3.5 py-2.5 dark:border-[#006a42]/40 dark:bg-[#006a42]/15">
+                    <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-primary/25 bg-primary-soft px-3.5 py-2.5">
                       <div className="flex flex-wrap items-center gap-2">
-                        <Sparkles className="h-4 w-4 text-[#006a42] dark:text-[#86f9ba]" />
-                        <span className="font-semibold text-[#171d19] dark:text-[#ecf3eb]">
+                        <Sparkles className="h-4 w-4 text-primary-on-soft" />
+                        <span className="font-semibold text-foreground">
                           Suggested Stage Update for{" "}
                           <span className="font-mono">
                             {email.linkedApplication.code}
@@ -628,15 +661,16 @@ export function EmailCenterClient({
                           name={email.linkedApplication.currentStageName}
                           color={email.linkedApplication.currentStageColor}
                         />
-                        <ArrowRight className="h-3.5 w-3.5 text-[#3f674f]" />
+                        <ArrowRight className="h-3.5 w-3.5 text-muted-foreground" />
                         <StageBadge
                           name={email.suggestedStage.name}
                           color={email.suggestedStage.color}
                         />
                       </div>
 
-                      <button
-                        type="button"
+                      <Button
+                        variant="primary"
+                        size="sm"
                         disabled={isPending}
                         onClick={() =>
                           handleConfirmSuggestedStage({
@@ -646,21 +680,24 @@ export function EmailCenterClient({
                             stageName: email.suggestedStage!.name,
                           })
                         }
-                        className="btn-primary h-8 px-3 text-xs"
                       >
                         <CheckCircle2 className="h-3.5 w-3.5" />
                         Confirm Stage Update
-                      </button>
+                      </Button>
                     </div>
                   )}
 
                   {/* Manual Link / Unlink Bar */}
-                  <div className="flex flex-wrap items-center justify-between gap-2 border-t border-[#bdcabf]/50 pt-2.5 dark:border-[#24332a]">
+                  <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border-subtle pt-2.5">
                     <div className="flex flex-wrap items-center gap-2">
-                      <Link2 className="h-3.5 w-3.5 text-[#3f674f]" />
-                      <span className="text-[#3f674f]">Linked Application:</span>
-                      <select
+                      <Link2 className="h-3.5 w-3.5 text-muted-foreground" />
+                      <span className="text-muted-foreground">
+                        Linked Application:
+                      </span>
+                      <Select
                         aria-label={`Link application for ${email.subject}`}
+                        selectSize="sm"
+                        wrapperClassName="w-64"
                         disabled={isPending}
                         value={email.applicationId ?? ""}
                         onChange={(e) =>
@@ -669,7 +706,6 @@ export function EmailCenterClient({
                             e.target.value || null,
                           )
                         }
-                        className="h-8 rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2 text-xs font-medium text-[#171d19] dark:border-[#2d3d33] dark:bg-[#1d2b23] dark:text-[#ecf3eb]"
                       >
                         <option value="">Unlinked (No application)</option>
                         {data.applications.map((app) => (
@@ -677,12 +713,13 @@ export function EmailCenterClient({
                             {app.code}: {app.jobTitle} at {app.companyName}
                           </option>
                         ))}
-                      </select>
+                      </Select>
 
                       {email.linkStatus === "suggested" &&
                         email.applicationId && (
-                          <button
-                            type="button"
+                          <Button
+                            variant="primary"
+                            size="sm"
                             disabled={isPending}
                             onClick={() =>
                               handleLinkApplication(
@@ -690,36 +727,35 @@ export function EmailCenterClient({
                                 email.applicationId,
                               )
                             }
-                            className="btn-primary h-8 px-3 text-[11px]"
                           >
                             <CheckCircle2 className="h-3 w-3" />
                             Confirm Suggested Link
-                          </button>
+                          </Button>
                         )}
 
                       {email.applicationId && (
-                        <button
-                          type="button"
+                        <Button
+                          variant="secondary"
+                          size="sm"
                           disabled={isPending}
                           onClick={() => handleLinkApplication(email.id, null)}
-                          className="btn-secondary h-8 px-2.5 text-[11px]"
                         >
                           <Link2Off className="h-3 w-3" />
                           Unlink
-                        </button>
+                        </Button>
                       )}
                     </div>
 
                     {email.linkedApplication && (
                       <Link
                         href={`/applications/${email.linkedApplication.id}?tab=communications`}
-                        className="font-semibold text-[#006a42] hover:underline dark:text-[#86f9ba]"
+                        className="font-semibold text-primary-text hover:underline"
                       >
                         Open {email.linkedApplication.code} &rarr;
                       </Link>
                     )}
                   </div>
-                </div>
+                </Card>
               ))}
             </div>
           )}
@@ -728,143 +764,130 @@ export function EmailCenterClient({
 
       {/* TAB 2: Email Analyzer & Manual Importer */}
       {activeTab === "analyzer" && (
-        <form
-          onSubmit={handleAnalyzeAndSave}
-          className="elevation-1 rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] p-5 space-y-4 dark:border-[#24332a] dark:bg-[#111a15]"
-        >
-          <div>
-            <h2 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
-              Analyze & Import Recruitment Email
-            </h2>
-            <p className="text-[#3f674f]">
-              Paste any email subject and message body. The classifier will detect whether it is an Application Confirmation, CV Screening, Interview Invitation, Assessment Invitation, Rejection, or Job Offer, extract the company/position, and match it to your applications.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <Card padding="md">
+          <form onSubmit={handleAnalyzeAndSave} className="space-y-4">
             <div>
-              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                Sender Name / Email
-              </label>
-              <input
+              <h2 className="text-section-title text-foreground">
+                Analyze & Import Recruitment Email
+              </h2>
+              <p className="text-muted-foreground">
+                Paste any email subject and message body. The classifier will
+                detect whether it is an Application Confirmation, CV Screening,
+                Interview Invitation, Assessment Invitation, Rejection, or Job
+                Offer, extract the company/position, and match it to your
+                applications.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+              <FormField label="Sender Name / Email">
+                <Input
+                  type="text"
+                  inputSize="lg"
+                  value={sender}
+                  onChange={(e) => setSender(e.target.value)}
+                  placeholder="Talent Acquisition <careers@company.com>"
+                />
+              </FormField>
+
+              <FormField label="Channel & Direction">
+                <div className="flex gap-2">
+                  <Select
+                    aria-label="Communication channel"
+                    selectSize="lg"
+                    value={channel}
+                    onChange={(e) => setChannel(e.target.value as CommChannel)}
+                  >
+                    {COMM_CHANNELS.map((c) => (
+                      <option key={c} value={c}>
+                        {COMM_CHANNEL_LABELS[c]}
+                      </option>
+                    ))}
+                  </Select>
+                  <Select
+                    aria-label="Communication direction"
+                    selectSize="lg"
+                    value={direction}
+                    onChange={(e) =>
+                      setDirection(e.target.value as CommDirection)
+                    }
+                  >
+                    {COMM_DIRECTIONS.map((d) => (
+                      <option key={d} value={d}>
+                        {COMM_DIRECTION_LABELS[d]}
+                      </option>
+                    ))}
+                  </Select>
+                </div>
+              </FormField>
+
+              <FormField label="Link to Application (Optional, leave blank to auto-match)">
+                <Select
+                  selectSize="lg"
+                  value={explicitAppId}
+                  onChange={(e) => setExplicitAppId(e.target.value)}
+                >
+                  <option value="">Auto-detect matching application</option>
+                  {data.applications.map((app) => (
+                    <option key={app.id} value={app.id}>
+                      {app.code}: {app.jobTitle} at {app.companyName}
+                    </option>
+                  ))}
+                </Select>
+              </FormField>
+            </div>
+
+            <FormField label="Email Subject" htmlFor="analyzer-subject" required>
+              <Input
+                id="analyzer-subject"
                 type="text"
-                value={sender}
-                onChange={(e) => setSender(e.target.value)}
-                placeholder="Talent Acquisition <careers@company.com>"
-                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-3 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
+                inputSize="lg"
+                required
+                value={subject}
+                onChange={(e) => setSubject(e.target.value)}
+                placeholder="e.g., Interview Invitation for Staff Full-Stack Engineer at PT GoTo"
               />
-            </div>
+            </FormField>
 
-            <div>
-              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                Channel & Direction
-              </label>
-              <div className="mt-1 flex gap-2">
-                <select
-                  value={channel}
-                  onChange={(e) => setChannel(e.target.value as CommChannel)}
-                  className="h-10 flex-1 rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
-                >
-                  {COMM_CHANNELS.map((c) => (
-                    <option key={c} value={c}>
-                      {COMM_CHANNEL_LABELS[c]}
-                    </option>
-                  ))}
-                </select>
-                <select
-                  value={direction}
-                  onChange={(e) =>
-                    setDirection(e.target.value as CommDirection)
-                  }
-                  className="h-10 flex-1 rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
-                >
-                  {COMM_DIRECTIONS.map((d) => (
-                    <option key={d} value={d}>
-                      {COMM_DIRECTION_LABELS[d]}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-
-            <div>
-              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                Link to Application (Optional, leave blank to auto-match)
-              </label>
-              <select
-                value={explicitAppId}
-                onChange={(e) => setExplicitAppId(e.target.value)}
-                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
-              >
-                <option value="">Auto-detect matching application</option>
-                {data.applications.map((app) => (
-                  <option key={app.id} value={app.id}>
-                    {app.code}: {app.jobTitle} at {app.companyName}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          <div>
-            <label
-              htmlFor="analyzer-subject"
-              className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]"
-            >
-              Email Subject *
-            </label>
-            <input
-              id="analyzer-subject"
-              type="text"
-              required
-              value={subject}
-              onChange={(e) => setSubject(e.target.value)}
-              placeholder="e.g., Interview Invitation for Staff Full-Stack Engineer at PT GoTo"
-              className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-3 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
-            />
-          </div>
-
-          <div>
-            <label
+            <FormField
+              label="Email Body / Excerpt"
               htmlFor="analyzer-snippet"
-              className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]"
             >
-              Email Body / Excerpt
-            </label>
-            <textarea
-              id="analyzer-snippet"
-              rows={5}
-              value={snippet}
-              onChange={(e) => setSnippet(e.target.value)}
-              placeholder="Paste the email content here (e.g., We would like to invite you to an HR interview on Thursday at 10:00 WIB)..."
-              className="mt-1 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] p-3 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
-            />
-          </div>
+              <Textarea
+                id="analyzer-snippet"
+                rows={5}
+                value={snippet}
+                onChange={(e) => setSnippet(e.target.value)}
+                placeholder="Paste the email content here (e.g., We would like to invite you to an HR interview on Thursday at 10:00 WIB)..."
+              />
+            </FormField>
 
-          <div className="flex justify-end">
-            <button
-              type="submit"
-              disabled={isPending}
-              className="btn-primary h-10 px-4 text-xs disabled:opacity-50"
-            >
-              <Sparkles className="h-3.5 w-3.5" />
-              {isPending ? "Analyzing..." : "Classify & Save Email"}
-            </button>
-          </div>
-        </form>
+            <div className="flex justify-end">
+              <Button
+                type="submit"
+                variant="primary"
+                size="lg"
+                disabled={isPending}
+              >
+                <Sparkles className="h-3.5 w-3.5" />
+                {isPending ? "Analyzing..." : "Classify & Save Email"}
+              </Button>
+            </div>
+          </form>
+        </Card>
       )}
 
       {/* TAB 3: Recruiter Contact Directory */}
       {activeTab === "recruiters" && (
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
           <div className="space-y-3 lg:col-span-7">
-            <div className="elevation-1 rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] p-5 space-y-3 dark:border-[#24332a] dark:bg-[#111a15]">
-              <h2 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
+            <Card padding="md" className="space-y-3">
+              <h2 className="text-section-title text-foreground">
                 Recruiter & Talent Acquisition Contact History
               </h2>
 
               {data.recruiterDirectory.length === 0 ? (
-                <p className="py-6 text-[#3f674f]">
+                <p className="py-6 text-muted-foreground">
                   No recruiter contacts recorded yet.
                 </p>
               ) : (
@@ -872,30 +895,32 @@ export function EmailCenterClient({
                   {data.recruiterDirectory.map((rec) => (
                     <div
                       key={rec.id}
-                      className="flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-[#bdcabf]/50 bg-[#eff5ee] p-3.5 dark:border-[#24332a] dark:bg-[#17231c]"
+                      className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-border-subtle bg-surface-subtle p-3.5"
                     >
                       <div className="space-y-0.5">
                         <div className="flex items-center gap-2">
-                          <UserCheck className="h-3.5 w-3.5 text-[#006a42]" />
-                          <span className="font-semibold text-[#171d19] dark:text-[#ecf3eb]">
+                          <UserCheck className="h-3.5 w-3.5 text-primary-text" />
+                          <span className="font-semibold text-foreground">
                             {rec.name}
                           </span>
                           {rec.title && (
-                            <span className="text-[#3f674f]">· {rec.title}</span>
+                            <span className="text-muted-foreground">
+                              · {rec.title}
+                            </span>
                           )}
                           {rec.companyName && (
-                            <span className="rounded-full bg-[#c0edcf]/60 px-2.5 py-0.5 text-[11px] font-semibold text-[#005232] dark:bg-[#1d2b23] dark:text-[#b7c6ba]">
-                              {rec.companyName}
-                            </span>
+                            <Badge variant="primary">{rec.companyName}</Badge>
                           )}
                           {rec.isSample && <SampleBadge />}
                         </div>
-                        <div className="flex flex-wrap gap-3 text-[11px] text-[#3f674f] tabular-nums">
+                        <div className="flex flex-wrap gap-3 text-[11px] text-muted-foreground tabular-nums">
                           {rec.email && <span>Email: {rec.email}</span>}
                           {rec.phone && <span>Phone: {rec.phone}</span>}
                           <span>
                             Correspondence count:{" "}
-                            <strong>{rec.interactionsCount}</strong>
+                            <strong className="text-foreground">
+                              {rec.interactionsCount}
+                            </strong>
                           </span>
                           {rec.lastContactedAt && (
                             <span>
@@ -906,116 +931,117 @@ export function EmailCenterClient({
                         </div>
                       </div>
 
-                      <button
-                        type="button"
+                      <Button
+                        variant="destructive"
+                        size="icon-sm"
                         disabled={isPending}
-                        onClick={() =>
-                          startTransition(async () => {
-                            await deleteRecruiterContactAction(rec.id);
-                            toast.success("Contact removed.");
-                            router.refresh();
-                          })
-                        }
-                        className="btn-destructive h-8 w-8 p-0"
+                        aria-label={`Delete contact ${rec.name}`}
+                        onClick={() => setDeleteRecruiterId(rec.id)}
                       >
                         <Trash2 className="h-3.5 w-3.5" />
-                      </button>
+                      </Button>
                     </div>
                   ))}
                 </div>
               )}
-            </div>
+            </Card>
           </div>
 
-          <form
-            onSubmit={handleAddRecruiter}
-            className="elevation-1 rounded-2xl border border-[#bdcabf]/50 bg-[#ffffff] p-5 space-y-3 lg:col-span-5 dark:border-[#24332a] dark:bg-[#111a15]"
-          >
-            <div className="flex items-center gap-2">
-              <Plus className="h-4 w-4 text-[#006a42]" />
-              <h3 className="text-headline-sm text-[#171d19] dark:text-[#ecf3eb]">
-                Add Recruiter Contact
-              </h3>
-            </div>
+          <Card padding="md" className="lg:col-span-5">
+            <form onSubmit={handleAddRecruiter} className="space-y-3">
+              <div className="flex items-center gap-2">
+                <Plus className="h-4 w-4 text-primary-text" />
+                <h3 className="text-section-title text-foreground">
+                  Add Recruiter Contact
+                </h3>
+              </div>
 
-            <div>
-              <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                Recruiter Name *
-              </label>
-              <input
-                type="text"
-                required
-                value={recName}
-                onChange={(e) => setRecName(e.target.value)}
-                placeholder="Nadia Putri"
-                className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-2.5">
-              <div>
-                <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                  Company
-                </label>
-                <input
+              <FormField label="Recruiter Name" required>
+                <Input
                   type="text"
-                  value={recCompany}
-                  onChange={(e) => setRecCompany(e.target.value)}
-                  placeholder="PT GoTo"
-                  className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
+                  inputSize="lg"
+                  required
+                  value={recName}
+                  onChange={(e) => setRecName(e.target.value)}
+                  placeholder="Nadia Putri"
                 />
-              </div>
-              <div>
-                <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                  Role / Title
-                </label>
-                <input
-                  type="text"
-                  value={recTitle}
-                  onChange={(e) => setRecTitle(e.target.value)}
-                  placeholder="Technical Recruiter"
-                  className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
-                />
-              </div>
-            </div>
+              </FormField>
 
-            <div className="grid grid-cols-2 gap-2.5">
-              <div>
-                <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                  Email
-                </label>
-                <input
-                  type="email"
-                  value={recEmail}
-                  onChange={(e) => setRecEmail(e.target.value)}
-                  placeholder="nadia@company.com"
-                  className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
-                />
+              <div className="grid grid-cols-2 gap-2.5">
+                <FormField label="Company">
+                  <Input
+                    type="text"
+                    inputSize="lg"
+                    value={recCompany}
+                    onChange={(e) => setRecCompany(e.target.value)}
+                    placeholder="PT GoTo"
+                  />
+                </FormField>
+                <FormField label="Role / Title">
+                  <Input
+                    type="text"
+                    inputSize="lg"
+                    value={recTitle}
+                    onChange={(e) => setRecTitle(e.target.value)}
+                    placeholder="Technical Recruiter"
+                  />
+                </FormField>
               </div>
-              <div>
-                <label className="block font-semibold text-[#3e4a41] dark:text-[#b7c6ba]">
-                  Phone / WhatsApp
-                </label>
-                <input
-                  type="text"
-                  value={recPhone}
-                  onChange={(e) => setRecPhone(e.target.value)}
-                  placeholder="+62..."
-                  className="mt-1 h-10 w-full rounded-xl border border-[#bdcabf]/70 bg-[#ffffff] px-2.5 text-xs text-[#171d19] dark:border-[#2d3d33] dark:bg-[#17231c]"
-                />
-              </div>
-            </div>
 
-            <button
-              type="submit"
-              disabled={isPending}
-              className="btn-primary h-10 w-full px-4 text-xs disabled:opacity-50"
-            >
-              Save Recruiter Contact
-            </button>
-          </form>
+              <div className="grid grid-cols-2 gap-2.5">
+                <FormField label="Email">
+                  <Input
+                    type="email"
+                    inputSize="lg"
+                    value={recEmail}
+                    onChange={(e) => setRecEmail(e.target.value)}
+                    placeholder="nadia@company.com"
+                  />
+                </FormField>
+                <FormField label="Phone / WhatsApp">
+                  <Input
+                    type="text"
+                    inputSize="lg"
+                    value={recPhone}
+                    onChange={(e) => setRecPhone(e.target.value)}
+                    placeholder="+62..."
+                  />
+                </FormField>
+              </div>
+
+              <Button
+                type="submit"
+                variant="primary"
+                size="lg"
+                disabled={isPending}
+                className="w-full"
+              >
+                Save Recruiter Contact
+              </Button>
+            </form>
+          </Card>
         </div>
       )}
+
+      <ConfirmDialog
+        open={Boolean(disconnectId)}
+        onOpenChange={(next) => !next && setDisconnectId(null)}
+        title="Disconnect email account?"
+        description="Imported messages will remain in your inbox, but future OAuth syncing will stop until reconnected."
+        confirmLabel="Disconnect"
+        pending={isPending}
+        onConfirm={handleConfirmDisconnect}
+      />
+
+      <ConfirmDialog
+        open={Boolean(deleteRecruiterId)}
+        onOpenChange={(next) => !next && setDeleteRecruiterId(null)}
+        title="Remove recruiter contact?"
+        description="This will remove the recruiter entry from your contact directory."
+        confirmLabel="Remove Contact"
+        pending={isPending}
+        onConfirm={handleConfirmDeleteRecruiter}
+      />
     </div>
   );
 }
