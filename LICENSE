@@ -1,0 +1,427 @@
+CAREER APPLICATION TRACKER — PERSONAL, NON-COMMERCIAL USE LICENSE
+Version 1.0 — 17 November 2026
+
+Copyright © 2026 Ari (GitHub: kijarrot21), Republic of Indonesia.
+Repository: https://github.com/kijarrot21/career-application-tracker
+
+THIS IS NOT AN OPEN SOURCE LICENSE. This is a source-available license for
+personal, non-commercial use. Commercial use, sale, resale, and paid
+redistribution are prohibited unless the copyright holder has given prior
+written approval. See Section 4 (Prohibited Uses) and Section 5 (Commercial
+License and Approval).
+
+
+================================================================================
+PLAIN-LANGUAGE SUMMARY
+================================================================================
+This summary is provided for convenience only. It has no legal effect on its
+own; the binding terms are in Sections 1 to 14 below.
+
+  ✔ You MAY: read the source code, run the application for yourself, study it,
+    learn from it, modify it, and share it for free with other individuals who
+    will also use it only for personal, non-commercial purposes.
+
+  ✘ You MAY NOT: sell it, resell it, rent it, charge for it, hide it behind a
+    paywall, ship it inside a paid product, or run it as a paid or
+    revenue-generating service for other people.
+
+  ✘ You MAY NOT: use it inside a business, company, agency, or freelance
+    delivery without prior written approval, even if you are not selling the
+    software itself.
+
+  ✘ You MAY NOT: remove the copyright notices, claim you wrote it, or present
+    yourself as its author or owner.
+
+  ➜ Want to use it commercially, or sell something built on it? Ask first.
+    Written approval from the copyright holder is required. Permission is
+    granted case by case and never automatically.
+
+  ➜ If you break these terms, your permission to use the software ends
+    immediately, and the copyright holder may take legal action under
+    Indonesian copyright law, including claims for damages, an accounting of
+    your profits, injunctions, and legal costs.
+
+RINGKASAN BAHASA INDONESIA
+Ringkasan ini hanya untuk kemudahan membaca dan tidak menggantikan ketentuan
+hukum di bawah ini.
+
+  ✔ BOLEH: membaca kode sumber, menjalankan aplikasi untuk diri sendiri,
+    mempelajari, memodifikasi, dan membagikannya secara gratis kepada individu
+    lain yang juga hanya memakainya untuk keperluan pribadi dan non-komersial.
+
+  ✘ DILARANG: menjual, menjual ulang, menyewakan, memungut biaya, menaruhnya di
+    balik paywall, memasukkannya ke dalam produk berbayar, atau menjalankannya
+    sebagai layanan berbayar maupun layanan yang menghasilkan pendapatan.
+
+  ✘ DILARANG: memakainya di dalam perusahaan, badan usaha, agensi, atau
+    pekerjaan lepas (freelance) tanpa persetujuan tertulis terlebih dahulu,
+    walaupun perangkat lunaknya sendiri tidak dijual.
+
+  ✘ DILARANG: menghapus notis hak cipta, mengklaim sebagai penulis, atau
+    mengaku sebagai pemilik aplikasi ini.
+
+  ➜ Ingin memakai secara komersial atau menjual sesuatu yang dibangun dari
+    aplikasi ini? Ajukan izin tertulis lebih dahulu. Izin diberikan per kasus
+    dan tidak pernah otomatis.
+
+  ➜ Jika ketentuan ini dilanggar, izin penggunaan berakhir seketika, dan
+    pemegang hak cipta dapat menempuh upaya hukum berdasarkan hukum Indonesia,
+    termasuk gugatan ganti rugi, permintaan keuntungan, penetapan sementara
+    pengadilan, serta biaya hukum.
+
+
+================================================================================
+TERMS AND CONDITIONS
+================================================================================
+
+1. DEFINITIONS
+
+   1.1 "Software" means the Career Application Tracker application and all
+       source code, object code, build scripts, database migrations, schemas,
+       configuration files, documentation, design assets, and other materials
+       in this repository, together with all Updates and Derivative Works.
+
+   1.2 "Licensor" means the copyright holder identified at the top of this
+       file, being the author and/or the person holding the economic rights in
+       the Software.
+
+   1.3 "You" means the individual exercising rights under this License. If You
+       exercise rights on behalf of any entity, "You" includes that entity.
+
+   1.4 "Personal Use" means use by a natural person, for that person's own
+       private and non-commercial purposes, including personal job searching,
+       learning, study, evaluation, and hobby projects that generate no revenue
+       and are not operated for or on behalf of any business.
+
+   1.5 "Commercial Use" means any use that is intended for or directed toward
+       commercial advantage or monetary compensation, including without
+       limitation: use by or for a company, business, partnership, cooperative,
+       foundation, government body, agency, or non-profit organisation in its
+       operations; use in freelance or consulting deliverables; use to provide
+       services to clients; use in any product, service, or internal tool that
+       supports revenue; and any use for which You receive payment, credits, or
+       other consideration.
+
+   1.6 "Resale" means selling, reselling, renting, leasing, licensing,
+       sublicensing, distributing for a fee, or otherwise transferring the
+       Software or any Derivative Work to a third party for consideration,
+       including as part of a bundle, template, starter kit, course, or
+       marketplace listing.
+
+   1.7 "Derivative Work" means any work based on or incorporating the Software,
+       in whole or in part, including modifications, translations, ports, and
+       works that link to or embed the Software.
+
+   1.8 "Distribute" means to provide the Software or a Derivative Work to any
+       third party by any means, including uploading, publishing, sharing a
+       repository, sending archives, containerising, or hosting.
+
+   1.9 "Approval" means the Licensor's prior, explicit, written permission,
+       given in a document signed by the Licensor or sent from an email address
+       or account verifiably controlled by the Licensor, and addressed to a
+       named person or entity for a named scope of use. Approval is valid only
+       for the scope, duration, and party stated in it.
+
+2. GRANT OF LICENSE
+
+   2.1 Subject to Your full compliance with this License, the Licensor grants
+       You a limited, worldwide, royalty-free, non-exclusive, non-transferable,
+       non-sublicensable, revocable license to:
+       (a) use and run the Software for Personal Use;
+       (b) reproduce the Software for Personal Use, including backup copies;
+       (c) modify the Software and create Derivative Works for Personal Use;
+       (d) Distribute unmodified or modified copies free of charge, solely to
+           individuals who will use them for Personal Use and who receive a
+           copy of this License.
+
+   2.2 This License does not permit any Commercial Use, any Resale, or any
+       distribution for consideration. Those rights are expressly withheld and
+       require Approval under Section 5.
+
+   2.3 All rights not expressly granted in Section 2.1 are reserved by the
+       Licensor.
+
+   2.4 The rights in Section 2.1 are conditioned on compliance with this
+       License. Use of the Software outside the scope of the grant in Section
+       2.1 is use without permission and constitutes an infringement of the
+       Licensor's copyright, in addition to any breach of this License.
+
+3. CONDITIONS
+
+   3.1 You must keep intact all copyright notices, license notices, and
+       attribution statements in the Software and in every copy and Derivative
+       Work.
+
+   3.2 Every copy You Distribute must include an unmodified copy of this
+       License and must clearly state that the Software is licensed for
+       personal, non-commercial use only.
+
+   3.3 You must not represent Yourself as the author, creator, or owner of the
+       Software, and must not remove or alter any notice that identifies the
+       Licensor as such.
+
+   3.4 You must not use the Licensor's name, GitHub handle, logos, or the
+       "Career Application Tracker" name to endorse, promote, or imply
+       sponsorship of Your own product or service (see Section 10).
+
+   3.5 You are solely responsible for Your own use of the Software and for
+       complying with all laws applicable to You, including data protection
+       law.
+
+4. PROHIBITED USES
+
+   Without prior Approval, You must not, and must not permit any third party to:
+
+   4.1 sell, resell, rent, lease, lend for a fee, or otherwise commercially
+       exploit the Software or any Derivative Work;
+
+   4.2 Distribute the Software or any Derivative Work for any fee, payment,
+       donation, subscription, credit, or other consideration;
+
+   4.3 publish, host, or make the Software available as a paid product, paid
+       service, software-as-a-service offering, or any hosted service that
+       generates revenue or is offered to the public as a commercial product;
+
+   4.4 include the Software or any Derivative Work in any product, template,
+       starter kit, boilerplate, course, plugin, or marketplace item that is
+       sold or monetised;
+
+   4.5 use the Software for Commercial Use of any kind, including internal
+       business use, client work, freelance delivery, or use in the operations
+       of any entity;
+
+   4.6 sublicense, assign, transfer, or otherwise grant any of Your rights
+       under this License to any third party, except as expressly permitted in
+       Section 2.1(d);
+
+   4.7 remove, obscure, or alter any copyright, license, or attribution notice;
+
+   4.8 claim authorship of the Software, or apply for any copyright
+       registration, trademark, patent, or other right over the Software or any
+       Derivative Work;
+
+   4.9 use the Software in a way that suggests the Licensor endorses or is
+       affiliated with Your product, service, or organisation; or
+
+   4.10 circumvent, disable, or remove any technical or legal restriction
+        relating to the Software.
+
+5. COMMERCIAL LICENSE AND APPROVAL
+
+   5.1 Commercial Use, Resale, and any use outside Section 2.1 require the
+       Licensor's prior Approval and, where the Licensor requires it, payment of
+       a commercial license fee on terms agreed in writing.
+
+   5.2 Requests for Approval must be made in writing to the Licensor, describing
+       the intended use, the entity that will use the Software, the scope and
+       duration of use, and whether any fee will be charged to third parties.
+
+   5.3 Approval is granted at the Licensor's sole discretion, applies only to
+       the exact scope described in the Approval, is non-exclusive unless
+       stated otherwise, and may be revoked for breach of its terms.
+
+   5.4 No Approval exists unless it is in writing and issued by the Licensor.
+       Silence, failure to respond, a "like", a verbal statement, or an
+       unanswered message does not constitute Approval.
+
+   5.5 Any use that requires Approval and is undertaken without it is
+       unauthorised, is outside the scope of this License, and is an
+       infringement of copyright from its first day.
+
+6. CONTRIBUTIONS
+
+   6.1 By submitting any contribution (including a pull request, patch, or
+       code suggestion) to the Software, You confirm that You are legally
+       entitled to do so and that the contribution is Your original work or is
+       otherwise lawfully contributed.
+
+   6.2 You grant the Licensor a perpetual, irrevocable, worldwide,
+       royalty-free, fully paid-up, sublicensable, and transferable license to
+       use, reproduce, modify, adapt, publish, Distribute, and relicense Your
+       contribution, including under commercial and proprietary terms, and to
+       exercise all copyright and related rights in it.
+
+   6.3 You retain ownership of Your contribution. Nothing in this Section
+       transfers Your copyright to the Licensor; it grants rights only.
+
+   6.4 Contributions are accepted only under this Section 6. If You do not
+       agree to it, do not submit a contribution.
+
+7. TERM AND TERMINATION
+
+   7.1 This License takes effect when You first use the Software and continues
+       until terminated.
+
+   7.2 This License terminates automatically, without notice, if You breach any
+       term of it.
+
+   7.3 The Licensor may also terminate this License at any time by written
+       notice, without cause and without liability.
+
+   7.4 On termination You must immediately stop all use of the Software and,
+       within seven (7) days, delete and destroy all copies, modifications, and
+       Derivative Works in Your possession or control, and confirm in writing
+       that You have done so if the Licensor asks.
+
+   7.5 Termination does not affect: (a) the Licensor's right to claim damages,
+       profits, costs, or other remedies for breaches that occurred before or
+       after termination; (b) any Approval separately granted in writing; or
+       (c) Sections 3, 4, 5, 6, 8, 9, 10, 11, 12, and 13, which survive
+       termination.
+
+   7.6 If the Licensor grants You a written reinstatement, this License is
+       reinstated only for the scope stated in that reinstatement.
+
+8. COPYRIGHT, OWNERSHIP, AND ENFORCEMENT
+
+   8.1 The Software is protected by copyright, including under the laws of the
+       Republic of Indonesia, in particular Law No. 28 of 2014 on Copyright
+       ("UU Hak Cipta"), which protects computer programs as protected works
+       and grants the author exclusive economic rights, and by international
+       copyright treaties.
+
+   8.2 Copyright in the Software arises automatically upon creation and does
+       not depend on registration. The Licensor may nonetheless record the work
+       with the Directorate General of Intellectual Property (DJKI) of the
+       Ministry of Law of the Republic of Indonesia for evidentiary purposes,
+       and may register it in other jurisdictions.
+
+   8.3 You acknowledge that unauthorised Commercial Use, Resale, or
+       distribution causes harm that is difficult to quantify and may cause
+       irreparable injury to the Licensor, and that monetary damages alone may
+       be an inadequate remedy.
+
+   8.4 Accordingly, in addition to any other remedy available at law or in
+       equity, the Licensor is entitled to seek:
+       (a) interim and permanent injunctive relief, including a court
+           interlocutory order (penetapan sementara pengadilan) under the
+           applicable provisions of UU Hak Cipta, subject to the procedure and
+           guarantees required by law;
+       (b) an order for the seizure, withdrawal from circulation, and
+           destruction of unauthorised copies, as permitted by applicable law;
+       (c) compensation for actual damages, including lost licensing revenue
+           and lost profits;
+       (d) an accounting and disgorgement of profits You obtained from the
+           unauthorised use, and, where available, statutory compensation;
+       (e) recovery of reasonable legal fees, court costs, and investigation
+           costs; and
+       (f) any criminal complaint or report available for commercial-scale
+           copyright infringement under UU Hak Cipta.
+
+   8.5 Where the Licensor offers commercial licenses for the Software, the
+       parties agree that, as a minimum measure of the Licensor's loss (and not
+       as a penalty), an unauthorised Commercial Use or Resale is chargeable at
+       the Licensor's published or standard commercial license fee for the
+       corresponding scope and period, plus a surcharge of one hundred percent
+       (100%) of that fee. This Section 8.5 does not limit any other remedy and
+       does not prevent the Licensor from proving higher damages.
+
+   8.6 Nothing in this License limits the Licensor's right to enforce its
+       rights in any jurisdiction where the Software is used without
+       permission, in accordance with the copyright law of that jurisdiction.
+
+9. DISCLAIMER OF WARRANTY
+
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND NON-INFRINGEMENT. THE LICENSOR
+   DOES NOT WARRANT THAT THE SOFTWARE WILL BE ERROR-FREE, SECURE, UNINTERRUPTED,
+   OR SUITABLE FOR ANY PARTICULAR PURPOSE. YOU USE THE SOFTWARE AT YOUR OWN RISK
+   AND ARE SOLELY RESPONSIBLE FOR ANY DATA YOU PROCESS WITH IT.
+
+10. NO TRADEMARK OR ENDORSEMENT LICENSE
+
+   10.1 No trademark, service mark, trade name, logo, or trade dress rights are
+        granted under this License.
+
+   10.2 You may refer to the Software by its name for descriptive purposes
+        only, and must not use the name in a way that implies endorsement,
+        partnership, or authorship.
+
+11. LIMITATION OF LIABILITY
+
+   TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, THE LICENSOR SHALL NOT BE
+   LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, EXEMPLARY, OR
+   PUNITIVE DAMAGES, OR FOR ANY LOSS OF PROFITS, REVENUE, DATA, GOODWILL, OR
+   BUSINESS OPPORTUNITY, ARISING OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+   THIS LICENSE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGES. WHERE
+   LIABILITY CANNOT BE EXCLUDED, THE LICENSOR'S TOTAL AGGREGATE LIABILITY SHALL
+   NOT EXCEED THE AMOUNT YOU PAID THE LICENSOR FOR THE SOFTWARE, WHICH FOR THIS
+   FREE PERSONAL-USE LICENSE IS ZERO (0).
+
+   Nothing in this License excludes or limits liability that cannot be excluded
+   or limited under applicable law.
+
+12. THIRD-PARTY COMPONENTS
+
+   12.1 The Software depends on third-party open source packages (for example
+        Next.js, React, Drizzle ORM, and others listed in package.json). Those
+        components remain governed exclusively by their own licenses.
+
+   12.2 This License applies only to the original code and materials authored
+        by the Licensor. It grants no rights in third-party components beyond
+        what their own licenses allow, and it does not restrict any right You
+        have under those licenses.
+
+13. GENERAL
+
+   13.1 Entire agreement. This License is the entire agreement between You and
+        the Licensor regarding the Software and supersedes any prior
+        understanding on the same subject.
+
+   13.2 Severability. If any provision is held invalid or unenforceable, it
+        shall be modified to the minimum extent necessary to make it
+        enforceable, and the remaining provisions shall remain in full force.
+
+   13.3 No waiver. Failure or delay by the Licensor in enforcing any provision
+        is not a waiver of that provision or of any other provision.
+
+   13.4 No implied permission. No permission may be inferred from the
+        Licensor's conduct, silence, or tolerance of prior unapproved use.
+
+   13.5 Assignment. The Licensor may assign or transfer its rights under this
+        License. You may not assign or transfer Your rights without prior
+        Approval.
+
+   13.6 Independent advice. You acknowledge that You have had the opportunity
+        to seek independent legal advice before using the Software.
+
+   13.7 Language. This License is written in English. The Indonesian summary in
+        this file is provided for convenience; if there is any conflict, the
+        English terms in Sections 1 to 14 prevail, except where mandatory
+        Indonesian law requires otherwise.
+
+14. GOVERNING LAW AND JURISDICTION
+
+   14.1 This License and any dispute arising out of or in connection with it,
+       including its validity, interpretation, performance, breach, and
+       remedies, are governed by the laws of the Republic of Indonesia.
+
+   14.2 Subject to Section 8.6, the courts of the Republic of Indonesia shall
+       have exclusive jurisdiction, and the parties submit to the jurisdiction
+       of the district court (Pengadilan Negeri) competent over the Licensor's
+       domicile.
+
+   14.3 Before commencing proceedings, a party may give written notice of the
+       dispute and allow thirty (30) days for good-faith resolution. This does
+       not prevent the Licensor from seeking urgent interim relief.
+
+   14.4 The Licensor may also rely on this License and on copyright law in any
+       country where the Software is used or Distributed without Approval.
+
+
+================================================================================
+HOW TO COMPLY (informational, not a separate grant)
+================================================================================
+
+  - Personal use: clone, run, modify, learn. Keep this LICENSE file in place.
+  - Sharing: give it away free, include this LICENSE unmodified, and tell the
+    recipient it is personal-use only.
+  - Business, client work, or selling anything: request written Approval first.
+  - Asking for permission is always welcome. A clear "no" is still a "no", and
+    silence is never permission.
+
+
+For commercial licensing, written approval, or permission requests, contact the
+copyright holder through the contact details published on the repository's
+GitHub profile.

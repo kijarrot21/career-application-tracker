@@ -4,6 +4,8 @@
 
 **Career Application Tracker** is a web-based **Personal Applicant Tracking System (ATS)** built to help job seekers manage their entire job search in a structured way. It covers the full cycle: discovering and evaluating job fit, tracking applications through a 13-stage HR pipeline, scheduling interviews and follow-ups, classifying recruiter emails, managing CV and portfolio document versions, and analyzing application conversion based on real data.
 
+> **License:** free for personal, non-commercial use only. Commercial use, sale, and resale require prior written approval from the author. See [LICENSE](LICENSE). This is a **source-available** license, not an OSI-approved open source license.
+
 ## Project Status (as of November 2026)
 
 | Area | Status |
@@ -197,3 +199,61 @@ Open `http://localhost:3000` in your browser.
 - [Current Architecture](docs/CURRENT_ARCHITECTURE.md): actual technical architecture
 - [Database Gap Analysis](docs/DATABASE_GAP_ANALYSIS.md) · [Security Review](docs/SECURITY_REVIEW_REPORT.md) · [Security Gap Analysis](docs/SECURITY_GAP_ANALYSIS.md) · [Repository Audit](docs/REPOSITORY_AUDIT.md)
 - [UI/UX Audit](docs/ui-ux-audit.md) · [UI/UX Roadmap](docs/ui-ux-improvement-roadmap.md) · [Development Backlog](DEVELOPMENT_BACKLOG.md)
+
+## License
+
+This project is **source-available** under the [Career Application Tracker Personal, Non-Commercial Use License v1.0](LICENSE). The source code is public so anyone can read it, learn from it, run it for their own job search, and improve it — but it is **not** free to commercialise.
+
+© 2026 Ari ([kijarrot21](https://github.com/kijarrot21)). New to licensing? Read [License and IP basics](docs/19-license-and-ip.md) for a plain-language walkthrough: what is required, what is optional, and what to do if someone resells this.
+
+### What "source-available for personal use" means
+
+Most people hear "public GitHub repository" and assume "do whatever you want." That is not the case here, because this application is a personal project and is not for sale by anyone other than its author.
+
+| Action | Allowed without asking? |
+|---|---|
+| Read, study, and learn from the source code | ✅ Yes |
+| Run the app for your own job search, on your own machine | ✅ Yes |
+| Modify it for your own personal use | ✅ Yes |
+| Share it free of charge with a friend for their personal use (with the LICENSE included) | ✅ Yes |
+| Use it inside a company, agency, or freelance client project | ❌ No — written approval required |
+| Sell it, resell it, or charge for access to it | ❌ No — written approval required |
+| Put it behind a paywall, or bundle it into a paid product, template, or course | ❌ No — written approval required |
+| Run it as a paid or revenue-generating hosted service for other people | ❌ No — written approval required |
+| Remove copyright notices or claim authorship | ❌ No — never permitted |
+
+### Why the license is written this way
+
+The goal is straightforward: **share the work, keep the commercial rights.** Someone else should not be able to download this repository, list it on a marketplace, or resell it as their own product and profit from work they did not do. The license achieves that by limiting the permission it grants:
+
+1. **The grant is conditional.** Section 2.1 gives a narrow permission — personal, non-commercial use — and Section 2.4 states that anything outside that scope is used *without permission*. That matters legally: unauthorised commercial use is not merely a broken contract, it is **copyright infringement**, which is what makes enforcement possible.
+2. **Resale and commercial use are expressly prohibited.** Section 4 lists them by name (sell, resell, rent, bundle, paywall, paid hosting, internal business use), so there is no room to argue that the restriction was unclear.
+3. **Approval must be in writing.** Section 5.4 removes the usual excuse of "I asked and nobody replied." Silence, a verbal "sure", or an unanswered message is explicitly **not** permission.
+4. **Breach ends the permission immediately.** Sections 7.2 to 7.4 require the infringer to stop and delete all copies within seven days.
+5. **Remedies are spelled out.** Section 8 covers injunctions (including a court interlocutory order), seizure and destruction of unauthorised copies, damages, disgorgement of profits, legal costs, and a criminal complaint where the infringement is commercial in scale.
+6. **Contributions stay licensable.** Section 6 makes sure that if other people contribute code, the author keeps the right to offer commercial licenses later.
+
+### About the word "open source"
+
+"Open source" has a formal meaning: a license must allow commercial use and must not discriminate against fields of endeavour. A personal-use-only license therefore **cannot** be called open source, and calling it that could create a false impression that others are free to sell the software. The accurate terms are **source-available**, **publicly available**, or **free for non-commercial use**. This README and the LICENSE use those terms deliberately.
+
+### Enforcement, in practice
+
+Copyright in this code exists automatically from the moment it was written — no registration is required. A license file in the repository is the notice that puts every user on notice of the terms. To make a claim easier to prove, the author may also:
+
+- record the work with **DJKI** (Directorate General of Intellectual Property, Ministry of Law of the Republic of Indonesia) for evidentiary purposes (pencatatan ciptaan);
+- keep dated evidence of authorship, such as signed Git commits and release tags (this repository's commit history serves this purpose);
+- send a written cease-and-desist demand before filing, and preserve screenshots, invoices, and marketplace listings as evidence.
+
+Under Law No. 28 of 2014 on Copyright (*UU Hak Cipta*), computer programs are protected works, and remedies for infringement include injunctions, compensation, seizure, and — for commercial-scale infringement — criminal sanctions.
+
+### If you want to use it commercially
+
+Ask first. Written approval is required, and it is granted case by case. Requests should state who will use the software, what it will be used for, whether any fee will be charged to third parties, and for how long. Contact the author through the details published on the [GitHub profile](https://github.com/kijarrot21).
+
+### Third-party components
+
+The license covers only the original code in this repository. Dependencies such as Next.js, React, Drizzle ORM, and the rest of `package.json` remain under their own licenses (MIT, Apache-2.0, and others), and those licenses are unaffected by this one.
+
+> **Note:** the license governs copying and modifying the *code*. If a public instance of this app is ever hosted for other users, that service also needs its own Terms of Service and Privacy Policy, because the license does not govern what users do with their accounts and data.
+

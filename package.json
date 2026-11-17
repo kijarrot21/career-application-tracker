@@ -2,6 +2,8 @@
   "name": "career-application-tracker",
   "version": "0.1.0",
   "private": true,
+  "license": "SEE LICENSE IN LICENSE",
+  "author": "Ari (https://github.com/kijarrot21)",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
