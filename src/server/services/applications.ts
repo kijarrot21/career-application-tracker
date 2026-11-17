@@ -2,6 +2,7 @@ import { and, asc, desc, eq } from "drizzle-orm";
 import { z } from "zod";
 import { ensureDbReady } from "@/db";
 import {
+  applicationClosureRecords,
   applications,
   applicationStatusHistory,
   emailCommunications,
@@ -37,6 +38,7 @@ import {
 } from "@/lib/domain/stages";
 import { formatCode } from "@/lib/format";
 import { getUserSettings, getUserStages } from "@/server/queries/settings";
+import { archiveApplicationTx, mapHistorySourceToClosureSource } from "./archive";
 import { createVacancyService } from "./vacancies";
 
 export const recordSubmissionSchema = z.object({
@@ -332,63 +334,102 @@ export async function moveApplicationStageService(
     historySource = "reopen";
   }
 
-  const [updated] = await db
-    .update(applications)
-    .set({
-      currentStageId: toStage.id,
-      outcome: newOutcome,
-      closedAt: isClosing ? effectiveOn : null,
-      nextFollowUpOn: isClosing ? null : app.nextFollowUpOn,
-      lastActivityAt: new Date(),
-      updatedAt: new Date(),
-    })
-    .where(and(eq(applications.id, app.id), eq(applications.userId, userId)))
-    .returning();
+  const [updated, archiveResult] = await db.transaction(async (tx) => {
+    const [updatedApp] = await tx
+      .update(applications)
+      .set({
+        currentStageId: toStage.id,
+        outcome: newOutcome,
+        closedAt: isClosing ? effectiveOn : null,
+        nextFollowUpOn: isClosing ? null : app.nextFollowUpOn,
+        lastActivityAt: new Date(),
+        updatedAt: new Date(),
+      })
+      .where(and(eq(applications.id, app.id), eq(applications.userId, userId)))
+      .returning();
 
-  // If moving to a terminal stage, cancel any open follow-up tasks
-  if (isClosing) {
-    await db
-      .update(followUpTasks)
-      .set({ status: "cancelled", updatedAt: new Date() })
-      .where(
-        and(
-          eq(followUpTasks.userId, userId),
-          eq(followUpTasks.applicationId, app.id),
-          eq(followUpTasks.status, "open"),
-        ),
-      );
-  }
+    // If moving to a terminal stage, cancel any open follow-up tasks
+    if (isClosing) {
+      await tx
+        .update(followUpTasks)
+        .set({ status: "cancelled", updatedAt: new Date() })
+        .where(
+          and(
+            eq(followUpTasks.userId, userId),
+            eq(followUpTasks.applicationId, app.id),
+            eq(followUpTasks.status, "open"),
+          ),
+        );
+    }
 
-  await db.insert(applicationStatusHistory).values({
-    userId,
-    applicationId: app.id,
-    fromStageId: fromStage.id,
-    toStageId: toStage.id,
-    effectiveOn,
-    source: historySource,
-    reason: input.reason || null,
-    note:
-      input.note ||
-      (transition.skipped.length > 0
-        ? `Skipped stages: ${transition.skipped.map((s) => s.name).join(", ")}`
-        : null),
-  });
+    // If reopening out of a terminal stage, mark active closure record as restored
+    if (transition.kind === "reopen") {
+      await tx
+        .update(applicationClosureRecords)
+        .set({
+          status: "restored",
+          restoredAt: new Date(),
+          restoredToStageId: toStage.id,
+          restorationReason: input.reason || "Reopened from recruitment pipeline",
+          updatedAt: new Date(),
+        })
+        .where(
+          and(
+            eq(applicationClosureRecords.userId, userId),
+            eq(applicationClosureRecords.applicationId, app.id),
+            eq(applicationClosureRecords.status, "archived"),
+          ),
+        );
+    }
 
-  await writeAudit(db, {
-    userId,
-    entityType: "application",
-    entityId: app.id,
-    action: "stage_change",
-    summary: `Moved ${app.code} from ${fromStage.name} to ${toStage.name}`,
-    changes: {
-      fromStage: fromStage.name,
-      toStage: toStage.name,
-      outcome: newOutcome,
+    await tx.insert(applicationStatusHistory).values({
+      userId,
+      applicationId: app.id,
+      fromStageId: fromStage.id,
+      toStageId: toStage.id,
       effectiveOn,
-    },
+      source: historySource,
+      reason: input.reason || null,
+      note:
+        input.note ||
+        (transition.skipped.length > 0
+          ? `Skipped stages: ${transition.skipped.map((s) => s.name).join(", ")}`
+          : null),
+    });
+
+    await writeAudit(tx, {
+      userId,
+      entityType: "application",
+      entityId: app.id,
+      action: "stage_change",
+      summary: `Moved ${app.code} from ${fromStage.name} to ${toStage.name}`,
+      changes: {
+        fromStage: fromStage.name,
+        toStage: toStage.name,
+        outcome: newOutcome,
+        effectiveOn,
+      },
+    });
+
+    let archived = null;
+    if (isClosing && settings.autoArchiveOnTerminal) {
+      archived = await archiveApplicationTx(tx, {
+        userId,
+        applicationId: app.id,
+        closureSource: mapHistorySourceToClosureSource(historySource),
+        closedOn: effectiveOn,
+        previousStageId: fromStage.id,
+        previousOutcome: app.outcome,
+        closureReason: input.reason || null,
+        closureNote: input.note || null,
+        isSample: app.isSample,
+      });
+    }
+
+    return [updatedApp, archived] as const;
   });
 
-  return { application: updated, transition };
+  return { application: updated, transition, archive: archiveResult };
 }
 
 export const updateApplicationSchema = z.object({

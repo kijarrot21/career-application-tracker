@@ -1,10 +1,12 @@
 "use client";
 
 import {
+  Archive,
   BarChart3,
   BookmarkCheck,
   Briefcase,
   CalendarClock,
+  Coins,
   FileText,
   Kanban,
   LayoutDashboard,
@@ -12,38 +14,48 @@ import {
   Mail,
   PanelLeftClose,
   PanelLeftOpen,
+  RefreshCw,
   Settings,
+  Sparkles,
+  UserCheck,
   X,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
+import { useTranslations } from "@/components/i18n/locale-provider";
 import { Button, Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui";
 import { signOut } from "@/lib/auth-client";
+import type { TranslationMessages } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
 interface NavItem {
-  label: string;
+  key: Extract<keyof TranslationMessages["nav"], string>;
   href: string;
   icon: React.ComponentType<{ className?: string }>;
 }
 
 const PIPELINE_NAV_ITEMS: NavItem[] = [
-  { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { label: "Applications", href: "/applications", icon: Kanban },
-  { label: "Interviews", href: "/interviews", icon: CalendarClock },
-  { label: "Analytics", href: "/analytics", icon: BarChart3 },
+  { key: "dashboard", href: "/dashboard", icon: LayoutDashboard },
+  { key: "applications", href: "/applications", icon: Kanban },
+  { key: "archive", href: "/archive", icon: Archive },
+  { key: "interviews", href: "/interviews", icon: CalendarClock },
+  { key: "analytics", href: "/analytics", icon: BarChart3 },
 ];
 
 const ASSET_NAV_ITEMS: NavItem[] = [
-  { label: "Find Jobs", href: "/jobs", icon: Briefcase },
-  { label: "Job Shortlist", href: "/shortlist", icon: BookmarkCheck },
-  { label: "Documents", href: "/documents", icon: FileText },
-  { label: "Email Center", href: "/emails", icon: Mail },
+  { key: "careerProfile", href: "/profile", icon: UserCheck },
+  { key: "cvStudio", href: "/cv-studio", icon: Sparkles },
+  { key: "jobs", href: "/jobs", icon: Briefcase },
+  { key: "shortlist", href: "/shortlist", icon: BookmarkCheck },
+  { key: "documents", href: "/documents", icon: FileText },
+  { key: "emails", href: "/emails", icon: Mail },
 ];
 
 const FOOTER_NAV_ITEMS: NavItem[] = [
-  { label: "Settings", href: "/settings", icon: Settings },
+  { key: "credits", href: "/credits", icon: Coins },
+  { key: "sync", href: "/sync", icon: RefreshCw },
+  { key: "settings", href: "/settings", icon: Settings },
 ];
 
 function getUserInitials(name: string) {
@@ -68,6 +80,7 @@ export function AppSidebar({
 }) {
   const pathname = usePathname();
   const router = useRouter();
+  const { messages } = useTranslations();
   const [collapsedOverride, setCollapsedOverride] = useState<boolean | null>(
     null,
   );
@@ -85,12 +98,13 @@ export function AppSidebar({
   ) {
     return items.map((item) => {
       const Icon = item.icon;
+      const label = messages.nav[item.key];
       const active =
         pathname === item.href || pathname.startsWith(`${item.href}/`);
 
       const linkEl = (
         <Link
-          key={item.label}
+          key={item.key}
           href={item.href}
           onClick={onCloseMobile}
           aria-current={active ? "page" : undefined}
@@ -109,16 +123,16 @@ export function AppSidebar({
             )}
           />
           <span className={cn("truncate", labelVisibilityClass)}>
-            {item.label}
+            {label}
           </span>
         </Link>
       );
 
       if (isCollapsed) {
         return (
-          <Tooltip key={item.label}>
+          <Tooltip key={item.key}>
             <TooltipTrigger asChild>{linkEl}</TooltipTrigger>
-            <TooltipContent side="right">{item.label}</TooltipContent>
+            <TooltipContent side="right">{label}</TooltipContent>
           </Tooltip>
         );
       }
@@ -193,8 +207,16 @@ export function AppSidebar({
                     prev === null ? true : !prev,
                   )
                 }
-                aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-                title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+                aria-label={
+                  isCollapsed
+                    ? messages.nav.expandSidebar
+                    : messages.nav.collapseSidebar
+                }
+                title={
+                  isCollapsed
+                    ? messages.nav.expandSidebar
+                    : messages.nav.collapseSidebar
+                }
                 className={cn(
                   isCollapsed
                     ? "hidden"
@@ -214,8 +236,8 @@ export function AppSidebar({
                 variant="ghost"
                 size="icon-sm"
                 onClick={() => setCollapsedOverride(false)}
-                aria-label="Expand sidebar"
-                title="Expand sidebar"
+                aria-label={messages.nav.expandSidebar}
+                title={messages.nav.expandSidebar}
               >
                 <PanelLeftOpen className="h-4 w-4" />
               </Button>
@@ -263,7 +285,7 @@ export function AppSidebar({
               )}
             >
               <span className="text-label-xs uppercase text-muted-foreground">
-                Pipeline Management
+                {messages.nav.pipelineGroup}
               </span>
             </div>
             <nav className="flex flex-col gap-1" aria-label="Pipeline navigation">
@@ -285,7 +307,7 @@ export function AppSidebar({
               )}
             >
               <span className="text-label-xs uppercase text-muted-foreground">
-                Career Assets
+                {messages.nav.assetsGroup}
               </span>
             </div>
             <nav
@@ -332,8 +354,8 @@ export function AppSidebar({
               variant="ghost"
               size="icon-sm"
               onClick={handleSignOut}
-              title="Sign out"
-              aria-label="Sign out"
+              title={messages.nav.signOut}
+              aria-label={messages.nav.signOut}
               className="shrink-0 hover:bg-destructive-soft hover:text-destructive-on-soft"
             >
               <LogOut className="h-4 w-4" />

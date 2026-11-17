@@ -8,6 +8,55 @@
       "when": 1794805663521,
       "tag": "0000_messy_komodo",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1794892930530,
+      "tag": "0001_parallel_omega_flight",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1794893768141,
+      "tag": "0002_pretty_cloak",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1794895209371,
+      "tag": "0003_modern_the_fury",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1794897163579,
+      "tag": "0004_hesitant_goblin_queen",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1794897829924,
+      "tag": "0005_tiresome_siren",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1794898420581,
+      "tag": "0006_reflective_venus",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1794901239599,
+      "tag": "0007_ordinary_lord_tyger",
+      "breakpoints": true
     }
   ]
 }

@@ -30,13 +30,29 @@ describe("Phase 3: AES-256-GCM token encryption & OAuth PKCE state", () => {
       userId: "user_1",
       provider: "gmail",
       codeVerifier: pkce.codeVerifier,
+      ts: String(Date.now()),
     });
     expect(verifyOAuthState(signed)).toEqual({
       userId: "user_1",
       provider: "gmail",
       codeVerifier: pkce.codeVerifier,
+      ts: expect.any(String),
     });
     expect(verifyOAuthState(`${signed}tampered`)).toBeNull();
+    // DEF-11-001 regression: replay protection
+    const expired = signOAuthState({
+      userId: "user_1",
+      provider: "gmail",
+      codeVerifier: pkce.codeVerifier,
+      ts: String(Date.now() - 600_001),
+    });
+    expect(verifyOAuthState(expired)).toBeNull();
+    const noTs = signOAuthState({
+      userId: "user_1",
+      provider: "gmail",
+      codeVerifier: pkce.codeVerifier,
+    });
+    expect(verifyOAuthState(noTs)).toBeNull();
   });
 });
 

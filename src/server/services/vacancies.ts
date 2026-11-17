@@ -34,6 +34,7 @@ import {
   type Criterion,
 } from "@/lib/domain/suitability";
 import { formatCode } from "@/lib/format";
+import { getProfileForSuitabilityScoring } from "@/server/queries/career-profile";
 import { getUserSettings } from "@/server/queries/settings";
 
 export const vacancyInputSchema = z
@@ -143,7 +144,10 @@ async function resolveSourceId(
 export async function createVacancyService(userId: string, rawInput: VacancyInput) {
   const input = vacancyInputSchema.parse(rawInput);
   const db = await ensureDbReady();
-  const settings = await getUserSettings(userId);
+  const [settings, profileForScoring] = await Promise.all([
+    getUserSettings(userId),
+    getProfileForSuitabilityScoring(userId),
+  ]);
   const today = todayInTimeZone(settings.timezone);
 
   const normUrl = input.url ? normalizeUrl(input.url) : null;
@@ -189,19 +193,7 @@ export async function createVacancyService(userId: string, rawInput: VacancyInpu
       location: input.location ?? null,
       workArrangement: input.workArrangement ?? null,
     },
-    {
-      skills: settings.skills ?? [],
-      yearsExperience: settings.yearsExperience,
-      educationLevel: settings.educationLevel,
-      expectedSalaryMin: settings.expectedSalaryMin,
-      currency: settings.currency,
-      preferredLocations: settings.preferredLocations ?? [],
-      preferredArrangements: (settings.preferredArrangements ?? []) as (
-        | "onsite"
-        | "hybrid"
-        | "remote"
-      )[],
-    },
+    profileForScoring,
   );
 
   const initialScores = {

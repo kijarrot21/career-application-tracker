@@ -1,6 +1,7 @@
 import { and, eq, isNull, sql } from "drizzle-orm";
 import type { AppDb } from "@/db";
 import {
+  applicationClosureRecords,
   applications,
   applicationStages,
   applicationStatusHistory,
@@ -18,6 +19,7 @@ import {
   suitabilityEvaluations,
   userSettings,
 } from "@/db/schema";
+import { archiveApplicationTx } from "@/server/services/archive";
 import { normalizeCompanyName, normalizeUrl } from "@/lib/domain/duplicates";
 import { DEFAULT_WEIGHTS, overallScore } from "@/lib/domain/suitability";
 import { formatCode } from "@/lib/format";
@@ -533,6 +535,20 @@ export async function loadSampleDataForUser(db: AppDb, userId: string): Promise<
           notes: "Strong base package and product engineering scope.",
         });
       }
+      if (outcome !== "active") {
+        await archiveApplicationTx(db, {
+          userId,
+          applicationId: app.id,
+          closureOutcome: "rejected",
+          closureSource: "sample",
+          closedOn: v.application.closedAt ?? "2026-11-05",
+          previousStageId: stageByKey.get("cv_screening")?.id ?? null,
+          previousOutcome: "active",
+          closureReason:
+            "Employer selected candidate with 6+ years of B2B SaaS experience.",
+          isSample: true,
+        });
+      }
     }
   }
 
@@ -604,6 +620,9 @@ export async function loadSampleDataForUser(db: AppDb, userId: string): Promise<
 
 /** Delete all records marked `isSample = true` for this user without touching real records. */
 export async function removeSampleDataForUser(db: AppDb, userId: string): Promise<void> {
+  await db
+    .delete(applicationClosureRecords)
+    .where(and(eq(applicationClosureRecords.userId, userId), eq(applicationClosureRecords.isSample, true)));
   await db
     .delete(documents)
     .where(and(eq(documents.userId, userId), eq(documents.isSample, true)));

@@ -37,6 +37,7 @@ export async function ensureUserInitialized(db: AppDb, userId: string): Promise<
     .insert(userSettings)
     .values({
       userId,
+      preferredLocale: "id-ID",
       timezone: "Asia/Jakarta",
       currency: "IDR",
       searchStatus: "actively_searching",

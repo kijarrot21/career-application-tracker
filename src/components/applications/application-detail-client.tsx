@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Archive,
   ArrowRightLeft,
   CalendarClock,
   CheckCircle2,
@@ -15,6 +16,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { MoveStageDialog } from "@/components/applications/move-stage-dialog";
+import { ManualArchiveDialog } from "@/components/archive/archive-dialogs";
 import {
   Badge,
   Button,
@@ -107,10 +109,17 @@ export function ApplicationDetailClient({
   app,
   sources,
   careerExtras,
+  activeArchive,
 }: {
   app: AppDetailData;
   sources: { id: string; key: string; name: string }[];
   careerExtras?: CareerExtrasData;
+  activeArchive?: {
+    id: string;
+    closureOutcome: string;
+    closedOn: string;
+    archivedAt: Date;
+  } | null;
 }) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -119,6 +128,7 @@ export function ApplicationDetailClient({
   const initialTab = (searchParams.get("tab") as TabKey) || "overview";
   const [tab, setTab] = useState<TabKey>(initialTab);
   const [moveOpen, setMoveOpen] = useState(false);
+  const [archiveOpen, setArchiveOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [targetMoveStageId, setTargetMoveStageId] = useState<
     string | undefined
@@ -414,6 +424,24 @@ export function ApplicationDetailClient({
               <ArrowRightLeft className="h-3.5 w-3.5" />
               Move Stage
             </Button>
+
+            {activeArchive ? (
+              <Button variant="secondary" size="lg" asChild>
+                <Link href={`/archive/${activeArchive.id}`}>
+                  <Archive className="h-3.5 w-3.5" />
+                  View Archive Snapshot
+                </Link>
+              </Button>
+            ) : (
+              <Button
+                variant="secondary"
+                size="lg"
+                onClick={() => setArchiveOpen(true)}
+              >
+                <Archive className="h-3.5 w-3.5" />
+                Archive
+              </Button>
+            )}
 
             <Button
               variant="destructive"
@@ -1262,6 +1290,18 @@ export function ApplicationDetailClient({
         pending={isPending}
         onConfirm={handleConfirmDelete}
       />
+
+      {archiveOpen && (
+        <ManualArchiveDialog
+          open={archiveOpen}
+          onClose={() => setArchiveOpen(false)}
+          preselectedApplicationId={app.id}
+          onArchived={(closureId) => {
+            router.push(`/archive/${closureId}`);
+            router.refresh();
+          }}
+        />
+      )}
     </div>
   );
 }

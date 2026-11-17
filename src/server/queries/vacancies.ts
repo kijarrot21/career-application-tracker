@@ -15,6 +15,7 @@ import {
   normalizeUrl,
 } from "@/lib/domain/duplicates";
 import { suggestScores } from "@/lib/domain/suitability";
+import { getProfileForSuitabilityScoring } from "./career-profile";
 import { getUserSettings } from "./settings";
 
 export interface VacancyFilters {
@@ -154,7 +155,10 @@ export async function getVacancyDetail(userId: string, vacancyId: string) {
 
   if (!row) return null;
 
-  const settings = await getUserSettings(userId);
+  const [settings, profileForScoring] = await Promise.all([
+    getUserSettings(userId),
+    getProfileForSuitabilityScoring(userId),
+  ]);
   const computedSuggestions = suggestScores(
     {
       skills: row.vacancy.skills ?? [],
@@ -166,19 +170,7 @@ export async function getVacancyDetail(userId: string, vacancyId: string) {
       location: row.vacancy.location,
       workArrangement: row.vacancy.workArrangement,
     },
-    {
-      skills: settings.skills ?? [],
-      yearsExperience: settings.yearsExperience,
-      educationLevel: settings.educationLevel,
-      expectedSalaryMin: settings.expectedSalaryMin,
-      currency: settings.currency,
-      preferredLocations: settings.preferredLocations ?? [],
-      preferredArrangements: (settings.preferredArrangements ?? []) as (
-        | "onsite"
-        | "hybrid"
-        | "remote"
-      )[],
-    },
+    profileForScoring,
   );
 
   const linkedApplications = await db

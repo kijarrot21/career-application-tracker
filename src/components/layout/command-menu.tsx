@@ -1,6 +1,16 @@
 "use client";
 
-import { Briefcase, Kanban, Search, X } from "lucide-react";
+import {
+  Archive,
+  Briefcase,
+  Coins,
+  Kanban,
+  RefreshCw,
+  Search,
+  Sparkles,
+  UserCheck,
+  X,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
 import {
@@ -128,6 +138,46 @@ export function CommandMenu({
               >
                 <Kanban className="h-4 w-4 text-primary-text" />
                 Open recruitment Kanban board
+              </button>
+              <button
+                type="button"
+                onClick={() => goTo("/profile")}
+                className="flex w-full cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2 text-left text-[13px] font-medium text-foreground transition-colors hover:bg-surface-subtle hover:text-primary-text"
+              >
+                <UserCheck className="h-4 w-4 text-primary-text" />
+                Edit Master Career Profile
+              </button>
+              <button
+                type="button"
+                onClick={() => goTo("/archive")}
+                className="flex w-full cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2 text-left text-[13px] font-medium text-foreground transition-colors hover:bg-surface-subtle hover:text-primary-text"
+              >
+                <Archive className="h-4 w-4 text-primary-text" />
+                Open application archive
+              </button>
+              <button
+                type="button"
+                onClick={() => goTo("/cv-studio")}
+                className="flex w-full cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2 text-left text-[13px] font-medium text-foreground transition-colors hover:bg-surface-subtle hover:text-primary-text"
+              >
+                <Sparkles className="h-4 w-4 text-primary-text" />
+                Open AI CV Studio
+              </button>
+              <button
+                type="button"
+                onClick={() => goTo("/credits")}
+                className="flex w-full cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2 text-left text-[13px] font-medium text-foreground transition-colors hover:bg-surface-subtle hover:text-primary-text"
+              >
+                <Coins className="h-4 w-4 text-primary-text" />
+                Open credit wallet
+              </button>
+              <button
+                type="button"
+                onClick={() => goTo("/sync")}
+                className="flex w-full cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2 text-left transition-colors hover:bg-surface-subtle"
+              >
+                <RefreshCw className="h-4 w-4 text-primary-text" />
+                Open hybrid sync center
               </button>
             </div>
           ) : isPending ? (

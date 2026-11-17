@@ -26,6 +26,13 @@ export const inputVariants = cva(
   },
 );
 
+const FILE_SIZE_CLASSES = {
+  sm: "py-1 pl-1.5 pr-2.5 leading-[22px] file:h-[22px] file:leading-[22px]",
+  md: "py-1 pl-1.5 pr-3 leading-[26px] file:h-[26px] file:leading-[26px]",
+  lg: "py-1.5 pl-1.5 pr-3 leading-[26px] file:h-[26px] file:leading-[26px]",
+  xl: "py-1.5 pl-2 pr-3.5 leading-[30px] file:h-[30px] file:leading-[30px]",
+} as const;
+
 export interface InputProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "size">,
     VariantProps<typeof inputVariants> {
@@ -34,6 +41,9 @@ export interface InputProps
 
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ({ className, type = "text", inputSize, tone, hasError, ...props }, ref) => {
+    const resolvedSize = inputSize ?? "md";
+    const isFile = type === "file";
+
     return (
       <input
         ref={ref}
@@ -41,6 +51,10 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         aria-invalid={hasError || undefined}
         className={cn(
           inputVariants({ inputSize, tone }),
+          isFile && [
+            "block cursor-pointer file:mr-2.5 file:cursor-pointer file:rounded-md file:bg-surface-subtle file:px-2.5 file:py-0 file:align-middle hover:file:bg-border-subtle",
+            FILE_SIZE_CLASSES[resolvedSize],
+          ],
           hasError && "border-destructive focus-visible:border-destructive",
           className,
         )}

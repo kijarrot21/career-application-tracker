@@ -1,0 +1,2 @@
+ALTER TABLE "user_settings" ADD COLUMN "preferred_locale" text DEFAULT 'id-ID' NOT NULL;--> statement-breakpoint
+ALTER TABLE "user_settings" ADD CONSTRAINT "user_settings_locale_len_ck" CHECK (length("user_settings"."preferred_locale") between 2 and 16);

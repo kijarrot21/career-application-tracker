@@ -1,11 +1,12 @@
 "use client";
 
-import { Bell, Menu, Moon, Plus, Search, Sun, X } from "lucide-react";
+import { Bell, Menu, Moon, Search, Sun, X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useTheme } from "next-themes";
+import { useTheme } from "@/components/theme-provider";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
+import { useLocale } from "@/components/i18n/locale-provider";
 import {
   Button,
   Popover,
@@ -13,8 +14,15 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui";
+import {
+  getMessages,
+  MARKET_CONFIGS,
+  SUPPORTED_LOCALES,
+  type AppLocale,
+} from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import { dismissNotificationAction } from "@/server/actions/emails";
+import { updatePreferredLocaleAction } from "@/server/actions/settings";
 import type { LiveNotificationItem } from "@/server/queries/emails";
 import { AppSidebar } from "./app-sidebar";
 import { CommandMenu } from "./command-menu";
@@ -47,6 +55,22 @@ export function AppShell({
   const [cmdOpen, setCmdOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
   const { resolvedTheme, setTheme } = useTheme();
+  const { locale, messages } = useLocale();
+
+  function handleSwitchLocale(nextLocale: AppLocale) {
+    if (nextLocale === locale) return;
+    startTransition(async () => {
+      try {
+        await updatePreferredLocaleAction(nextLocale);
+        toast.success(getMessages(nextLocale).settings.languageSwitchedToast);
+        router.refresh();
+      } catch (err) {
+        toast.error(
+          err instanceof Error ? err.message : messages.errors.UNKNOWN_ERROR,
+        );
+      }
+    });
+  }
 
   function handleDismiss(id: string) {
     startTransition(async () => {
@@ -98,9 +122,11 @@ export function AppShell({
               <span className="flex items-center gap-2 truncate">
                 <Search className="h-4 w-4 shrink-0 text-primary-text" />
                 <span className="hidden truncate sm:inline">
-                  Search jobs, applications, companies, or tags...
+                  {messages.nav.searchPlaceholder}
                 </span>
-                <span className="truncate sm:hidden">Search...</span>
+                <span className="truncate sm:hidden">
+                  {messages.nav.searchShort}
+                </span>
               </span>
               <kbd className="hidden rounded-md border border-border bg-card px-1.5 py-0.5 font-mono text-[10px] font-semibold text-foreground sm:inline">
                 ⌘K
@@ -109,23 +135,34 @@ export function AppShell({
           </div>
 
           <div className="flex items-center gap-2">
-            <Button
-              variant="secondary"
-              size="lg"
-              asChild
-              className="hidden sm:inline-flex"
+            <div
+              role="group"
+              aria-label={messages.common.language}
+              className="inline-flex items-center rounded-lg border border-border bg-surface-subtle p-0.5"
             >
-              <Link href="/jobs/new">
-                <Plus className="h-3.5 w-3.5" />
-                <span>Add Job</span>
-              </Link>
-            </Button>
-            <Button variant="primary" size="lg" asChild>
-              <Link href="/applications?new=1">
-                <Plus className="h-3.5 w-3.5" />
-                <span>Log Application</span>
-              </Link>
-            </Button>
+              {SUPPORTED_LOCALES.map((loc) => {
+                const active = loc === locale;
+                const cfg = MARKET_CONFIGS[loc];
+                return (
+                  <button
+                    key={loc}
+                    type="button"
+                    disabled={isPending}
+                    onClick={() => handleSwitchLocale(loc)}
+                    aria-pressed={active}
+                    title={cfg.label}
+                    className={cn(
+                      "cursor-pointer rounded-md px-2 py-1 text-[11px] font-semibold transition-colors",
+                      active
+                        ? "bg-card text-foreground shadow-xs"
+                        : "text-muted-foreground hover:text-foreground",
+                    )}
+                  >
+                    {cfg.shortLabel}
+                  </button>
+                );
+              })}
+            </div>
 
             <Popover open={notifOpen} onOpenChange={setNotifOpen}>
               <PopoverTrigger asChild>
@@ -210,12 +247,14 @@ export function AppShell({
             </Popover>
 
             <Button
+              type="button"
               variant="ghost"
               size="icon"
               onClick={() =>
                 setTheme(resolvedTheme === "dark" ? "light" : "dark")
               }
               aria-label="Toggle color theme"
+              title="Toggle color theme"
             >
               <Sun className="hidden h-[18px] w-[18px] dark:block" />
               <Moon className="block h-[18px] w-[18px] dark:hidden" />
@@ -224,7 +263,7 @@ export function AppShell({
             <div className="hidden h-6 w-px bg-border lg:block" />
 
             <Link
-              href="/settings"
+              href="/profile"
               className="hidden items-center gap-2.5 rounded-xl px-2 py-1 transition-colors hover:bg-surface-subtle lg:flex"
             >
               <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-soft text-xs font-bold text-primary-on-soft">

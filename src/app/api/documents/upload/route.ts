@@ -1,13 +1,26 @@
 import { revalidatePath } from "next/cache";
 import { NextResponse, type NextRequest } from "next/server";
 import type { DocumentCategory } from "@/lib/constants";
+import { DomainError } from "@/lib/errors";
 import { getOptionalUser } from "@/lib/session";
 import { uploadOrVersionDocumentService } from "@/server/services/career";
+
+/** Multipart body ceiling: 10 MB file limit + ~1 MB field/boundary overhead. */
+const MAX_UPLOAD_BODY_BYTES = 10 * 1024 * 1024 + 1024 * 1024;
 
 export async function POST(request: NextRequest) {
   const user = await getOptionalUser();
   if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  // DEF-11-008: reject oversized bodies before buffering them into memory.
+  const contentLength = Number(request.headers.get("content-length") ?? "0");
+  if (Number.isFinite(contentLength) && contentLength > MAX_UPLOAD_BODY_BYTES) {
+    return NextResponse.json(
+      { error: "Document upload exceeds the maximum allowed size." },
+      { status: 413 },
+    );
   }
 
   try {
@@ -62,12 +75,15 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(res, { status: 201 });
   } catch (err) {
+    // DEF-11-008: only expected domain errors surface their message; internal
+    // errors are logged server-side and sanitized for the client.
+    if (err instanceof DomainError) {
+      return NextResponse.json({ error: err.message }, { status: 400 });
+    }
+    console.error("[documents/upload] unexpected error:", err);
     return NextResponse.json(
-      {
-        error:
-          err instanceof Error ? err.message : "Could not upload document.",
-      },
-      { status: 400 },
+      { error: "Could not upload document." },
+      { status: 500 },
     );
   }
 }

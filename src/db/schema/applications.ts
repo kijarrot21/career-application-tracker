@@ -26,6 +26,9 @@ import {
 } from "./core";
 import {
   assessmentTypeEnum,
+  closureOutcomeEnum,
+  closureRecordStatusEnum,
+  closureSourceEnum,
   commChannelEnum,
   commDirectionEnum,
   commSourceEnum,
@@ -44,6 +47,7 @@ import {
   salaryPeriodEnum,
   submissionMethodEnum,
 } from "./enums";
+import type { ApplicationArchiveSnapshotPayload } from "@/lib/domain/archive";
 
 // ---------------------------------------------------------------------------
 // Documents & Document Versions (Phase 4 storage, referenced by Applications)
@@ -442,4 +446,166 @@ export const auditLogs = pgTable(
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [index("audit_logs_user_created_idx").on(t.userId, t.createdAt)],
+);
+
+// ---------------------------------------------------------------------------
+// Application Archive (Closure Records, Immutable Snapshots & Document History)
+// ---------------------------------------------------------------------------
+export const applicationClosureRecords = pgTable(
+  "application_closure_records",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: userId(),
+    applicationId: uuid("application_id").notNull(),
+    vacancyId: uuid("vacancy_id").notNull(),
+    closureOutcome: closureOutcomeEnum("closure_outcome").notNull(),
+    closureSource: closureSourceEnum("closure_source")
+      .notNull()
+      .default("auto_stage_transition"),
+    status: closureRecordStatusEnum("status").notNull().default("archived"),
+    closedOn: date("closed_on", { mode: "string" }).notNull(),
+    archivedAt: timestamp("archived_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    previousStageId: uuid("previous_stage_id"),
+    previousOutcome: outcomeEnum("previous_outcome").notNull().default("active"),
+    closedStageId: uuid("closed_stage_id"),
+    closureReason: text("closure_reason"),
+    closureNote: text("closure_note"),
+    retainUntil: date("retain_until", { mode: "string" }),
+    restoredAt: timestamp("restored_at", { withTimezone: true }),
+    restoredToStageId: uuid("restored_to_stage_id"),
+    restorationReason: text("restoration_reason"),
+    isSample: boolean("is_sample").notNull().default(false),
+    ...timestamps,
+  },
+  (t) => [
+    unique("app_closure_records_id_user_uq").on(t.id, t.userId),
+    // Prevent duplicate active archive records for the same application
+    uniqueIndex("app_closure_active_app_uq")
+      .on(t.applicationId)
+      .where(sql`${t.status} = 'archived'`),
+    foreignKey({
+      name: "app_closure_application_fk",
+      columns: [t.applicationId, t.userId],
+      foreignColumns: [applications.id, applications.userId],
+    }).onDelete("cascade"),
+    foreignKey({
+      name: "app_closure_vacancy_fk",
+      columns: [t.vacancyId, t.userId],
+      foreignColumns: [jobVacancies.id, jobVacancies.userId],
+    }).onDelete("cascade"),
+    index("app_closure_user_status_closed_idx").on(
+      t.userId,
+      t.status,
+      t.closedOn,
+    ),
+    index("app_closure_user_outcome_idx").on(t.userId, t.closureOutcome),
+    index("app_closure_user_retain_idx").on(t.userId, t.retainUntil),
+  ],
+);
+
+export const applicationArchiveSnapshots = pgTable(
+  "application_archive_snapshots",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: userId(),
+    closureRecordId: uuid("closure_record_id").notNull(),
+    applicationId: uuid("application_id").notNull(),
+    snapshotVersion: integer("snapshot_version").notNull().default(1),
+    applicationCode: text("application_code").notNull(),
+    companyName: text("company_name").notNull(),
+    jobTitle: text("job_title").notNull(),
+    closureOutcome: closureOutcomeEnum("closure_outcome").notNull(),
+    closedOn: date("closed_on", { mode: "string" }).notNull(),
+    submittedOn: date("submitted_on", { mode: "string" }).notNull(),
+    attemptNumber: integer("attempt_number").notNull().default(1),
+    contentHash: text("content_hash").notNull(),
+    snapshotPayload: jsonb("snapshot_payload")
+      .$type<ApplicationArchiveSnapshotPayload>()
+      .notNull(),
+    capturedAt: timestamp("captured_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    isSample: boolean("is_sample").notNull().default(false),
+  },
+  (t) => [
+    unique("app_archive_snapshots_id_user_uq").on(t.id, t.userId),
+    uniqueIndex("app_archive_snapshots_closure_uq").on(t.closureRecordId),
+    foreignKey({
+      name: "app_archive_snapshots_closure_fk",
+      columns: [t.closureRecordId, t.userId],
+      foreignColumns: [
+        applicationClosureRecords.id,
+        applicationClosureRecords.userId,
+      ],
+    }).onDelete("cascade"),
+    foreignKey({
+      name: "app_archive_snapshots_app_fk",
+      columns: [t.applicationId, t.userId],
+      foreignColumns: [applications.id, applications.userId],
+    }).onDelete("cascade"),
+    index("app_archive_snapshots_user_app_idx").on(
+      t.userId,
+      t.applicationId,
+      t.capturedAt,
+    ),
+  ],
+);
+
+export const applicationArchiveDocuments = pgTable(
+  "application_archive_documents",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: userId(),
+    closureRecordId: uuid("closure_record_id").notNull(),
+    snapshotId: uuid("snapshot_id").notNull(),
+    applicationId: uuid("application_id").notNull(),
+    documentId: uuid("document_id").references(() => documents.id, {
+      onDelete: "set null",
+    }),
+    documentVersionId: uuid("document_version_id").references(
+      () => documentVersions.id,
+      { onDelete: "set null" },
+    ),
+    role: text("role").notNull().default("other"),
+    documentCategory: text("document_category"),
+    documentTitle: text("document_title").notNull(),
+    versionNo: integer("version_no"),
+    versionLabel: text("version_label").notNull(),
+    filename: text("filename"),
+    mimeType: text("mime_type"),
+    sizeBytes: integer("size_bytes"),
+    sha256: text("sha256"),
+    storageKey: text("storage_key"),
+    notes: text("notes"),
+    capturedAt: timestamp("captured_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (t) => [
+    foreignKey({
+      name: "app_archive_docs_closure_fk",
+      columns: [t.closureRecordId, t.userId],
+      foreignColumns: [
+        applicationClosureRecords.id,
+        applicationClosureRecords.userId,
+      ],
+    }).onDelete("cascade"),
+    foreignKey({
+      name: "app_archive_docs_snapshot_fk",
+      columns: [t.snapshotId, t.userId],
+      foreignColumns: [
+        applicationArchiveSnapshots.id,
+        applicationArchiveSnapshots.userId,
+      ],
+    }).onDelete("cascade"),
+    foreignKey({
+      name: "app_archive_docs_app_fk",
+      columns: [t.applicationId, t.userId],
+      foreignColumns: [applications.id, applications.userId],
+    }).onDelete("cascade"),
+    index("app_archive_docs_closure_idx").on(t.closureRecordId),
+    index("app_archive_docs_user_app_idx").on(t.userId, t.applicationId),
+  ],
 );

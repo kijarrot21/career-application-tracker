@@ -1,5 +1,6 @@
 import { SettingsClient } from "@/components/settings/settings-client";
 import { requireUser } from "@/lib/session";
+import { getSanitizedProviderStatuses } from "@/server/ai/providers";
 import {
   getSampleDataStatus,
   getUserSettings,
@@ -15,12 +16,14 @@ export default async function SettingsPage() {
     getUserStages(user.id, true),
     getSampleDataStatus(user.id),
   ]);
+  const aiProviders = getSanitizedProviderStatuses();
 
   return (
     <SettingsClient
       settings={settings}
       stages={stages}
       sampleStatus={sampleStatus}
+      aiProviders={aiProviders}
     />
   );
 }

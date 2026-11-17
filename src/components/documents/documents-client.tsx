@@ -305,12 +305,12 @@ export function DocumentsClient({ data }: { data: DocumentsData }) {
                 label="Attach File (PDF / Image / DOCX / TXT / MD)"
                 htmlFor="doc-file"
               >
-                <input
+                <Input
                   id="doc-file"
                   ref={fileInputRef}
                   type="file"
+                  inputSize="lg"
                   accept=".pdf,.png,.jpg,.jpeg,.webp,.docx,.txt,.md"
-                  className="block h-10 w-full rounded-xl border border-input-border bg-input px-3 py-2 text-xs text-foreground transition-colors hover:border-border-strong focus-visible:border-primary focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring"
                 />
               </FormField>
 

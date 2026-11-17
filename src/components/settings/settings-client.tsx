@@ -3,6 +3,7 @@
 import {
   ArrowDown,
   ArrowUp,
+  Cpu,
   Database,
   Download,
   Eye,
@@ -14,6 +15,7 @@ import {
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
+import { useTranslations } from "@/components/i18n/locale-provider";
 import {
   Badge,
   Button,
@@ -26,16 +28,31 @@ import {
   StageBadge,
 } from "@/components/ui";
 import {
-  CURRENCIES,
-  SEARCH_STATUS_LABELS,
   SEARCH_STATUSES,
   TIMEZONES,
-  WORK_ARRANGEMENT_LABELS,
-  WORK_ARRANGEMENTS,
-  type Currency,
   type SearchStatus,
 } from "@/lib/constants";
+import {
+  getLocalizedSearchStatusLabel,
+  getMessages,
+  getSupportedCurrencyOptions,
+  MARKET_CONFIGS,
+  normalizeLocale,
+  SUPPORTED_LOCALES,
+  type AppLocale,
+} from "@/lib/i18n";
 import { INDONESIAN_HOLIDAY_PRESETS } from "@/lib/domain/business-days";
+import {
+  AI_PREFERRED_PROVIDERS,
+  AI_PRIVACY_MODE_DESCRIPTIONS,
+  AI_PRIVACY_MODE_LABELS,
+  AI_PRIVACY_MODES,
+  AI_PROVIDER_LABELS,
+  DEFAULT_OLLAMA_ENDPOINT,
+  type AiPreferredProvider,
+  type AiPrivacyMode,
+  type AiProviderSanitizedStatus,
+} from "@/lib/domain/ai";
 import {
   CUSTOM_STAGE_TYPES,
   STAGE_COLORS,
@@ -44,11 +61,7 @@ import {
 import {
   CRITERIA,
   CRITERION_LABELS,
-  EDUCATION_LABELS,
-  EDUCATION_LEVELS,
-  type EducationLevel,
   type Weights,
-  type WorkArrangement,
 } from "@/lib/domain/suitability";
 import {
   deleteAccountWithPasswordAction,
@@ -57,9 +70,10 @@ import {
   reorderStagesAction,
   saveStageAction,
   toggleStageHiddenAction,
+  updateAiPrivacySettingsAction,
   updateFollowUpSettingsAction,
-  updateProfileSettingsAction,
   updateSuitabilityWeightsAction,
+  updateWorkspaceSettingsAction,
 } from "@/server/actions/settings";
 import type {
   getSampleDataStatus,
@@ -75,48 +89,29 @@ export function SettingsClient({
   settings,
   stages,
   sampleStatus,
+  aiProviders,
 }: {
   settings: SettingsData;
   stages: StagesData;
   sampleStatus: SampleStatus;
+  aiProviders: AiProviderSanitizedStatus[];
 }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const { locale: activeLocale, messages } = useTranslations();
 
-  // 1. Profile state
+  // 1. Workspace locale & search status state
+  const [preferredLocale, setPreferredLocale] = useState<AppLocale>(
+    normalizeLocale(settings.preferredLocale ?? activeLocale),
+  );
   const [timezone, setTimezone] = useState(settings.timezone);
-  const [currency, setCurrency] = useState<Currency>(
-    (settings.currency as Currency) ?? "IDR",
+  const [currency, setCurrency] = useState<string>(
+    settings.currency ?? "IDR",
   );
   const [searchStatus, setSearchStatus] = useState<SearchStatus>(
     settings.searchStatus,
   );
-  const [headline, setHeadline] = useState(settings.headline ?? "");
-  const [skillsText, setSkillsText] = useState(
-    (settings.skills ?? []).join(", "),
-  );
-  const [yearsExperience, setYearsExperience] = useState(
-    settings.yearsExperience != null ? String(settings.yearsExperience) : "",
-  );
-  const [educationLevel, setEducationLevel] = useState<EducationLevel | "">(
-    settings.educationLevel ?? "bachelor",
-  );
-  const [expectedSalaryMin, setExpectedSalaryMin] = useState(
-    settings.expectedSalaryMin != null
-      ? String(settings.expectedSalaryMin)
-      : "",
-  );
-  const [expectedSalaryMax, setExpectedSalaryMax] = useState(
-    settings.expectedSalaryMax != null
-      ? String(settings.expectedSalaryMax)
-      : "",
-  );
-  const [preferredLocationsText, setPreferredLocationsText] = useState(
-    (settings.preferredLocations ?? []).join(", "),
-  );
-  const [preferredArrangements, setPreferredArrangements] = useState<
-    WorkArrangement[]
-  >((settings.preferredArrangements ?? []) as WorkArrangement[]);
+  const currencyOptions = getSupportedCurrencyOptions(preferredLocale);
 
   // 2. Follow-up rules state
   const [followUpFirstDays, setFollowUpFirstDays] = useState(
@@ -143,49 +138,68 @@ export function SettingsClient({
   const [newStageType, setNewStageType] = useState<string>("interview");
   const [newStageColor, setNewStageColor] = useState<StageColor>("indigo");
 
-  // 5. Account deletion state
+  // 5. AI privacy mode state
+  const [aiPrivacyMode, setAiPrivacyMode] = useState<AiPrivacyMode>(
+    settings.aiPrivacyMode,
+  );
+  const [aiPreferredProvider, setAiPreferredProvider] =
+    useState<AiPreferredProvider>(settings.aiPreferredProvider);
+  const [aiOllamaEndpoint, setAiOllamaEndpoint] = useState(
+    settings.aiOllamaEndpoint ?? DEFAULT_OLLAMA_ENDPOINT,
+  );
+  const [aiOllamaModel, setAiOllamaModel] = useState(
+    settings.aiOllamaModel ?? "",
+  );
+  const [aiCloudDocumentConsent, setAiCloudDocumentConsent] = useState(
+    settings.aiCloudDocumentConsent,
+  );
+
+  // 6. Account deletion state
   const [deletePassword, setDeletePassword] = useState("");
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
-  function toggleArrangement(arr: WorkArrangement) {
-    setPreferredArrangements((prev) =>
-      prev.includes(arr) ? prev.filter((x) => x !== arr) : [...prev, arr],
-    );
-  }
-
-  function handleSaveProfile(e: React.FormEvent) {
+  function handleSaveAiPrivacy(e: React.FormEvent) {
     e.preventDefault();
     startTransition(async () => {
       try {
-        await updateProfileSettingsAction({
-          timezone: timezone as (typeof TIMEZONES)[number],
-          currency,
-          searchStatus,
-          headline: headline || null,
-          skills: skillsText
-            .split(",")
-            .map((s) => s.trim())
-            .filter(Boolean),
-          yearsExperience: yearsExperience ? Number(yearsExperience) : null,
-          educationLevel: (educationLevel || null) as EducationLevel | null,
-          expectedSalaryMin: expectedSalaryMin
-            ? Number(expectedSalaryMin)
-            : null,
-          expectedSalaryMax: expectedSalaryMax
-            ? Number(expectedSalaryMax)
-            : null,
-          preferredLocations: preferredLocationsText
-            .split(",")
-            .map((s) => s.trim())
-            .filter(Boolean),
-          preferredArrangements,
-          includeSampleInAnalytics: settings.includeSampleInAnalytics,
+        await updateAiPrivacySettingsAction({
+          aiPrivacyMode,
+          aiPreferredProvider,
+          aiOllamaEndpoint: aiOllamaEndpoint.trim() || null,
+          aiOllamaModel: aiOllamaModel.trim() || null,
+          aiCloudDocumentConsent:
+            aiPrivacyMode === "local_only" ? false : aiCloudDocumentConsent,
         });
-        toast.success("Profile and preferences saved.");
+        toast.success("AI privacy and provider preferences saved.");
         router.refresh();
       } catch (err) {
         toast.error(
-          err instanceof Error ? err.message : "Could not save profile",
+          err instanceof Error
+            ? err.message
+            : "Could not save AI privacy settings",
+        );
+      }
+    });
+  }
+
+  function handleSaveWorkspaceSettings(e: React.FormEvent) {
+    e.preventDefault();
+    startTransition(async () => {
+      try {
+        await updateWorkspaceSettingsAction({
+          preferredLocale,
+          timezone: timezone as (typeof TIMEZONES)[number],
+          currency,
+          searchStatus,
+          includeSampleInAnalytics: settings.includeSampleInAnalytics,
+        });
+        toast.success(getMessages(preferredLocale).settings.workspaceSavedToast);
+        router.refresh();
+      } catch (err) {
+        toast.error(
+          err instanceof Error
+            ? err.message
+            : messages.errors.UNKNOWN_ERROR,
         );
       }
     });
@@ -291,23 +305,41 @@ export function SettingsClient({
   return (
     <div className="mx-auto max-w-5xl space-y-6 text-xs">
       <PageHeader
-        title="Settings, Pipeline Customization & Data Privacy"
-        description="Configure your candidate profile, recruitment stages, follow-up rules, suitability weights, and privacy controls."
+        title={messages.settings.pageTitle}
+        description={messages.settings.pageDescription}
       />
 
-      {/* 1. Candidate Profile & Locale */}
+      {/* 1. Workspace Locale & Search Status */}
       <Card padding="md">
-        <form onSubmit={handleSaveProfile} className="space-y-4">
+        <form onSubmit={handleSaveWorkspaceSettings} className="space-y-4">
           <h2 className="text-section-title text-foreground">
-            1. Candidate Profile & Preferences
+            {messages.settings.workspaceSectionTitle}
           </h2>
           <p className="text-muted-foreground">
-            Used to auto-suggest suitability scores when evaluating job
-            vacancies.
+            {messages.settings.workspaceSectionDescription}
           </p>
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            <FormField label="Timezone">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <FormField
+              label={messages.settings.preferredLanguageLabel}
+              hint={messages.settings.preferredLanguageHint}
+            >
+              <Select
+                selectSize="lg"
+                value={preferredLocale}
+                onChange={(e) =>
+                  setPreferredLocale(normalizeLocale(e.target.value))
+                }
+              >
+                {SUPPORTED_LOCALES.map((loc) => (
+                  <option key={loc} value={loc}>
+                    {MARKET_CONFIGS[loc].label}
+                  </option>
+                ))}
+              </Select>
+            </FormField>
+
+            <FormField label={messages.settings.timezoneLabel}>
               <Select
                 selectSize="lg"
                 value={timezone}
@@ -321,21 +353,24 @@ export function SettingsClient({
               </Select>
             </FormField>
 
-            <FormField label="Default Currency">
+            <FormField
+              label={messages.settings.currencyLabel}
+              hint={messages.settings.currencyHint}
+            >
               <Select
                 selectSize="lg"
                 value={currency}
-                onChange={(e) => setCurrency(e.target.value as Currency)}
+                onChange={(e) => setCurrency(e.target.value)}
               >
-                {CURRENCIES.map((c) => (
-                  <option key={c} value={c}>
-                    {c}
+                {currencyOptions.map((c) => (
+                  <option key={c.code} value={c.code}>
+                    {c.label}
                   </option>
                 ))}
               </Select>
             </FormField>
 
-            <FormField label="Job Search Status">
+            <FormField label={messages.settings.searchStatusLabel}>
               <Select
                 selectSize="lg"
                 value={searchStatus}
@@ -345,114 +380,11 @@ export function SettingsClient({
               >
                 {SEARCH_STATUSES.map((s) => (
                   <option key={s} value={s}>
-                    {SEARCH_STATUS_LABELS[s]}
+                    {getLocalizedSearchStatusLabel(s, preferredLocale)}
                   </option>
                 ))}
               </Select>
             </FormField>
-          </div>
-
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            <FormField label="Target Headline / Role">
-              <Input
-                type="text"
-                inputSize="lg"
-                value={headline}
-                onChange={(e) => setHeadline(e.target.value)}
-                placeholder="Full-Stack Software Engineer"
-              />
-            </FormField>
-
-            <FormField label="Years of Experience">
-              <Input
-                type="number"
-                inputSize="lg"
-                min={0}
-                max={50}
-                value={yearsExperience}
-                onChange={(e) => setYearsExperience(e.target.value)}
-                className="tabular-nums"
-              />
-            </FormField>
-
-            <FormField label="Highest Education Level">
-              <Select
-                selectSize="lg"
-                value={educationLevel}
-                onChange={(e) =>
-                  setEducationLevel(e.target.value as EducationLevel)
-                }
-              >
-                {EDUCATION_LEVELS.map((lvl) => (
-                  <option key={lvl} value={lvl}>
-                    {EDUCATION_LABELS[lvl]}
-                  </option>
-                ))}
-              </Select>
-            </FormField>
-          </div>
-
-          <FormField label="Your Skills (comma-separated)">
-            <Input
-              type="text"
-              inputSize="lg"
-              value={skillsText}
-              onChange={(e) => setSkillsText(e.target.value)}
-              placeholder="TypeScript, React, Next.js, Node.js, PostgreSQL, Tailwind CSS"
-            />
-          </FormField>
-
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            <FormField label={`Expected Monthly Salary Min (${currency})`}>
-              <Input
-                type="number"
-                inputSize="lg"
-                min={0}
-                value={expectedSalaryMin}
-                onChange={(e) => setExpectedSalaryMin(e.target.value)}
-                placeholder="22000000"
-                className="tabular-nums"
-              />
-            </FormField>
-            <FormField label={`Expected Monthly Salary Max (${currency})`}>
-              <Input
-                type="number"
-                inputSize="lg"
-                min={0}
-                value={expectedSalaryMax}
-                onChange={(e) => setExpectedSalaryMax(e.target.value)}
-                placeholder="32000000"
-                className="tabular-nums"
-              />
-            </FormField>
-            <FormField label="Preferred Locations (comma-separated)">
-              <Input
-                type="text"
-                inputSize="lg"
-                value={preferredLocationsText}
-                onChange={(e) => setPreferredLocationsText(e.target.value)}
-                placeholder="Jakarta, Bandung, Remote"
-              />
-            </FormField>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-3">
-            <span className="font-semibold text-foreground">
-              Preferred Work Arrangements:
-            </span>
-            {WORK_ARRANGEMENTS.map((arr) => (
-              <label
-                key={arr}
-                className="inline-flex items-center gap-1.5 font-medium text-foreground"
-              >
-                <input
-                  type="checkbox"
-                  checked={preferredArrangements.includes(arr)}
-                  onChange={() => toggleArrangement(arr)}
-                />
-                <span>{WORK_ARRANGEMENT_LABELS[arr]}</span>
-              </label>
-            ))}
           </div>
 
           <div className="flex justify-end">
@@ -462,7 +394,7 @@ export function SettingsClient({
               size="lg"
               disabled={isPending}
             >
-              Save Profile & Preferences
+              {messages.settings.saveWorkspaceButton}
             </Button>
           </div>
         </form>
@@ -747,12 +679,130 @@ export function SettingsClient({
         </form>
       </Card>
 
-      {/* 5. Sample Demonstration Data */}
+      {/* 5. AI Privacy & Provider Mode */}
+      <Card padding="md">
+        <form onSubmit={handleSaveAiPrivacy} className="space-y-4">
+          <div className="flex items-center gap-2">
+            <Cpu className="h-4 w-4 text-primary-text" />
+            <h2 className="text-section-title text-foreground">
+              5. AI Privacy &amp; Hybrid Provider Mode
+            </h2>
+          </div>
+          <p className="text-muted-foreground">
+            Control how career documents and job descriptions are routed between
+            local and cloud AI providers. API keys remain strictly server-side.
+          </p>
+
+          <div className="flex flex-wrap gap-2">
+            {aiProviders.map((p) => (
+              <Badge
+                key={p.id}
+                variant={p.configured ? "success" : "secondary"}
+              >
+                {p.label}: {p.configured ? `Configured (${p.defaultModel})` : "Not configured"}
+              </Badge>
+            ))}
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <FormField
+              label="AI Privacy Mode"
+              hint={AI_PRIVACY_MODE_DESCRIPTIONS[aiPrivacyMode]}
+            >
+              <Select
+                selectSize="lg"
+                value={aiPrivacyMode}
+                onChange={(e) => {
+                  const next = e.target.value as AiPrivacyMode;
+                  setAiPrivacyMode(next);
+                  if (next === "local_only") {
+                    setAiCloudDocumentConsent(false);
+                  }
+                }}
+              >
+                {AI_PRIVACY_MODES.map((m) => (
+                  <option key={m} value={m}>
+                    {AI_PRIVACY_MODE_LABELS[m]}
+                  </option>
+                ))}
+              </Select>
+            </FormField>
+
+            <FormField label="Preferred Provider">
+              <Select
+                selectSize="lg"
+                value={aiPreferredProvider}
+                onChange={(e) =>
+                  setAiPreferredProvider(e.target.value as AiPreferredProvider)
+                }
+              >
+                {AI_PREFERRED_PROVIDERS.map((p) => (
+                  <option key={p} value={p}>
+                    {AI_PROVIDER_LABELS[p]}
+                  </option>
+                ))}
+              </Select>
+            </FormField>
+
+            <FormField
+              label="Local AI Endpoint (Ollama)"
+              hint="Must target a valid loopback URL (e.g. http://127.0.0.1:11434)."
+            >
+              <Input
+                inputSize="lg"
+                value={aiOllamaEndpoint}
+                onChange={(e) => setAiOllamaEndpoint(e.target.value)}
+                placeholder={DEFAULT_OLLAMA_ENDPOINT}
+              />
+            </FormField>
+
+            <FormField
+              label="Local Model Override (Optional)"
+              hint="Leave empty to use server default local model."
+            >
+              <Input
+                inputSize="lg"
+                value={aiOllamaModel}
+                onChange={(e) => setAiOllamaModel(e.target.value)}
+                placeholder="qwen2.5:7b"
+              />
+            </FormField>
+          </div>
+
+          {aiPrivacyMode !== "local_only" && (
+            <label className="flex items-start gap-2 rounded-lg border border-border-subtle bg-surface-subtle p-3 text-foreground">
+              <input
+                type="checkbox"
+                checked={aiCloudDocumentConsent}
+                onChange={(e) => setAiCloudDocumentConsent(e.target.checked)}
+                className="mt-0.5"
+              />
+              <span>
+                I explicitly consent to sending selected career documents to
+                configured Cloud AI providers when running Cloud AI tasks.
+              </span>
+            </label>
+          )}
+
+          <div className="flex justify-end">
+            <Button
+              type="submit"
+              variant="primary"
+              size="lg"
+              disabled={isPending}
+            >
+              Save AI Privacy Settings
+            </Button>
+          </div>
+        </form>
+      </Card>
+
+      {/* 6. Sample Demonstration Data */}
       <Card padding="md" className="space-y-3">
         <div className="flex items-center gap-2">
           <Database className="h-4 w-4 text-warning" />
           <h2 className="text-section-title text-foreground">
-            5. Sample Demonstration Records
+            6. Sample Demonstration Records
           </h2>
         </div>
         <p className="text-muted-foreground">
@@ -821,7 +871,7 @@ export function SettingsClient({
         <div className="flex items-center gap-2">
           <ShieldAlert className="h-4 w-4 text-primary-text" />
           <h2 className="text-section-title text-foreground">
-            6. Data Portability & Account Deletion (Privacy / UU PDP)
+            7. Data Portability & Account Deletion (Privacy / UU PDP)
           </h2>
         </div>
 

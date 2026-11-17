@@ -27,6 +27,7 @@ export const OUTCOMES = [
   "unsuccessful",
   "withdrawn",
   "no_response",
+  "closed",
 ] as const;
 export type Outcome = (typeof OUTCOMES)[number];
 
@@ -36,6 +37,7 @@ export const OUTCOME_LABELS: Record<Outcome, string> = {
   unsuccessful: "Unsuccessful",
   withdrawn: "Withdrawn",
   no_response: "No Response",
+  closed: "Closed",
 };
 
 /** Stage types that represent a vacancy before any submission exists. */

@@ -1,0 +1,172 @@
+import type { TranslationMessages } from "../types";
+
+export const EN_US_MESSAGES: TranslationMessages = {
+  meta: {
+    localeName: "English (en-US)",
+    languageCode: "en-US",
+  },
+  nav: {
+    pipelineGroup: "Pipeline & Analytics",
+    assetsGroup: "Discovery & Assets",
+    dashboard: "Dashboard",
+    applications: "Applications",
+    archive: "Archive",
+    interviews: "Interviews",
+    analytics: "Analytics",
+    careerProfile: "Career Profile",
+    cvStudio: "CV Studio AI",
+    jobs: "Find Jobs",
+    shortlist: "Job Shortlist",
+    documents: "Documents",
+    emails: "Email Center",
+    credits: "Credit Wallet",
+    sync: "Hybrid Sync",
+    settings: "Settings",
+    collapseSidebar: "Collapse sidebar",
+    expandSidebar: "Expand sidebar",
+    signOut: "Sign out",
+    searchPlaceholder: "Search jobs, applications, companies, or tags...",
+    searchShort: "Search...",
+  },
+  common: {
+    save: "Save",
+    saving: "Saving...",
+    cancel: "Cancel",
+    loading: "Loading...",
+    notSet: "Not set",
+    notSpecified: "Not specified",
+    undisclosed: "Undisclosed",
+    from: "From",
+    upTo: "Up to",
+    to: "to",
+    language: "Language",
+    timezone: "Timezone",
+    currency: "Currency",
+    indicativeDisplayNote:
+      "Display estimate only (not a financial settlement rate).",
+  },
+  statuses: {
+    outcome: {
+      active: "Active",
+      successful: "Successful",
+      unsuccessful: "Unsuccessful",
+      withdrawn: "Withdrawn",
+      no_response: "No Response",
+      closed: "Closed",
+    },
+    stageType: {
+      sourced: "Sourced",
+      interested: "Interested",
+      applied: "Applied",
+      screening: "CV Screening",
+      interview: "Interview",
+      assessment: "Assessment",
+      offer: "Offer",
+      hired: "Hired",
+      rejected: "Rejected",
+      withdrawn: "Withdrawn",
+      no_response: "No Response",
+    },
+    archiveOutcome: {
+      rejected: "Rejected",
+      withdrawn: "Withdrawn",
+      hired: "Hired",
+      no_response: "No Response",
+      closed: "Closed",
+    },
+    triage: {
+      new: "New",
+      interested: "Interested",
+      shortlisted: "Shortlisted",
+      not_interested: "Not Interested",
+      archived: "Archived",
+    },
+    priority: {
+      low: "Low",
+      medium: "Medium",
+      high: "High",
+    },
+    workArrangement: {
+      onsite: "On-site",
+      hybrid: "Hybrid",
+      remote: "Remote",
+    },
+    searchStatus: {
+      actively_searching: "Actively searching",
+      open_to_offers: "Open to offers",
+      paused: "Search paused",
+      hired: "Hired / Not searching",
+    },
+    salaryPeriod: {
+      month: "/mo",
+      year: "/yr",
+      hour: "/hr",
+      project: "/project",
+    },
+  },
+  settings: {
+    pageTitle: "Settings, Pipeline Customization & Data Privacy",
+    pageDescription:
+      "Configure workspace locale, recruitment stages, follow-up rules, suitability weights, and privacy controls.",
+    workspaceSectionTitle: "1. Workspace Locale & Search Status",
+    workspaceSectionDescription:
+      "Configure your preferred language, timezone, display currency, and current job search availability.",
+    preferredLanguageLabel: "Preferred Language",
+    preferredLanguageHint:
+      "Controls UI labels, localized date/number formatting, and default AI prompt language.",
+    timezoneLabel: "Timezone",
+    currencyLabel: "Default Display Currency",
+    currencyHint:
+      "Display currency does not alter server-verified payment settlement currencies.",
+    searchStatusLabel: "Job Search Status",
+    saveWorkspaceButton: "Save Workspace Settings",
+    workspaceSavedToast: "Workspace settings updated.",
+    languageSwitchedToast: "Language switched to English (en-US).",
+  },
+  cv: {
+    indonesianTemplateLabel: "Indonesian CV (Structured ATS Format)",
+    internationalTemplateLabel: "International Resume (US/Global Format)",
+    sections: {
+      summary: "PROFESSIONAL SUMMARY",
+      experience: "WORK EXPERIENCE",
+      projects: "KEY PROJECTS",
+      skills: "SKILLS",
+      education: "EDUCATION",
+      certifications: "CERTIFICATIONS",
+      languages: "LANGUAGES",
+      coverLetter: "COVER LETTER DRAFT",
+      technologiesPrefix: "Technologies",
+    },
+  },
+  errors: {
+    UNAUTHORIZED: "Authentication required. Please sign in.",
+    FORBIDDEN: "You do not have permission to access this resource.",
+    INVALID_WEBHOOK_SIGNATURE: "Invalid payment webhook signature.",
+    NOT_FOUND: "The requested record was not found.",
+    INVALID_ID: "Invalid ID format; expected UUID.",
+    INVALID_JSON: "Request body must be valid JSON.",
+    VALIDATION_ERROR: "Input validation failed. Please check your entries.",
+    UNSUPPORTED_MEDIA_TYPE: "Unsupported file format.",
+    CONFLICT: "A version or state conflict occurred.",
+    UNPROCESSABLE_ENTITY:
+      "Request cannot be processed due to domain constraints.",
+    INSUFFICIENT_CREDITS: "Insufficient AI credit balance.",
+    RATE_LIMIT_EXCEEDED: "Rate limit exceeded. Please retry shortly.",
+    PRIVACY_MODE_BLOCKED:
+      "Cloud AI providers are blocked by Local AI Only privacy mode.",
+    CONSENT_REQUIRED:
+      "Explicit user consent is required before sending documents to Cloud AI.",
+    SYNC_FORBIDDEN_ENTITY:
+      "Credits and payments are cloud-authoritative and cannot be synchronized from local devices.",
+    SYNC_CLOUD_DISABLED:
+      "Cloud synchronization is disabled pending production approval.",
+    SYNC_LOCAL_ONLY_MODE: "Device is configured for local_only offline mode.",
+    ARCHIVE_SNAPSHOT_IMMUTABLE:
+      "Historical archive snapshots are immutable and cannot be modified.",
+    DOCUMENT_VERSION_IMMUTABLE:
+      "Existing document versions cannot be overwritten.",
+    INTERNAL_ERROR: "An unexpected internal error occurred.",
+    UNKNOWN_ERROR: "An unexpected error occurred.",
+  },
+};
+

@@ -11,6 +11,7 @@ import {
   jobOffers,
 } from "@/db/schema";
 import { writeAudit } from "@/lib/audit";
+import { DomainError } from "@/lib/errors";
 import {
   ASSESSMENT_TYPES,
   CURRENCIES,
@@ -23,7 +24,9 @@ import {
 } from "@/lib/constants";
 import {
   deleteDocumentFile,
+  getSignedDocumentDownloadUrl,
   readDocumentFile,
+  scanDocumentForMalware,
   validateDocumentBuffer,
   writeDocumentFile,
 } from "@/lib/storage";
@@ -85,7 +88,7 @@ export async function updateInterviewFullService(
     )
     .returning();
 
-  if (!updated) throw new Error("Interview not found.");
+  if (!updated) throw new DomainError("Interview not found.");
 
   await writeAudit(db, {
     userId,
@@ -107,7 +110,7 @@ export async function deleteInterviewService(
     .delete(interviews)
     .where(and(eq(interviews.id, interviewId), eq(interviews.userId, userId)))
     .returning();
-  if (!deleted) throw new Error("Interview not found.");
+  if (!deleted) throw new DomainError("Interview not found.");
   return deleted;
 }
 
@@ -143,7 +146,7 @@ export async function saveAssessmentService(
         eq(applications.userId, userId),
       ),
     );
-  if (!app) throw new Error("Application not found.");
+  if (!app) throw new DomainError("Application not found.");
 
   if (input.assessmentId) {
     const [updated] = await db
@@ -166,7 +169,7 @@ export async function saveAssessmentService(
         ),
       )
       .returning();
-    if (!updated) throw new Error("Assessment not found.");
+    if (!updated) throw new DomainError("Assessment not found.");
     return updated;
   }
 
@@ -208,7 +211,7 @@ export async function deleteAssessmentService(
       and(eq(assessments.id, assessmentId), eq(assessments.userId, userId)),
     )
     .returning();
-  if (!deleted) throw new Error("Assessment not found.");
+  if (!deleted) throw new DomainError("Assessment not found.");
   return deleted;
 }
 
@@ -247,7 +250,7 @@ export async function upsertJobOfferService(
         eq(applications.userId, userId),
       ),
     );
-  if (!app) throw new Error("Application not found.");
+  if (!app) throw new DomainError("Application not found.");
 
   const decidedOn =
     input.decision !== "pending"
@@ -376,6 +379,15 @@ export async function uploadOrVersionDocumentService(
       params.file.buffer,
       params.file.filename,
     );
+    const malwareScan = await scanDocumentForMalware(
+      params.file.buffer,
+      params.file.filename,
+    );
+    if (!malwareScan.isClean) {
+      throw new DomainError(
+        `File rejected: Threat "${malwareScan.threatName || "SuspiciousPayload"}" detected by malware scanner.`,
+      );
+    }
     const storageKey = writeDocumentFile({
       userId,
       mimeType: checked.mimeType,
@@ -398,7 +410,7 @@ export async function uploadOrVersionDocumentService(
       .select()
       .from(documents)
       .where(and(eq(documents.id, docId), eq(documents.userId, userId)));
-    if (!existingDoc) throw new Error("Document not found.");
+    if (!existingDoc) throw new DomainError("Document not found.");
 
     const existingVersions = await db
       .select({ versionNo: documentVersions.versionNo })
@@ -489,7 +501,7 @@ export async function linkDocumentVersionToApplicationService(
         eq(documentVersions.userId, userId),
       ),
     );
-  if (!ver) throw new Error("Document version not found.");
+  if (!ver) throw new DomainError("Document version not found.");
 
   const [app] = await db
     .select()
@@ -500,7 +512,7 @@ export async function linkDocumentVersionToApplicationService(
         eq(applications.userId, userId),
       ),
     );
-  if (!app) throw new Error("Application not found.");
+  if (!app) throw new DomainError("Application not found.");
 
   const [link] = await db
     .insert(applicationDocuments)
@@ -581,7 +593,7 @@ export async function deleteDocumentService(
     .where(and(eq(documents.id, documentId), eq(documents.userId, userId)))
     .returning();
 
-  if (!deleted) throw new Error("Document not found.");
+  if (!deleted) throw new DomainError("Document not found.");
 
   for (const v of versions) {
     deleteDocumentFile(v.storageKey);
@@ -620,4 +632,29 @@ export async function getDocumentVersionFileForUserService(
     version: ver,
     buffer,
   };
+}
+
+export async function getSignedDocumentUrlForUserService(
+  userId: string,
+  versionId: string,
+  options?: { expiresInSeconds?: number; download?: boolean },
+) {
+  const db = await ensureDbReady();
+  const [ver] = await db
+    .select({ id: documentVersions.id })
+    .from(documentVersions)
+    .where(
+      and(
+        eq(documentVersions.id, versionId),
+        eq(documentVersions.userId, userId),
+      ),
+    );
+  if (!ver) throw new DomainError("Document version not found.");
+
+  return getSignedDocumentDownloadUrl({
+    userId,
+    versionId,
+    expiresInSeconds: options?.expiresInSeconds ?? 300,
+    download: options?.download,
+  });
 }

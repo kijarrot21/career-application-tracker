@@ -4,6 +4,7 @@ import { drizzle } from "drizzle-orm/pglite";
 import { migrate } from "drizzle-orm/pglite/migrator";
 import { setTestDb, type AppDb } from "@/db";
 import * as schema from "@/db/schema";
+import { seedCreditCatalog } from "@/db/seed/credits";
 import { ensureUserInitialized, seedSystemSources } from "@/db/seed/system";
 
 const migrationsFolder = resolve(process.cwd(), "src/db/migrations");
@@ -16,6 +17,7 @@ export async function createIsolatedTestDb(): Promise<{
   const testDb = drizzle(client, { schema });
   await migrate(testDb, { migrationsFolder });
   await seedSystemSources(testDb);
+  await seedCreditCatalog(testDb);
   setTestDb(testDb);
   return {
     db: testDb,

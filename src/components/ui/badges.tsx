@@ -1,12 +1,17 @@
 import { Badge, type BadgeProps } from "@/components/ui/badge";
 import {
-  PRIORITY_LABELS,
-  TRIAGE_LABELS,
   type JobPriority,
   type TriageStatus,
 } from "@/lib/constants";
-import { OUTCOME_LABELS, type Outcome } from "@/lib/domain/stages";
+import { type Outcome } from "@/lib/domain/stages";
 import { scoreBand } from "@/lib/domain/suitability";
+import {
+  DEFAULT_LOCALE,
+  getLocalizedOutcomeLabel,
+  getLocalizedPriorityLabel,
+  getLocalizedTriageLabel,
+  type AppLocale,
+} from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
 type StageTone = "warning" | "primary" | "success" | "destructive" | "neutral";
@@ -135,18 +140,35 @@ export function StageBadge({
   );
 }
 
-export function OutcomeBadge({ outcome }: { outcome: Outcome }) {
+export function OutcomeBadge({
+  outcome,
+  locale = DEFAULT_LOCALE,
+}: {
+  outcome: Outcome;
+  locale?: AppLocale;
+}) {
   const variantMap: Record<Outcome, BadgeProps["variant"]> = {
     active: "primary",
     successful: "success",
     unsuccessful: "destructive",
     withdrawn: "secondary",
     no_response: "warning",
+    closed: "secondary",
   };
-  return <Badge variant={variantMap[outcome]}>{OUTCOME_LABELS[outcome]}</Badge>;
+  return (
+    <Badge variant={variantMap[outcome]}>
+      {getLocalizedOutcomeLabel(outcome, locale)}
+    </Badge>
+  );
 }
 
-export function TriageBadge({ status }: { status: TriageStatus }) {
+export function TriageBadge({
+  status,
+  locale = DEFAULT_LOCALE,
+}: {
+  status: TriageStatus;
+  locale?: AppLocale;
+}) {
   const variantMap: Record<TriageStatus, BadgeProps["variant"]> = {
     new: "secondary",
     interested: "warning",
@@ -154,10 +176,20 @@ export function TriageBadge({ status }: { status: TriageStatus }) {
     not_interested: "destructive",
     archived: "destructive",
   };
-  return <Badge variant={variantMap[status]}>{TRIAGE_LABELS[status]}</Badge>;
+  return (
+    <Badge variant={variantMap[status]}>
+      {getLocalizedTriageLabel(status, locale)}
+    </Badge>
+  );
 }
 
-export function PriorityBadge({ priority }: { priority: JobPriority }) {
+export function PriorityBadge({
+  priority,
+  locale = DEFAULT_LOCALE,
+}: {
+  priority: JobPriority;
+  locale?: AppLocale;
+}) {
   const variantMap: Record<JobPriority, BadgeProps["variant"]> = {
     low: "secondary",
     medium: "warning",
@@ -165,7 +197,7 @@ export function PriorityBadge({ priority }: { priority: JobPriority }) {
   };
   return (
     <Badge variant={variantMap[priority]}>
-      {PRIORITY_LABELS[priority]} Priority
+      {getLocalizedPriorityLabel(priority, locale)}
     </Badge>
   );
 }

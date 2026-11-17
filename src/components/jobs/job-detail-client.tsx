@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { RecordSubmissionDialog } from "@/components/applications/record-submission-dialog";
+import { JobMatchAiPanel } from "@/components/jobs/job-match-ai-panel";
 import { SuitabilityPanel } from "@/components/jobs/suitability-panel";
 import { VacancyForm } from "@/components/jobs/vacancy-form";
 import {
@@ -41,17 +42,23 @@ import {
   setVacancyTriageAction,
 } from "@/server/actions/vacancies";
 import type { getVacancyDetail } from "@/server/queries/vacancies";
+import type { listCvVersionsForProfileImport } from "@/server/services/career-profile";
 
 type VacancyDetailData = NonNullable<
   Awaited<ReturnType<typeof getVacancyDetail>>
 >;
+type CvVersionOption = Awaited<
+  ReturnType<typeof listCvVersionsForProfileImport>
+>[number];
 
 export function JobDetailClient({
   vacancy,
   sources,
+  cvVersions = [],
 }: {
   vacancy: VacancyDetailData;
   sources: { id: string; key: string; name: string }[];
+  cvVersions?: CvVersionOption[];
 }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -387,8 +394,8 @@ export function JobDetailClient({
             </Card>
           </div>
 
-          {/* Right (40%): Suitability Evaluation Panel */}
-          <div className="lg:col-span-5">
+          {/* Right (40%): Suitability & AI Job Match Panels */}
+          <div className="space-y-6 lg:col-span-5">
             <SuitabilityPanel
               vacancyId={vacancy.id}
               initialScores={{
@@ -402,6 +409,7 @@ export function JobDetailClient({
               suggestions={vacancy.suggestions}
               weights={vacancy.weights}
             />
+            <JobMatchAiPanel vacancyId={vacancy.id} cvVersions={cvVersions} />
           </div>
         </div>
       )}

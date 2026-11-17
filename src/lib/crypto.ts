@@ -4,8 +4,12 @@ import {
   createHash,
   createHmac,
   randomBytes,
+  timingSafeEqual,
 } from "node:crypto";
 import { env } from "@/lib/env";
+
+/** Matches the 10-minute maxAge of the OAuth state cookie (start/route.ts). */
+const OAUTH_STATE_TTL_MS = 600_000;
 
 function deriveKey32(): Buffer {
   const raw = env.ENCRYPTION_KEY || env.BETTER_AUTH_SECRET;
@@ -77,14 +81,93 @@ export function signOAuthState(data: Record<string, string>): string {
 export function verifyOAuthState(
   token: string,
 ): Record<string, string> | null {
-  const [json, sig] = token.split(".");
+  const parts = token.split(".");
+  if (parts.length !== 2) return null;
+  const [json, sig] = parts;
   if (!json || !sig) return null;
   const expected = createHmac("sha256", deriveKey32())
     .update(json)
     .digest("base64url");
-  if (sig !== expected) return null;
+  // Constant-time signature comparison (DEF-11-001): compare decoded bytes so
+  // the mismatch signal does not leak through early-exit string equality.
+  const sigBuf = Buffer.from(sig, "base64url");
+  const expectedBuf = Buffer.from(expected, "base64url");
+  if (sigBuf.length !== expectedBuf.length) return null;
+  if (!timingSafeEqual(sigBuf, expectedBuf)) return null;
+  let parsed: Record<string, string>;
   try {
-    return JSON.parse(Buffer.from(json, "base64url").toString("utf8"));
+    parsed = JSON.parse(Buffer.from(json, "base64url").toString("utf8"));
+  } catch {
+    return null;
+  }
+  // Replay protection (DEF-11-001): reject states older than the cookie TTL
+  // (or implausibly future-dated) so a captured state cannot be reused later.
+  const ts = Number(parsed?.ts);
+  if (!Number.isFinite(ts)) return null;
+  const age = Date.now() - ts;
+  if (age > OAUTH_STATE_TTL_MS || age < -OAUTH_STATE_TTL_MS) return null;
+  return parsed;
+}
+
+/**
+ * Generates a short-lived HMAC-signed download token for secure, direct file
+ * access without leaking credentials or enabling unbounded file harvesting.
+ */
+export function createSignedDownloadToken(params: {
+  userId: string;
+  versionId: string;
+  expiresInSeconds?: number;
+}): string {
+  const expiresInSeconds = params.expiresInSeconds ?? 300; // 5 minutes default
+  const exp = Math.floor(Date.now() / 1000) + expiresInSeconds;
+  const rawPayload = JSON.stringify({
+    u: params.userId,
+    v: params.versionId,
+    exp,
+  });
+  const encodedPayload = Buffer.from(rawPayload, "utf8").toString("base64url");
+  const sig = createHmac("sha256", deriveKey32())
+    .update(`${encodedPayload}`)
+    .digest("base64url");
+  return `${encodedPayload}.${sig}`;
+}
+
+/**
+ * Validates a short-lived HMAC-signed download token and ensures it is unexpired
+ * and untampered.
+ */
+export function verifySignedDownloadToken(
+  token: string,
+): { userId: string; versionId: string } | null {
+  if (!token || typeof token !== "string") return null;
+  const parts = token.split(".");
+  if (parts.length !== 2) return null;
+  const [encodedPayload, sig] = parts;
+  if (!encodedPayload || !sig) return null;
+
+  const expectedSig = createHmac("sha256", deriveKey32())
+    .update(encodedPayload)
+    .digest("base64url");
+  // Constant-time comparison (DEF-11-001, same defect class as OAuth state).
+  const sigBuf = Buffer.from(sig, "base64url");
+  const expectedBuf = Buffer.from(expectedSig, "base64url");
+  if (sigBuf.length !== expectedBuf.length) return null;
+  if (!timingSafeEqual(sigBuf, expectedBuf)) return null;
+
+  try {
+    const raw = Buffer.from(encodedPayload, "base64url").toString("utf8");
+    const parsed = JSON.parse(raw) as { u?: string; v?: string; exp?: number };
+    if (!parsed.u || !parsed.v || typeof parsed.exp !== "number") {
+      return null;
+    }
+    const now = Math.floor(Date.now() / 1000);
+    if (parsed.exp < now) {
+      return null; // Expired
+    }
+    return {
+      userId: parsed.u,
+      versionId: parsed.v,
+    };
   } catch {
     return null;
   }

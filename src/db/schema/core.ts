@@ -18,6 +18,8 @@ import {
 } from "drizzle-orm/pg-core";
 import { user } from "./auth";
 import {
+  aiPreferredProviderEnum,
+  aiPrivacyModeEnum,
   educationLevelEnum,
   employmentTypeEnum,
   jobPriorityEnum,
@@ -53,6 +55,7 @@ export const userSettings = pgTable(
     userId: text("user_id")
       .primaryKey()
       .references(() => user.id, { onDelete: "cascade" }),
+    preferredLocale: text("preferred_locale").notNull().default("id-ID"),
     timezone: text("timezone").notNull().default("Asia/Jakarta"),
     currency: text("currency").notNull().default("IDR"),
     searchStatus: searchStatusEnum("search_status").notNull().default("actively_searching"),
@@ -74,6 +77,20 @@ export const userSettings = pgTable(
     suitabilityWeights: jsonb("suitability_weights").$type<Weights>(),
     /** null = automatic (include sample data only while there are no real applications). */
     includeSampleInAnalytics: boolean("include_sample_in_analytics"),
+    autoArchiveOnTerminal: boolean("auto_archive_on_terminal").notNull().default(true),
+    archiveRetentionDays: integer("archive_retention_days"),
+    archiveAutoDeleteExpired: boolean("archive_auto_delete_expired").notNull().default(false),
+    aiPrivacyMode: aiPrivacyModeEnum("ai_privacy_mode")
+      .notNull()
+      .default("ask_before_each"),
+    aiPreferredProvider: aiPreferredProviderEnum("ai_preferred_provider")
+      .notNull()
+      .default("auto"),
+    aiOllamaEndpoint: text("ai_ollama_endpoint"),
+    aiOllamaModel: text("ai_ollama_model"),
+    aiCloudDocumentConsent: boolean("ai_cloud_document_consent")
+      .notNull()
+      .default(false),
     nextApplicationSeq: integer("next_application_seq").notNull().default(1),
     nextJobSeq: integer("next_job_seq").notNull().default(1),
     ...timestamps,
@@ -81,6 +98,14 @@ export const userSettings = pgTable(
   (t) => [
     check("user_settings_follow_up_days_ck", sql`${t.followUpFirstDays} between 1 and 60 and ${t.followUpSecondDays} between 1 and 60 and ${t.followUpFinalDays} between 0 and 90`),
     check("user_settings_no_response_ck", sql`${t.noResponseDays} between 7 and 365`),
+    check(
+      "user_settings_archive_retention_ck",
+      sql`${t.archiveRetentionDays} is null or ${t.archiveRetentionDays} between 30 and 3650`,
+    ),
+    check(
+      "user_settings_locale_len_ck",
+      sql`length(${t.preferredLocale}) between 2 and 16`,
+    ),
   ],
 );
 

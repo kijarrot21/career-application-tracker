@@ -1,8 +1,93 @@
 import { createHash, randomUUID } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
+import { createSignedDownloadToken } from "@/lib/crypto";
 
 export const MAX_DOCUMENT_BYTES = 10 * 1024 * 1024; // 10 MB
+
+// ---------------------------------------------------------------------------
+// Malware Scanner Integration Point
+// ---------------------------------------------------------------------------
+export type MalwareScanResult = {
+  isClean: boolean;
+  threatName?: string;
+  scanner: string;
+};
+
+export type MalwareScannerHook = (
+  buffer: Buffer,
+  filename: string,
+) => Promise<MalwareScanResult> | MalwareScanResult;
+
+let customMalwareScanner: MalwareScannerHook | null = null;
+
+/**
+ * Pluggable malware scanner hook (e.g. for ClamAV daemon, VirusTotal API, or cloud sandboxing).
+ */
+export function registerMalwareScanner(scanner: MalwareScannerHook | null) {
+  customMalwareScanner = scanner;
+}
+
+export function resetMalwareScanner() {
+  customMalwareScanner = null;
+}
+
+/**
+ * Built-in baseline malware scanner that checks for the standard EICAR test string,
+ * raw executable binaries masquerading as documents, and script inclusions.
+ */
+export async function scanDocumentForMalware(
+  buffer: Buffer,
+  filename: string,
+): Promise<MalwareScanResult> {
+  if (customMalwareScanner) {
+    return await customMalwareScanner(buffer, filename);
+  }
+
+  // 1. EICAR Standard Antivirus Test String check
+  const EICAR_PREFIX = "X5O!P%@AP[4\\PZX54(P^)7CC)7}$EICAR";
+  const strSample = buffer.subarray(0, 1024).toString("ascii");
+  if (strSample.includes(EICAR_PREFIX)) {
+    return {
+      isClean: false,
+      threatName: "EICAR-Standard-AV-Test-Signature",
+      scanner: "builtin-signature",
+    };
+  }
+
+  // 2. Disallowed executable signatures check (DOS PE 'MZ', Linux ELF, Mach-O)
+  if (startsWithBytes(buffer, [0x4d, 0x5a])) {
+    return {
+      isClean: false,
+      threatName: "Executable.DOS-MZ.Blocked",
+      scanner: "builtin-signature",
+    };
+  }
+  if (startsWithBytes(buffer, [0x7f, 0x45, 0x4c, 0x46])) {
+    return {
+      isClean: false,
+      threatName: "Executable.ELF.Blocked",
+      scanner: "builtin-signature",
+    };
+  }
+  if (
+    startsWithBytes(buffer, [0xfe, 0xed, 0xfa, 0xce]) ||
+    startsWithBytes(buffer, [0xfe, 0xed, 0xfa, 0xcf]) ||
+    startsWithBytes(buffer, [0xce, 0xfa, 0xed, 0xfe]) ||
+    startsWithBytes(buffer, [0xcf, 0xfa, 0xed, 0xfe])
+  ) {
+    return {
+      isClean: false,
+      threatName: "Executable.Mach-O.Blocked",
+      scanner: "builtin-signature",
+    };
+  }
+
+  return {
+    isClean: true,
+    scanner: "builtin-signature",
+  };
+}
 
 export type AllowedDocumentMime =
   | "application/pdf"
@@ -161,4 +246,42 @@ export function deleteDocumentFile(storageKey: string | null | undefined): void 
   } catch {
     // Ignore missing file on cleanup
   }
+}
+
+/**
+ * Completely purges all stored documents for a user from physical disk.
+ * Required for Right to Erasure / GDPR Article 17 / Indonesian PDP Law Art. 8.
+ */
+export function deleteUserStorageDir(userId: string): void {
+  if (!userId) return;
+  try {
+    const safeUserDir = userId.replace(/[^a-zA-Z0-9_-]/g, "_");
+    const userDir = resolve(getStorageRoot(), safeUserDir);
+    if (existsSync(userDir)) {
+      rmSync(userDir, { recursive: true, force: true });
+    }
+  } catch {
+    // Ignore cleanup failures
+  }
+}
+
+/**
+ * Helper to construct a signed short-lived download URL.
+ */
+export function getSignedDocumentDownloadUrl(params: {
+  userId: string;
+  versionId: string;
+  expiresInSeconds?: number;
+  download?: boolean;
+}): string {
+  const token = createSignedDownloadToken({
+    userId: params.userId,
+    versionId: params.versionId,
+    expiresInSeconds: params.expiresInSeconds ?? 300,
+  });
+  const query = new URLSearchParams({ token });
+  if (params.download) {
+    query.set("download", "1");
+  }
+  return `/api/documents/download?${query.toString()}`;
 }

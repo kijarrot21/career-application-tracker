@@ -215,7 +215,7 @@ export const FOLLOW_UP_TYPE_LABELS: Record<FollowUpType, string> = {
 export const FOLLOW_UP_STATUSES = ["open", "done", "cancelled"] as const;
 export type FollowUpStatus = (typeof FOLLOW_UP_STATUSES)[number];
 
-export const CURRENCIES = ["IDR", "USD", "SGD", "MYR", "EUR", "AUD", "JPY"] as const;
+export const CURRENCIES = ["IDR", "USD", "SGD", "MYR", "EUR", "GBP", "AUD", "JPY"] as const;
 export type Currency = (typeof CURRENCIES)[number];
 
 export const TIMEZONES = [

@@ -1,4 +1,4 @@
-import { mkdirSync } from "node:fs";
+import { mkdirSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { PGlite } from "@electric-sql/pglite";
 import { drizzle as drizzlePglite, type PgliteDatabase } from "drizzle-orm/pglite";
@@ -8,6 +8,7 @@ import { migrate as migratePg } from "drizzle-orm/postgres-js/migrator";
 import postgres from "postgres";
 import * as schema from "./schema";
 import { env } from "@/lib/env";
+import { seedCreditCatalog } from "./seed/credits";
 import { seedSystemSources } from "./seed/system";
 
 export type AppDb = PgliteDatabase<typeof schema>;
@@ -16,6 +17,7 @@ type GlobalDbState = {
   db?: AppDb;
   pglite?: PGlite;
   readyPromise?: Promise<void>;
+  migrationSignature?: string;
   overrideDb?: AppDb;
   signalsBound?: boolean;
 };
@@ -86,10 +88,28 @@ const migrationsFolder = resolve(
   "src/db/migrations",
 );
 
+const journalPath = resolve(
+  /*turbopackIgnore: true*/ process.cwd(),
+  "src/db/migrations/meta/_journal.json",
+);
+
+function getMigrationSignature(): string {
+  try {
+    return readFileSync(journalPath, "utf8");
+  } catch {
+    return "";
+  }
+}
+
 export async function ensureDbReady(): Promise<AppDb> {
   const current = getDb();
   if (state.overrideDb) return current;
-  if (!state.readyPromise) {
+
+  const signature =
+    env.NODE_ENV === "production" ? "prod" : getMigrationSignature();
+
+  if (!state.readyPromise || state.migrationSignature !== signature) {
+    state.migrationSignature = signature;
     state.readyPromise = (async () => {
       if (env.DATABASE_URL) {
         await migratePg(current as unknown as ReturnType<typeof drizzlePg>, {
@@ -99,8 +119,10 @@ export async function ensureDbReady(): Promise<AppDb> {
         await migratePglite(current, { migrationsFolder });
       }
       await seedSystemSources(current);
+      await seedCreditCatalog(current);
     })().catch((err) => {
       state.readyPromise = undefined;
+      state.migrationSignature = undefined;
       throw err;
     });
   }
