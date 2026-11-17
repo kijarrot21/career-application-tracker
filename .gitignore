@@ -25,6 +25,9 @@
 /.data/
 /storage/
 
+# private working notes (kept on disk, never published)
+/docs/19-license-and-ip.md
+
 # misc
 .DS_Store
 *.pem

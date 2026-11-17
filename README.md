@@ -204,7 +204,7 @@ Open `http://localhost:3000` in your browser.
 
 This project is **source-available** under the [Career Application Tracker Personal, Non-Commercial Use License v1.0](LICENSE). The source code is public so anyone can read it, learn from it, run it for their own job search, and improve it, but it is **not** free to commercialise.
 
-© 2026 Ari ([kijarrot21](https://github.com/kijarrot21)). New to licensing? Read [License and IP basics](docs/19-license-and-ip.md) for a plain-language walkthrough: what is required, what is optional, and what to do if someone resells this.
+© 2026 Ari ([kijarrot21](https://github.com/kijarrot21)).
 
 ### What "source-available for personal use" means
 
