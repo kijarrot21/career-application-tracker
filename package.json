@@ -11,6 +11,7 @@
     "setup": "node scripts/setup.mjs && npx tsx scripts/migrate.mjs",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx scripts/migrate.mjs",
+    "usage": "node scripts/opencode-usage.mjs",
     "test": "vitest run",
     "test:e2e": "playwright test"
   },
