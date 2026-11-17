@@ -100,6 +100,28 @@ The database layer supports two modes via a single Drizzle schema (`dialect: "po
 - Shared accessible UI primitives in `src/components/ui/` built on `radix-ui`, `class-variance-authority`, and `lucide-react` (`Button`, `Dialog`, `ConfirmDialog`, `Popover`, `Tabs`, `DropdownMenu`, `Tooltip`, `DataTable`, `FormField`, `Input`, `Select`, `Textarea`, `Badge`, `Card`, `PageHeader`, `EmptyState`/`ErrorState`/`LoadingState`).
 - Fonts loaded offline-safe via `geist/font/sans` and `geist/font/mono`.
 
+### 2.7 Hybrid AI Engine (`src/server/ai/`)
+- **Providers:** Ollama (local) + OpenAI + Gemini (cloud) behind a provider-agnostic router (`src/server/ai/providers/`).
+- **Consent gate:** cloud AI calls require explicit user consent; local mode and deterministic fallbacks work fully offline.
+- **Structured output:** Zod schemas per capability (CV parse/evaluate/correct/generate, job match, skill gap, roadmap) in `src/server/ai/schemas/`.
+- **Prompt-injection defense** and grounding rules: AI outputs never mutate career facts or pipeline state without explicit user confirmation (`src/server/ai/security/`).
+
+### 2.8 Credits & Payments (`src/lib/domain/credits.ts`, `src/lib/domain/payments.ts`, `src/server/payments/`)
+- **Atomic credit wallet:** server-authoritative balance using `FOR UPDATE` row locks + compare-and-swap updates + idempotency keys; append-only ledger and reservations.
+- **Providers:** Midtrans (webhook signature SHA-512 verification) and Stripe (webhook HMAC verification); checkout, webhook ingestion, and refunds.
+- All monetization flows degrade gracefully when gateway credentials are unconfigured.
+
+### 2.9 Hybrid Sync & API v1 (`src/server/sync/`, `src/app/api/v1/`)
+- **Outbox pattern:** local changes queued for push, remote changes pulled; version-based conflict detection with explicit resolution; replay-safe operations.
+- **API v1:** versioned route handlers with session/API-key auth, Zod validation, per-route rate limiting, and idempotency keys.
+
+### 2.10 Localization (`src/lib/i18n/`)
+- Two markets: Indonesia (`id-ID`, IDR, `Asia/Jakarta`) and Global (`en-US`, USD). Locale cookie drives the SSR `<html lang>` attribute, currency, and date formatting.
+
+### 2.11 Security Headers & Error Handling
+- Global environment-aware `Content-Security-Policy` in `next.config.ts`; inline document responses served with `CSP: sandbox`.
+- Server services throw typed `DomainError` (`src/lib/errors.ts`); route handlers return domain messages as 400 and sanitize unexpected errors to a generic 500.
+
 ---
 
 ## 3. Architectural Constraints for Evolution

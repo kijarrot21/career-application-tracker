@@ -1,6 +1,22 @@
 # Career Application Tracker (Personal ATS)
 
+[![CI](https://github.com/kijarrot21/career-application-tracker/actions/workflows/ci.yml/badge.svg)](https://github.com/kijarrot21/career-application-tracker/actions/workflows/ci.yml)
+
 **Career Application Tracker** adalah sistem **Personal Applicant Tracking System (ATS)** berbasis web yang dirancang khusus untuk membantu pencari kerja mengelola seluruh siklus pencarian kerja secara terstruktur—mulai dari menemukan dan mengevaluasi kecocokan lowongan, melacak lamaran di dalam pipeline HR 13 tahap, menjadwalkan wawancara dan *follow-up*, mengklasifikasikan email rekrutmen, mengelola versi dokumen CV/portofolio, hingga menganalisis konversi lamaran berbasis data riil.
+
+## Status Proyek (per November 2026)
+
+| Bagian | Status |
+|---|---|
+| Fase 0–2 (Fondasi, Core ATS, Arsip, Profil Karier) | ✅ Selesai |
+| Fase 3–4 (AI Engine Hybrid & Fitur Karier AI / CV Studio) | ✅ Selesai |
+| Fase 5–6 (Kredit & Pembayaran Midtrans/Stripe) | ✅ Selesai |
+| Fase 7–8 (Sinkronisasi Lokal–Awan & REST API v1) | ✅ Selesai |
+| Fase 9 (Lokalisasi id-ID/en-US, IDR/USD) | ✅ Selesai |
+| Fase 10 (Keamanan & Tata Kelola Data UU PDP) | ✅ Selesai |
+| Fase 11 (QA & Testing) | ✅ Selesai — 1 pengecualian diterima (RLS PostgreSQL, ditunda ke fase hardening awan) |
+
+**Quality gates terverifikasi:** 125/125 unit & integration test (Vitest) · 4/4 E2E (Playwright: core journey + aksesibilitas) · typecheck · lint · production build — semuanya juga dijalankan otomatis oleh [CI GitHub Actions](.github/workflows/ci.yml) pada setiap push dan pull request.
 
 ---
 
@@ -53,6 +69,22 @@ Proses mencari kerja di era modern sering kali terasa berantakan dan melelahkan 
   Funnel rekrutmen, rasio respons per platform dan perusahaan, distribusi industri, tren bulanan, filter rentang tanggal, pemisahan otomatis data sampel (*sample mode*), serta ekspor laporan analitik.
 - **Settings & Hak Data (UU PDP)**  
   Konfigurasi profil kandidat, zona waktu (default `Asia/Jakarta`), mata uang (default `IDR`), preset hari libur nasional Indonesia untuk perhitungan hari kerja *follow-up*, kustomisasi pipeline, muat/hapus data sampel, ekspor seluruh data akun (JSON) atau daftar lamaran (CSV aman dari *formula injection*), hingga penghapusan akun permanen.
+- **Application Archive**  
+  Arsipan *snapshot* lamaran yang tertutup (*Rejected/Withdrawn/No Response*) beserta catatan penutupan, dengan *retention purge* otomatis dan pencegahan lamaran ulang tanpa konfirmasi.
+- **Master Career Profile**  
+  Profil karier induk (keahlian, pengalaman, pendidikan, sertifikasi) yang menjadi sumber data terverifikasi untuk *Suitability Score*, *skill-gap analysis*, dan generator AI. Data terverifikasi dilindungi dari penimpaan otomatis oleh AI.
+- **AI Engine Hybrid (Ollama / OpenAI / Gemini)**  
+  Router AI *provider-agnostic* yang dapat berjalan lokal (Ollama) atau awan (OpenAI/Gemini) dengan *consent gate* eksplisit, pertahanan *prompt injection*, dan *fallback* deterministik. Menjalankan: ekstraksi CV, evaluasi CV, koreksi CV, generasi CV/cover letter, analisis kecocokan lowongan, analisis *skill gap*, dan peta jalan karier.
+- **CV Studio**  
+  Studio penyuntingan dan generasi CV berbasis AI dengan pratinjau, kontrol versi, dan prinsip *human-in-the-loop* (semua keluaran AI memerlukan konfirmasi).
+- **Kredit & Pembayaran**  
+  Dompet kredit *server-authoritative* (atomik: `FOR UPDATE` + CAS + kunci idempotensi) untuk membeli kuota fitur AI, dengan pembayaran via **Midtrans** (verifikasi tanda tangan SHA-512) dan **Stripe** (webhook HMAC), lengkap dengan buku besar (*ledger*), reservasi kredit, dan pengembalian dana.
+- **Sinkronisasi Hibrida Lokal–Awan**  
+  *Outbox pattern* untuk mendorong perubahan lokal ke penyimpanan awan, *pull* perubahan jauh, deteksi konflik berbasis versi dengan resolusi eksplisit, serta *replay* yang aman.
+- **REST API v1**  
+  API terversi (`/api/v1/*`) dengan autentikasi sesi/API key, validasi Zod, *rate limiting*, dan kunci idempotensi untuk klien eksternal dan sinkronisasi.
+- **Lokalisasi Global**  
+  Dukungan dua pasar: **Indonesia** (id-ID, IDR, zona waktu Asia/Jakarta) dan **Global** (en-US, USD), dengan atribut `lang` dokumen yang selaras dan format tanggal/mata uang otomatis.
 
 ---
 
@@ -74,6 +106,8 @@ npm run dev
 ```
 
 Buka `http://localhost:3000` di browser Anda.
+
+> ⚠️ **Aturan operasional penting:** jangan pernah menjalankan `npm run setup` atau `npm run db:migrate` saat `next dev` sedang berjalan. Akses bersamaan ke `./.data/pglite` dapat merusak direktori data secara permanen (bug upstream PGlite [#884](https://github.com/electric-sql/pglite/issues/884)). Hentikan dev server terlebih dahulu.
 
 #### Mode Database
 - **Lokal (Default)**: Jika `DATABASE_URL` di `.env.local` dibiarkan kosong, aplikasi otomatis menggunakan **PGlite** (PostgreSQL embedded) yang disimpan di `./.data/pglite`. Tidak perlu instalasi PostgreSQL atau Docker.
@@ -116,35 +150,69 @@ Buka `http://localhost:3000` di browser Anda.
 
 ## Tech Stack
 
-- **Framework**: Next.js 16 (App Router, Server Components, Server Actions), React 19, TypeScript (strict)
+- **Framework**: Next.js 16.4.6 (App Router, Server Components, Server Actions, Turbopack), React 19, TypeScript (strict)
 - **Styling & UI**: Tailwind CSS v4, Radix UI primitives, Lucide icons, Geist & Plus Jakarta Sans fonts
-- **Database & ORM**: Drizzle ORM dengan PGlite (lokal) / PostgreSQL (production)
-- **Authentication & Security**: Better Auth (database sessions, scrypt hashing, rate limiting), Zod validation, AES-256-GCM (OAuth tokens)
+- **Database & ORM**: Drizzle ORM 0.45 dengan PGlite (lokal) / PostgreSQL (production)
+- **Authentication & Security**: Better Auth 1.7 (database sessions, scrypt hashing, rate limiting), Zod validation, AES-256-GCM (OAuth tokens), PKCE + HMAC state, CSP global, magic-byte upload validation, malware scan hooks, signed download tokens
+- **AI**: Ollama (lokal) / OpenAI / Gemini (awan) di belakang router `provider-agnostic` dengan consent gate dan pertahanan prompt injection
+- **Pembayaran**: Midtrans (SHA-512) & Stripe (HMAC webhook), dompet kredit atomik server-authoritative
 - **Interaksi & Visualisasi**: `@dnd-kit` (Kanban), `recharts` (Analytics), `react-hook-form`, `cmdk`, `sonner`
-- **Testing**: Vitest (unit & database integration tests pada in-memory PGlite) dan Playwright (E2E)
+- **Testing**: Vitest 5 (125 unit & integration tests pada in-memory PGlite) dan Playwright (E2E: core journey + suite aksesibilitas/keyboard)
 
 ---
 
 ## Scripts
 
-- `npm run setup`: Membuat secret `.env.local` serta menjalankan migrasi dan *system seed*.
+- `npm run setup`: Membuat secret `.env.local` serta menjalankan migrasi dan *system seed*. **⚠️ Hentikan `next dev` dulu — jangan dijalankan bersamaan (lihat peringatan di atas).**
 - `npm run dev`: Menjalankan server pengembangan Next.js.
 - `npm run build`: Membuat *production build*.
 - `npm run start`: Menjalankan hasil *production build*.
 - `npm run typecheck`: Validasi TypeScript (`tsc --noEmit`).
 - `npm run lint`: Menjalankan ESLint.
-- `npm run test`: Menjalankan seluruh unit test & integration test (Vitest).
-- `npm run test:e2e`: Menjalankan end-to-end & responsive viewport test (Playwright).
+- `npm run test`: Menjalankan seluruh unit test & integration test (Vitest, in-memory PGlite terisolasi).
+- `npm run test:e2e`: Menjalankan end-to-end & accessibility test (Playwright, in-memory PGlite di port 3105).
 - `npm run db:generate`: Generate migrasi Drizzle baru dari skema.
-- `npm run db:migrate`: Menjalankan migrasi database.
+- `npm run db:migrate`: Menjalankan migrasi database. **⚠️ Aturan yang sama: jangan saat dev server aktif.**
+
+---
+
+## Keamanan & Tata Kelola Data
+
+- **Isolasi tenant** ketat per pengguna di setiap query/service (filter `userId` eksplisit + composite foreign keys).
+- **Token OAuth** (Gmail/Microsoft) dienkripsi **AES-256-GCM**; alur otorisasi memakai **PKCE (S256)** dan *state* bertanda tangan HMAC dengan perlindungan *replay* (TTL 10 menit, perbandingan *timing-safe*).
+- **Unggahan dokumen**: validasi *magic bytes*, batas 10 MB dengan *pre-check* 413, kaitan sandi (*sandbox* CSP) pada respons dokumen inline, *malware scan hooks*, dan *token* unduhan bertanda tangan.
+- **CSP global** berbasis lingkungan (`next.config.ts`); penghapusan akun + ekspor data penuh sesuai **UU PDP No. 27/2022**.
+- **Pengecualian yang diterima:** Row-Level Security (RLS) PostgreSQL untuk mode awan belum diimplementasikan — terdokumentasi sebagai DEF-11-006 dan ditunda ke fase *cloud hardening*.
 
 ---
 
 ## Dokumentasi Arsitektur & Desain
 
+### Spesifikasi Fase (01–18)
 - [01. Requirements Analysis](docs/01-requirements-analysis.md)
 - [02. User Journeys](docs/02-user-journeys.md)
 - [03. Architecture](docs/03-architecture.md)
 - [04. Database Schema](docs/04-database-schema.md)
 - [05. UI/UX Wireframes](docs/05-wireframes.md)
 - [06. Privacy and Security (UU PDP)](docs/06-privacy-and-security.md)
+- [07. Application Archive](docs/07-application-archive.md)
+- [08. Master Career Profile](docs/08-master-career-profile.md)
+- [09. AI Architecture](docs/09-ai-architecture.md)
+- [10. AI Career Intelligence](docs/10-ai-career-intelligence.md)
+- [11. CV Studio](docs/11-cv-studio.md)
+- [12. Credit System](docs/12-credit-system.md)
+- [13. Payment Architecture](docs/13-payment-architecture.md)
+- [14. Hybrid Sync](docs/14-hybrid-sync.md)
+- [15. API Reference](docs/15-api-reference.md)
+- [16. Global Localization](docs/16-global-localization.md)
+- [18. Security and Data Governance](docs/18-security-and-data-governance.md)
+
+### Status & QA (Fase 11)
+- [Phase Progress Status](docs/PHASE_PROGRESS_STATUS.md) — tabel status per fase berbasis bukti
+- [QA Audit](docs/PHASE_11_QA_AUDIT.md) · [Test Strategy](docs/PHASE_11_TEST_STRATEGY.md) · [Coverage Matrix](docs/PHASE_11_TEST_COVERAGE_MATRIX.md) · [Environment Matrix](docs/PHASE_11_ENVIRONMENT_TEST_MATRIX.md) · [Defect Register](docs/PHASE_11_DEFECT_REGISTER.md)
+- [Handover Report](docs/OPENCODE_HANDOVER_REPORT.md) — panduan serah terima untuk kontributor berikutnya
+
+### Referensi Lain
+- [Current Architecture](docs/CURRENT_ARCHITECTURE.md) — arsitektur teknis aktual
+- [Database Gap Analysis](docs/DATABASE_GAP_ANALYSIS.md) · [Security Review](docs/SECURITY_REVIEW_REPORT.md) · [Security Gap Analysis](docs/SECURITY_GAP_ANALYSIS.md) · [Repository Audit](docs/REPOSITORY_AUDIT.md)
+- [UI/UX Audit](docs/ui-ux-audit.md) · [UI/UX Roadmap](docs/ui-ux-improvement-roadmap.md) · [Development Backlog](DEVELOPMENT_BACKLOG.md)
