@@ -17,7 +17,7 @@ All existing automated quality gates pass with zero baseline failures:
 | TypeScript (`tsc --noEmit`) | **PASS** (exit 0) | `npm run typecheck` |
 | ESLint | **PASS** (exit 0, no findings) | `npm run lint` |
 | Production build (`next build`, Turbopack) | **PASS** | All 21 routes compiled; full route table emitted |
-| CI/CD | **GitHub Actions workflow added** (DEF-11-004) | `.github/workflows/ci.yml` — runs typecheck, lint, vitest, build, Playwright E2E on push/PR; activates on next push |
+| CI/CD | **GitHub Actions workflow added** (DEF-11-004) | `.github/workflows/ci.yml` — runs typecheck, lint, vitest, build, Playwright E2E on push/PR; active on `main` since 2026-11-17 |
 
 **Phase 10 verification: COMPLETE, with 3 open High findings carried into the Phase 11 defect register** (see §4). No Phase 10 work was reopened or rewritten.
 

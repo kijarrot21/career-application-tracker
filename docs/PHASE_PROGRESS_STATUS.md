@@ -15,7 +15,7 @@
 | 8 | API Design | ✅ COMPLETE | `api/v1` handler, auth, validation, rate limiting, idempotency; phase8 + api-v1 (11 PASS) |
 | 9 | Localization | ✅ COMPLETE | en-US/id-ID, IDR/USD, timezone Asia/Jakarta, locale provider (html lang verified); phase9 + localization (10 PASS) |
 | 10 | Security | ✅ COMPLETE (3 High items fixed in Phase 11) | prompt-guard, malware scan, signed downloads, UU PDP erasure/export; phase10 + security (23 PASS). DEF-11-001/002/003 fixed 2026-11-17 |
-| 11 | QA & Testing | 🟡 IN COMPLETION | Audit + strategy + coverage matrix + env matrix + defect register delivered; 125/125 unit+integration, 4/4 E2E, build PASS; remaining: DEF-11-006 accepted exception + final sign-off |
+| 11 | QA & Testing | ✅ COMPLETE (signed off 2026-11-17) | Audit + strategy + coverage matrix + env matrix + defect register delivered; 125/125 unit+integration, 4/4 E2E, build PASS; DEF-11-006 accepted exception; committed `ba26d3a` + docs `00129ab`, pushed to `origin/main` |
 
 ## Phase 11 Defect Board (live)
 

@@ -1,7 +1,7 @@
 # OpenCode Handover Report — Career Application Tracker
 
 **Date:** 2026-11-17 · **Branch:** `main` · **Version:** 0.1.0
-**Status:** Phase 0–10 implemented and verified; Phase 11 (QA & Testing) in final completion stage.
+**Status:** Phases 0–11 complete and verified (Phase 11 signed off 2026-11-17 with one accepted exception, DEF-11-006).
 
 ---
 
@@ -60,7 +60,7 @@ npm run typecheck / lint / build / db:migrate / db:generate
 | Playwright E2E | core-journey 1/1 PASS + accessibility spec |
 | Typecheck / Lint | PASS |
 | Production build | PASS (21 routes) |
-| CI/CD | `.github/workflows/ci.yml` (runs all gates on push/PR) — activates on next push |
+| CI/CD | `.github/workflows/ci.yml` (runs all gates on push/PR) — **active**; first green run on `main` after push 2026-11-17 |
 
 ## 6. Security Posture (Phase 10 + Phase 11 fixes)
 
@@ -71,7 +71,12 @@ npm run typecheck / lint / build / db:migrate / db:generate
 
 ## 7. Working-Tree State (⚠️ important for the next engineer)
 
-The repository carries **substantial uncommitted work** (Phase 1–10 implementations: AI engine, credits, payments, sync, i18n, security, UI modernization — 113 tracked changes + 69 untracked files as of 2026-11-17). Nothing has been committed since `8a070ff`. Recommended first action: review `git status`, then commit in coherent feature slices. Do not run destructive git commands.
+The working tree is **clean**. All Phase 1–10 implementation work and Phase 11 QA fixes are committed on `main`:
+
+- `ba26d3a` — `feat: complete Phases 1-10 implementation and Phase 11 QA hardening` (221 files, 94,313 insertions)
+- `00129ab` — `docs: refresh README and architecture doc for Phases 1-11`
+
+Both commits are pushed to `origin/main` (`github.com/kijarrot21/career-application-tracker`), which activates the CI workflow on every subsequent push/PR. Recommended first action for a new contributor: read `docs/PHASE_PROGRESS_STATUS.md` and the accepted exception DEF-11-006 in `docs/PHASE_11_DEFECT_REGISTER.md`, then follow the run instructions in §4 above (especially the PGlite operational rule).
 
 ## 8. Known Non-Blocking Issues
 

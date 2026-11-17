@@ -64,6 +64,7 @@ flowchart LR
 - **P5.3 Usage & Balance UX:** Credit balance indicator in AppShell, pre-run cost estimate before Cloud AI invocation, usage breakdown in Settings/Billing.
 
 ## Phase 6 — Production Hardening, PostgreSQL RLS, CI/CD & Full E2E
+> **Status (2026-11-17):** P6.2 delivered — `.github/workflows/ci.yml` runs `typecheck`, `lint`, `test` (in-memory PGlite), `build`, and `test:e2e` on push/PR (a PostgreSQL service-matrix leg remains future work). P6.1 RLS remains deferred as the accepted exception DEF-11-006. P6.3 partially delivered — Playwright core-journey + accessibility/keyboard suites are in place; automated retention reminders remain open.
 **Goal:** Make cloud multi-tenant deployment production-grade.
 - **P6.1 PostgreSQL Row-Level Security (RLS):** Add cloud-safe RLS policies for PostgreSQL/Supabase deployments without breaking local PGlite.
 - **P6.2 CI/CD Pipeline:** Add GitHub Actions running `typecheck`, `lint`, `test` (both PGlite and PostgreSQL service), `build`, and `test:e2e`.
