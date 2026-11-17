@@ -431,7 +431,7 @@ export function CvStudioClient({
               <option value="">Use Verified Master Profile / Pasted Text</option>
               {cvVersions.map((v) => (
                 <option key={v.versionId} value={v.versionId}>
-                  {v.title} — v{v.versionNo} ({v.label})
+                  {v.title} · v{v.versionNo} ({v.label})
                 </option>
               ))}
             </Select>
@@ -461,11 +461,11 @@ export function CvStudioClient({
               </div>
               <p className="text-muted-foreground">
                 Supports PDF, DOCX, TXT, and Markdown. Extracted details never
-                overwrite verified profile records automatically — uncertain
+                overwrite verified profile records automatically; uncertain
                 fields are flagged so you can verify them first.
               </p>
 
-              <FormField label="Upload CV File (PDF, DOCX, TXT, MD — Max 10 MB)">
+              <FormField label="Upload CV File (PDF, DOCX, TXT, MD; max 10 MB)">
                 <Input
                   type="file"
                   accept=".pdf,.docx,.txt,.md"
@@ -520,7 +520,7 @@ export function CvStudioClient({
                     {parsedResult.data.uncertainFields.map((uf, i) => (
                       <li key={i}>
                         <span className="font-mono">{uf.fieldPath}</span>:{" "}
-                        {uf.extractedValue ?? "(missing)"} — {uf.reason}
+                        {uf.extractedValue ?? "(missing)"} · {uf.reason}
                       </li>
                     ))}
                   </ul>
@@ -665,7 +665,7 @@ export function CvStudioClient({
                   <option value="">General CV Polish (No specific vacancy)</option>
                   {vacancies.map((v) => (
                     <option key={v.id} value={v.id}>
-                      {v.code} · {v.companyName} — {v.title}
+                      {v.code} · {v.companyName} · {v.title}
                     </option>
                   ))}
                 </Select>
@@ -823,7 +823,7 @@ export function CvStudioClient({
                     <option value="">General Role (Manual Title Below)</option>
                     {vacancies.map((v) => (
                       <option key={v.id} value={v.id}>
-                        {v.code} · {v.companyName} — {v.title}
+                        {v.code} · {v.companyName} · {v.title}
                       </option>
                     ))}
                   </Select>

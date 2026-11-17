@@ -2,8 +2,8 @@ export const PAYMENT_PROVIDERS = ["midtrans", "stripe"] as const;
 export type PaymentProviderId = (typeof PAYMENT_PROVIDERS)[number];
 
 export const PAYMENT_PROVIDER_LABELS: Record<PaymentProviderId, string> = {
-  midtrans: "Midtrans (Indonesia — QRIS, VA, E-Wallet, Card)",
-  stripe: "Stripe (International — Cards & Global Checkout)",
+  midtrans: "Midtrans (Indonesia - QRIS, VA, E-Wallet, Card)",
+  stripe: "Stripe (International - Cards & Global Checkout)",
 };
 
 export const PAYMENT_ENVIRONMENTS = ["disabled", "sandbox"] as const;

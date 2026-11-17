@@ -233,7 +233,7 @@ describe("Phase 4 AI Career Features integration tests (in-memory PGlite)", () =
     if (parsedRes.status !== "completed") throw new Error("Expected completed");
     expect(parsedRes.data.uncertainFields).toHaveLength(1);
 
-    // Stage into Career Profile review — verified headline must remain untouched!
+    // Stage into Career Profile review, verified headline must remain untouched!
     await stageAiParsedCvToProfileService("user_a", {
       analysisId: parsedRes.analysisId,
       sourceDocumentVersionId: uploaded.version.id,
@@ -454,7 +454,7 @@ describe("Phase 4 AI Career Features integration tests (in-memory PGlite)", () =
           targetRole: "Staff Backend Engineer",
           candidateName: "Alice Pratama",
           contactLine: "Jakarta | alice@example.com",
-          tailoredHeadline: "Senior Backend Engineer — Fintech Payments",
+          tailoredHeadline: "Senior Backend Engineer - Fintech Payments",
           tailoredSummary: "Berpengalaman 7 tahun membangun sistem pembayaran di Jakarta.",
           highlightedExperiences: [
             {

@@ -377,7 +377,7 @@ const range =
         sessions[sessions.length - 1].timeUpdated,
       ).toLocaleString()}`;
 
-console.log(`OpenCode token usage — ${project.name ?? project.worktree}`);
+console.log(`OpenCode token usage - ${project.name ?? project.worktree}`);
 console.log(`Project:  ${project.worktree}`);
 console.log(`Project ID: ${project.id}`);
 console.log(`Database: ${dbPath}`);

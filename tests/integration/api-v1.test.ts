@@ -89,7 +89,7 @@ function makeReq(
   });
 }
 
-describe("Phase 8 Integration — Versioned /api/v1/* Endpoints", () => {
+describe("Phase 8 Integration - Versioned /api/v1/* Endpoints", () => {
   let db: AppDb;
   let cleanup: () => Promise<void>;
   const origPaymentMode = env.PAYMENT_MODE;

@@ -50,7 +50,7 @@ export const RETENTION_PRESET_DAYS = [
   { label: "Keep indefinitely", value: null },
   { label: "6 months (180 days)", value: 180 },
   { label: "1 year (365 days)", value: 365 },
-  { label: "2 years (730 days — UU PDP recommended)", value: 730 },
+  { label: "2 years (730 days - UU PDP recommended)", value: 730 },
   { label: "3 years (1095 days)", value: 1095 },
 ] as const;
 

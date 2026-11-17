@@ -251,7 +251,7 @@ export function SyncCenterClient({ data }: { data: SyncDashboardData }) {
     <div className="space-y-6">
       <PageHeader
         title="Hybrid Local-Cloud Synchronization"
-        description="Explicit outbox, incremental cloud cursor pull, and manual conflict resolution — without modifying your existing PGlite or PostgreSQL database mode."
+        description="Explicit outbox, incremental cloud cursor pull, and manual conflict resolution, without modifying your existing PGlite or PostgreSQL database mode."
         actions={
           <Button
             variant="outline"
@@ -567,7 +567,7 @@ export function SyncCenterClient({ data }: { data: SyncDashboardData }) {
                       </code>
                     </div>
                     <span className="text-muted-foreground">
-                      {c.resolvedAt ? formatDate(c.resolvedAt) : "—"}
+                      {c.resolvedAt ? formatDate(c.resolvedAt) : "-"}
                     </span>
                   </div>
                 ))}

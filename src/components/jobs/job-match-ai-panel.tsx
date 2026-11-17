@@ -111,7 +111,7 @@ export function JobMatchAiPanel({
           <option value="">Master Career Profile Only</option>
           {cvVersions.map((v) => (
             <option key={v.versionId} value={v.versionId}>
-              {v.title} — v{v.versionNo} ({v.label})
+              {v.title} · v{v.versionNo} ({v.label})
             </option>
           ))}
         </Select>

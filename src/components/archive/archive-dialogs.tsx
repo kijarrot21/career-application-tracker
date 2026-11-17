@@ -151,7 +151,7 @@ export function ManualArchiveDialog({
                 ) : (
                   applications.map((a) => (
                     <option key={a.id} value={a.id}>
-                      {a.code} — {a.companyName} ({a.jobTitle})
+                      {a.code} · {a.companyName} ({a.jobTitle})
                     </option>
                   ))
                 )}

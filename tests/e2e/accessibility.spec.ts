@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 // DEF-11-007 regression: accessibility & keyboard operability checks.
-// Uses only built-in Playwright APIs — no additional dependencies.
+// Uses only built-in Playwright APIs, no additional dependencies.
 
 test.describe("Accessibility & Keyboard Navigation", () => {
   test("sign-in page: document language, heading, labelled inputs, focus order, visible focus", async ({
@@ -82,7 +82,7 @@ test.describe("Accessibility & Keyboard Navigation", () => {
     await expect(page).toHaveURL(/\/dashboard/);
 
     // Primary landmarks exist (sidebar ships three labelled navigation
-    // regions — Pipeline, Career assets, Settings — so require at least one)
+    // regions, Pipeline, Career assets, Settings, so require at least one)
     await expect(page.locator("main")).toHaveCount(1);
     const navCount = await page.getByRole("navigation").count();
     expect(navCount).toBeGreaterThanOrEqual(1);
@@ -102,7 +102,7 @@ test.describe("Accessibility & Keyboard Navigation", () => {
     expect(unnamedButtons).toBe(0);
 
     // Sidebar navigation is keyboard operable: focus a nav link, press Enter
-    // (href-based locator keeps the test locale-independent — the sidebar
+    // (href-based locator keeps the test locale-independent, the sidebar
     // renders in Indonesian by default, e.g. "Cari Lowongan")
     const jobsLink = page.locator("nav a[href='/jobs']").first();
     await jobsLink.focus();

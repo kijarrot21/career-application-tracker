@@ -122,7 +122,7 @@ function createStubRegistry(
   };
 }
 
-describe("Phase 9 Integration — Localization & Global Readiness", () => {
+describe("Phase 9 Integration - Localization & Global Readiness", () => {
   let db: AppDb;
   let cleanup: () => Promise<void>;
 

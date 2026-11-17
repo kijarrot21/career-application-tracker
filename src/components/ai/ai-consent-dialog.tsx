@@ -69,7 +69,7 @@ export function AiConsentDialog({
               Estimated tokens: ~{pending.estimatedUsage.totalTokens} tokens
               {pending.locality === "cloud"
                 ? " (API keys stay server-side; sensitive tokens & NIK patterns are minimized)"
-                : " (Processed locally — zero external cloud transfer)"}
+                : " (Processed locally, zero external cloud transfer)"}
             </p>
           </div>
         )}

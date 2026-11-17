@@ -131,6 +131,6 @@ export function getSupportedCurrencyOptions(
 
   return list.map((c) => ({
     code: c.code,
-    label: `${c.code} — ${locale === "id-ID" ? c.nameId : c.nameEn}`,
+    label: `${c.code} - ${locale === "id-ID" ? c.nameId : c.nameEn}`,
   }));
 }

@@ -29,7 +29,7 @@ export const MARKET_CONFIGS: Record<AppLocale, MarketConfig> = {
   "id-ID": {
     locale: "id-ID",
     htmlLang: "id",
-    label: "Indonesia — Bahasa Indonesia (id-ID)",
+    label: "Indonesia - Bahasa Indonesia (id-ID)",
     nativeLabel: "Bahasa Indonesia",
     shortLabel: "ID",
     aiLocale: "id",
@@ -40,7 +40,7 @@ export const MARKET_CONFIGS: Record<AppLocale, MarketConfig> = {
   "en-US": {
     locale: "en-US",
     htmlLang: "en",
-    label: "Global — English (en-US)",
+    label: "Global - English (en-US)",
     nativeLabel: "English",
     shortLabel: "EN",
     aiLocale: "en",

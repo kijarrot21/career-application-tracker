@@ -34,7 +34,7 @@ function buildTestPdfBuffer(text: string, compressed: boolean): Buffer {
   ]);
 }
 
-describe("Phase 4 AI Career Features unit tests — binary extractors, exporters & schemas", () => {
+describe("Phase 4 AI Career Features unit tests - binary extractors, exporters & schemas", () => {
   it("extracts text cleanly from generated DOCX, TXT/MD, uncompressed PDF, and FlateDecode PDF buffers", () => {
     const sampleCv = cvGenerationSchema.parse({
       cvFormat: "international_resume",
@@ -126,7 +126,7 @@ describe("Phase 4 AI Career Features unit tests — binary extractors, exporters
       templateStyle: "project_based",
       targetRole: "Frontend Architect",
       candidateName: "Dewi Lestari",
-      tailoredHeadline: "Frontend Architect — React & Design Systems",
+      tailoredHeadline: "Frontend Architect - React & Design Systems",
       tailoredSummary: "Memimpin pengembangan sistem desain lintas tim.",
       highlightedExperiences: [
         {

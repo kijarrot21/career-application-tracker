@@ -770,7 +770,7 @@ export function CareerProfileClient({
                         {exp.location ? ` • ${exp.location}` : ""}
                       </p>
                       <p className="mt-0.5 text-[11px] text-muted-foreground tabular-nums">
-                        {formatDate(exp.startDate)} —{" "}
+                        {formatDate(exp.startDate)} -{" "}
                         {exp.isCurrent
                           ? "Present"
                           : exp.endDate
@@ -1159,9 +1159,9 @@ export function CareerProfileClient({
                         {proj.organization ? `${proj.organization} • ` : ""}
                         {proj.startDate ? formatDate(proj.startDate) : ""}
                         {proj.isOngoing
-                          ? " — Present"
+                          ? " - Present"
                           : proj.endDate
-                            ? ` — ${formatDate(proj.endDate)}`
+                            ? ` - ${formatDate(proj.endDate)}`
                             : ""}
                       </p>
                     </div>

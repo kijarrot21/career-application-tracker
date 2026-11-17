@@ -179,7 +179,7 @@ export function CareerRoadmapPanel({
                   className="rounded border border-border-subtle p-2.5 space-y-1"
                 >
                   <p className="font-semibold text-foreground">
-                    {m.phase} ({m.timeframe}) — {m.focusArea}
+                    {m.phase} ({m.timeframe}) · {m.focusArea}
                   </p>
                   <ul className="list-disc pl-4 text-muted-foreground">
                     {m.actions.map((a, i) => (
@@ -198,7 +198,7 @@ export function CareerRoadmapPanel({
                   className="rounded border border-border-subtle p-2.5 space-y-1"
                 >
                   <p className="font-semibold text-foreground">
-                    {m.phase} ({m.timeframe}) — {m.focusArea}
+                    {m.phase} ({m.timeframe}) · {m.focusArea}
                   </p>
                   <ul className="list-disc pl-4 text-muted-foreground">
                     {m.actions.map((a, i) => (

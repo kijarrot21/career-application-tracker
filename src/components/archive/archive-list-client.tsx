@@ -405,7 +405,7 @@ export function ArchiveListClient({
             size="sm"
             onClick={() => setRetentionDialogOpen(true)}
           >
-            {data.stats.expiredCount} Expired — Review Retention
+            {data.stats.expiredCount} Expired: Review Retention
           </Button>
         )}
       </div>

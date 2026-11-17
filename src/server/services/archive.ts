@@ -755,7 +755,7 @@ export async function archiveApplicationTx(
     entityType: "application_archive",
     entityId: closureRecord.id,
     action: "create",
-    summary: `Archived ${currentApp.code} (${appRow.company.name} — ${appRow.vacancy.title}) as ${resolvedClosureOutcome}`,
+    summary: `Archived ${currentApp.code} (${appRow.company.name} - ${appRow.vacancy.title}) as ${resolvedClosureOutcome}`,
     changes: {
       applicationId: currentApp.id,
       snapshotId: snapshot.id,
@@ -952,7 +952,7 @@ export async function restoreArchivedApplicationService(
       note: `Restored from archive (${closure.closureOutcome}) to ${targetStage.name}`,
     });
 
-    // Mark closure record restored — immutable snapshot row remains untouched
+    // Mark closure record restored, immutable snapshot row remains untouched
     const [updatedClosure] = await tx
       .update(applicationClosureRecords)
       .set({

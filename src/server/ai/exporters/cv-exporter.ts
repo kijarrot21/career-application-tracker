@@ -87,7 +87,7 @@ function buildStructuredCvSections(cv: AiCvGenerationResult): {
       ? {
           heading: headings.projects,
           lines: cv.projects.flatMap((p) => [
-            `${p.name}${p.role ? ` — ${p.role}` : ""}${p.organization ? ` (${p.organization})` : ""}`,
+            `${p.name}${p.role ? ` - ${p.role}` : ""}${p.organization ? ` (${p.organization})` : ""}`,
             ...p.bullets.map((b) => `- ${b}`),
             ...(p.technologies.length > 0
               ? [`${headings.technologiesPrefix}: ${p.technologies.join(", ")}`]
@@ -110,7 +110,7 @@ function buildStructuredCvSections(cv: AiCvGenerationResult): {
           heading: headings.education,
           lines: cv.educations.map(
             (ed) =>
-              `${ed.institution} — ${ed.qualificationLabel}${ed.fieldOfStudy ? `, ${ed.fieldOfStudy}` : ""}${ed.graduationYear ? ` (${ed.graduationYear})` : ""}`,
+              `${ed.institution} - ${ed.qualificationLabel}${ed.fieldOfStudy ? `, ${ed.fieldOfStudy}` : ""}${ed.graduationYear ? ` (${ed.graduationYear})` : ""}`,
           ),
         }
       : null;
@@ -121,7 +121,7 @@ function buildStructuredCvSections(cv: AiCvGenerationResult): {
           heading: headings.certifications,
           lines: cv.certifications.map(
             (c) =>
-              `${c.name} — ${c.issuingOrganization}${c.issueDate ? ` (${c.issueDate})` : ""}`,
+              `${c.name} - ${c.issuingOrganization}${c.issueDate ? ` (${c.issueDate})` : ""}`,
           ),
         }
       : null;

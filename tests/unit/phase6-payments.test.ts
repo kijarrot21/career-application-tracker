@@ -31,7 +31,7 @@ function signStripe(timestampSec: number, rawBody: string, secret: string) {
   return `t=${timestampSec},v1=${sig}`;
 }
 
-describe("Phase 6 Payment Architecture unit tests — gateway adapters & webhook crypto", () => {
+describe("Phase 6 Payment Architecture unit tests - gateway adapters & webhook crypto", () => {
   it("verifies Midtrans SHA-512 signatures and rejects invalid signatures or stale replay timestamps", async () => {
     const adapter = new MidtransSandboxProvider({
       serverKeyOverride: MIDTRANS_SB_KEY,

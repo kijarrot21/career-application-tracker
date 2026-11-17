@@ -11,7 +11,7 @@ import {
   updateAiPricingSchema,
 } from "@/server/services/credits";
 
-describe("Phase 5 Credit System unit tests — pricing, packages & Zod validation", () => {
+describe("Phase 5 Credit System unit tests - pricing, packages & Zod validation", () => {
   it("defines configurable initial AI pricing assumptions and IDR-first packages", () => {
     const byKey = new Map(
       DEFAULT_CREDIT_PRICING.map((p) => [p.pricingKey, p.creditCost]),

@@ -75,7 +75,7 @@ const SAMPLE_CV_BASE: Omit<AiCvGenerationResult, "cvFormat"> = {
   fabricationSelfCheck: "All facts strictly grounded in verified profile.",
 };
 
-describe("Phase 9 Unit — Localization & Global Readiness", () => {
+describe("Phase 9 Unit - Localization & Global Readiness", () => {
   it("uses id-ID, IDR, and Asia/Jakarta defaults cleanly", () => {
     expect(DEFAULT_LOCALE).toBe("id-ID");
     expect(DEFAULT_CURRENCY).toBe("IDR");

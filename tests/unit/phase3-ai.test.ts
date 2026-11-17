@@ -21,7 +21,7 @@ import {
   wrapUntrustedDataBlock,
 } from "@/server/ai/security/prompt-guard";
 
-describe("Phase 3 AI unit tests — security, prompt registry & normalized providers", () => {
+describe("Phase 3 AI unit tests - security, prompt registry & normalized providers", () => {
   it("validates local AI endpoints and rejects SSRF / non-local targets", () => {
     expect(validateLocalAiEndpoint("http://127.0.0.1:11434/")).toEqual({
       valid: true,

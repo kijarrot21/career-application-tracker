@@ -18,7 +18,7 @@ afterEach(() => {
   resetRateLimitKey();
 });
 
-describe("Phase 7 Domain Rules — Hybrid Local-Cloud Sync", () => {
+describe("Phase 7 Domain Rules - Hybrid Local-Cloud Sync", () => {
   it("blocks every cloud-authoritative credit and payment entity from local sync", () => {
     for (const forbidden of FORBIDDEN_SYNC_ENTITIES) {
       expect(() =>

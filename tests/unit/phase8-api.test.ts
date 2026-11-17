@@ -18,7 +18,7 @@ afterEach(() => {
   // No shared mutable globals
 });
 
-describe("Phase 8 Unit — Versioned API Standards", () => {
+describe("Phase 8 Unit - Versioned API Standards", () => {
   it("builds accurate pagination metadata and slices collections safely", () => {
     const items = ["a", "b", "c", "d", "e"];
     const page1 = paginateArray(items, 1, 2);

@@ -334,7 +334,7 @@ describe("Master Career Profile integration tests (in-memory PGlite)", () => {
       },
     });
 
-    // Stage CV import — must NOT overwrite verified headline or experiences
+    // Stage CV import, must NOT overwrite verified headline or experiences
     await stageCvImportReviewService("user_a", {
       sourceDocumentVersionId: uploadedCv.version.id,
       profilePatch: {

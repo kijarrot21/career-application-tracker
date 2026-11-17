@@ -60,7 +60,7 @@ export const cvActionItemSchema = z.object({
 const HIRING_PROBABILITY_RE = /\b(hiring\s+probability|chance\s+of\s+getting\s+hired|likelihood\s+of\s+offer|peluang\s+diterima)\b/i;
 
 export const DEFAULT_EVALUATION_DISCLAIMER =
-  "This score evaluates CV structure, clarity, keyword alignment, and ATS readability only — it does not measure or predict hiring probability.";
+  "This score evaluates CV structure, clarity, keyword alignment, and ATS readability only; it does not measure or predict hiring probability.";
 
 export const cvEvaluationSchema = z.object({
   overallScore: z.number().int().min(0).max(100),

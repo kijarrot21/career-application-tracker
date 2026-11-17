@@ -166,7 +166,7 @@ export function ArchiveDetailClient({
           { label: "Application Archive", href: "/archive" },
           { label: snap.application.code },
         ]}
-        title={`${snap.vacancy.title} — ${snap.company.name}`}
+        title={`${snap.vacancy.title} · ${snap.company.name}`}
         description={`Immutable historical snapshot #${data.snapshot.snapshotVersion} for ${snap.application.code} (Attempt #${snap.application.attemptNumber}).`}
       />
 
@@ -404,7 +404,7 @@ export function ArchiveDetailClient({
               <div>
                 <dt className="text-muted-foreground">Recruiter Contact</dt>
                 <dd className="font-medium text-foreground">
-                  {snap.application.recruiterName || "—"}
+                  {snap.application.recruiterName || "-"}
                   {snap.application.recruiterEmail
                     ? ` (${snap.application.recruiterEmail})`
                     : ""}
@@ -413,7 +413,7 @@ export function ArchiveDetailClient({
               <div>
                 <dt className="text-muted-foreground">Location &amp; Mode</dt>
                 <dd className="font-medium text-foreground">
-                  {snap.vacancy.location || "—"}
+                  {snap.vacancy.location || "-"}
                   {snap.vacancy.workArrangement
                     ? ` • ${snap.vacancy.workArrangement}`
                     : ""}
@@ -452,29 +452,29 @@ export function ArchiveDetailClient({
               {snap.suitabilityEvaluation ? (
                 <div className="space-y-2 text-xs">
                   <p className="font-display text-3xl font-bold text-primary-text tabular-nums">
-                    {snap.suitabilityEvaluation.overallScore ?? "—"}%
+                    {snap.suitabilityEvaluation.overallScore ?? "-"}%
                   </p>
                   <div className="grid grid-cols-2 gap-1.5 text-muted-foreground">
                     <span>
-                      Skills: {snap.suitabilityEvaluation.skillsScore ?? "—"}
+                      Skills: {snap.suitabilityEvaluation.skillsScore ?? "-"}
                     </span>
                     <span>
                       Experience:{" "}
-                      {snap.suitabilityEvaluation.experienceScore ?? "—"}
+                      {snap.suitabilityEvaluation.experienceScore ?? "-"}
                     </span>
                     <span>
                       Education:{" "}
-                      {snap.suitabilityEvaluation.educationScore ?? "—"}
+                      {snap.suitabilityEvaluation.educationScore ?? "-"}
                     </span>
                     <span>
-                      Salary: {snap.suitabilityEvaluation.salaryScore ?? "—"}
+                      Salary: {snap.suitabilityEvaluation.salaryScore ?? "-"}
                     </span>
                     <span>
                       Location:{" "}
-                      {snap.suitabilityEvaluation.locationScore ?? "—"}
+                      {snap.suitabilityEvaluation.locationScore ?? "-"}
                     </span>
                     <span>
-                      Growth: {snap.suitabilityEvaluation.growthScore ?? "—"}
+                      Growth: {snap.suitabilityEvaluation.growthScore ?? "-"}
                     </span>
                   </div>
                 </div>
@@ -561,7 +561,7 @@ export function ArchiveDetailClient({
                 </h3>
               </div>
               <p className="text-xs text-foreground">
-                {snap.offer.positionTitle} —{" "}
+                {snap.offer.positionTitle} · {" "}
                 {snap.offer.baseSalary != null
                   ? formatMoney(snap.offer.baseSalary, snap.offer.currency)
                   : "Salary undisclosed"}{" "}

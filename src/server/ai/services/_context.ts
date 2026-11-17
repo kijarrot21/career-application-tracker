@@ -196,7 +196,7 @@ export async function loadUntrustedVacancyContext(
   const source: AiTaskSourceInput = {
     sourceType: "job_vacancy",
     sourceId: row.vacancy.id,
-    sourceLabel: `${row.companyName} — ${row.vacancy.title}`,
+    sourceLabel: `${row.companyName} - ${row.vacancy.title}`,
     sourceHash: guarded.sourceHash,
     isUntrustedExternal: true,
     injectionSignalCount: guarded.injectionSignals.length,

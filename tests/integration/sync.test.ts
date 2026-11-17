@@ -29,7 +29,7 @@ const USER_B = {
   email: "bob-sync@example.com",
 };
 
-describe("Phase 7 Integration — Hybrid Local-Cloud Synchronization", () => {
+describe("Phase 7 Integration - Hybrid Local-Cloud Synchronization", () => {
   let db: AppDb;
   let cleanup: () => Promise<void>;
   const originalSyncMode = process.env.SYNC_MODE;

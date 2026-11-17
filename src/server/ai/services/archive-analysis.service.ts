@@ -87,7 +87,7 @@ export async function analyzeArchivedApplicationWithAiService(
       {
         sourceType: "archive_snapshot",
         sourceId: detail.snapshot.id,
-        sourceLabel: `${detail.snapshot.companyName} — ${detail.snapshot.jobTitle}`,
+        sourceLabel: `${detail.snapshot.companyName} - ${detail.snapshot.jobTitle}`,
         sourceHash: canonicalSha256(snapshotSummary),
         isUntrustedExternal: true,
         injectionSignalCount: guardedArchive.injectionSignals.length,

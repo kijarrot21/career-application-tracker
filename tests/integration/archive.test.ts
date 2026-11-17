@@ -141,7 +141,7 @@ describe("Application Archive integration tests (in-memory PGlite)", () => {
     expect(detail!.snapshot.snapshotPayload.statusHistory.length).toBeGreaterThanOrEqual(4);
     expect(detail!.snapshot.snapshotPayload.application.notes).toBe("Original application note");
 
-    // Mutate the live application notes later — immutable snapshot must remain unchanged
+    // Mutate the live application notes later, immutable snapshot must remain unchanged
     await updateApplicationService("user_a", app.id, {
       submittedOn: "2026-10-01",
       submissionMethod: "platform",

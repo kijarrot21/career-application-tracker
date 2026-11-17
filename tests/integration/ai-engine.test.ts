@@ -546,7 +546,7 @@ describe("Phase 3 Hybrid AI Engine integration tests (in-memory PGlite)", () => 
         registry: createRegistry({
           ollamaPayload: {
             targetRole: "Staff Backend Engineer",
-            tailoredHeadline: "Senior Backend Engineer — Payment Systems",
+            tailoredHeadline: "Senior Backend Engineer - Payment Systems",
             tailoredSummary: "7 years shipping payment APIs in Indonesia.",
             highlightedExperiences: [
               {
@@ -637,7 +637,7 @@ describe("Phase 3 Hybrid AI Engine integration tests (in-memory PGlite)", () => 
                 starFrameworkHints: [
                   "Situation: Settlement API latency bottleneck at PT Nusantara Pay",
                 ],
-                groundedProfileRef: "PT Nusantara Pay — Senior Backend Engineer",
+                groundedProfileRef: "PT Nusantara Pay - Senior Backend Engineer",
               },
             ],
             questionsToAskInterviewer: ["What is the current SLO target?"],

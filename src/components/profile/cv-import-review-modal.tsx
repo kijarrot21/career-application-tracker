@@ -163,7 +163,7 @@ export function StageCvImportDialog({
               <option value="">None / External structured draft</option>
               {cvVersions.map((v) => (
                 <option key={v.versionId} value={v.versionId}>
-                  {v.title} — v{v.versionNo} ({v.label})
+                  {v.title} · v{v.versionNo} ({v.label})
                 </option>
               ))}
             </Select>
@@ -456,7 +456,7 @@ export function ReviewStagedCvImportDialog({
                   />
                   <span>
                     <strong className="text-foreground">
-                      {exp.jobTitle} — {exp.companyName}
+                      {exp.jobTitle} · {exp.companyName}
                     </strong>
                     <span className="block text-muted-foreground">
                       {exp.startDate} to{" "}
@@ -508,7 +508,7 @@ export function ReviewStagedCvImportDialog({
                   />
                   <span>
                     <strong>{edu.institution}</strong>
-                    {edu.fieldOfStudy ? ` — ${edu.fieldOfStudy}` : ""}
+                    {edu.fieldOfStudy ? ` · ${edu.fieldOfStudy}` : ""}
                   </span>
                 </label>
               ))}
