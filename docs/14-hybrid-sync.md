@@ -1,4 +1,4 @@
-# Phase 7 — Hybrid Local-Cloud Synchronization
+# Phase 7: Hybrid Local-Cloud Synchronization
 
 ## Overview
 
@@ -34,10 +34,10 @@ Phase 7 introduces an explicit, additive synchronization subsystem that works al
 
 ## API Contracts
 
-- `POST /api/v1/sync/push` — Processes an explicit event batch (`{ deviceId, streamKey?, events }`) or drains the device outbox (`{ mode: "outbox", deviceId, ignoreBackoff? }`).
-- `GET / POST /api/v1/sync/pull` — Returns committed cloud `sync_events` strictly after `sinceCursor` (or stored `lastPullCursor`) and updates checkpoints.
-- `GET /api/v1/sync/status` — Returns device list, checkpoints, pending/failed outbox counts, active errors, open conflicts, and sync gate status.
-- `POST /api/v1/sync/resolve` — Applies manual conflict resolution (`keep_local`, `keep_cloud`, `merged`, `dismissed`).
+- `POST /api/v1/sync/push`: Processes an explicit event batch (`{ deviceId, streamKey?, events }`) or drains the device outbox (`{ mode: "outbox", deviceId, ignoreBackoff? }`).
+- `GET / POST /api/v1/sync/pull`: Returns committed cloud `sync_events` strictly after `sinceCursor` (or stored `lastPullCursor`) and updates checkpoints.
+- `GET /api/v1/sync/status`: Returns device list, checkpoints, pending/failed outbox counts, active errors, open conflicts, and sync gate status.
+- `POST /api/v1/sync/resolve`: Applies manual conflict resolution (`keep_local`, `keep_cloud`, `merged`, `dismissed`).
 
 ---
 

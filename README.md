@@ -202,7 +202,7 @@ Open `http://localhost:3000` in your browser.
 
 ## License
 
-This project is **source-available** under the [Career Application Tracker Personal, Non-Commercial Use License v1.0](LICENSE). The source code is public so anyone can read it, learn from it, run it for their own job search, and improve it — but it is **not** free to commercialise.
+This project is **source-available** under the [Career Application Tracker Personal, Non-Commercial Use License v1.0](LICENSE). The source code is public so anyone can read it, learn from it, run it for their own job search, and improve it, but it is **not** free to commercialise.
 
 © 2026 Ari ([kijarrot21](https://github.com/kijarrot21)). New to licensing? Read [License and IP basics](docs/19-license-and-ip.md) for a plain-language walkthrough: what is required, what is optional, and what to do if someone resells this.
 
@@ -216,17 +216,17 @@ Most people hear "public GitHub repository" and assume "do whatever you want." T
 | Run the app for your own job search, on your own machine | ✅ Yes |
 | Modify it for your own personal use | ✅ Yes |
 | Share it free of charge with a friend for their personal use (with the LICENSE included) | ✅ Yes |
-| Use it inside a company, agency, or freelance client project | ❌ No — written approval required |
-| Sell it, resell it, or charge for access to it | ❌ No — written approval required |
-| Put it behind a paywall, or bundle it into a paid product, template, or course | ❌ No — written approval required |
-| Run it as a paid or revenue-generating hosted service for other people | ❌ No — written approval required |
-| Remove copyright notices or claim authorship | ❌ No — never permitted |
+| Use it inside a company, agency, or freelance client project | ❌ No, written approval required |
+| Sell it, resell it, or charge for access to it | ❌ No, written approval required |
+| Put it behind a paywall, or bundle it into a paid product, template, or course | ❌ No, written approval required |
+| Run it as a paid or revenue-generating hosted service for other people | ❌ No, written approval required |
+| Remove copyright notices or claim authorship | ❌ No, never permitted |
 
 ### Why the license is written this way
 
 The goal is straightforward: **share the work, keep the commercial rights.** Someone else should not be able to download this repository, list it on a marketplace, or resell it as their own product and profit from work they did not do. The license achieves that by limiting the permission it grants:
 
-1. **The grant is conditional.** Section 2.1 gives a narrow permission — personal, non-commercial use — and Section 2.4 states that anything outside that scope is used *without permission*. That matters legally: unauthorised commercial use is not merely a broken contract, it is **copyright infringement**, which is what makes enforcement possible.
+1. **The grant is conditional.** Section 2.1 gives a narrow permission (personal, non-commercial use), and Section 2.4 states that anything outside that scope is used *without permission*. That matters legally: unauthorised commercial use is not merely a broken contract, it is **copyright infringement**, which is what makes enforcement possible.
 2. **Resale and commercial use are expressly prohibited.** Section 4 lists them by name (sell, resell, rent, bundle, paywall, paid hosting, internal business use), so there is no room to argue that the restriction was unclear.
 3. **Approval must be in writing.** Section 5.4 removes the usual excuse of "I asked and nobody replied." Silence, a verbal "sure", or an unanswered message is explicitly **not** permission.
 4. **Breach ends the permission immediately.** Sections 7.2 to 7.4 require the infringer to stop and delete all copies within seven days.
@@ -239,13 +239,13 @@ The goal is straightforward: **share the work, keep the commercial rights.** Som
 
 ### Enforcement, in practice
 
-Copyright in this code exists automatically from the moment it was written — no registration is required. A license file in the repository is the notice that puts every user on notice of the terms. To make a claim easier to prove, the author may also:
+Copyright in this code exists automatically from the moment it was written; no registration is required. A license file in the repository is the notice that puts every user on notice of the terms. To make a claim easier to prove, the author may also:
 
 - record the work with **DJKI** (Directorate General of Intellectual Property, Ministry of Law of the Republic of Indonesia) for evidentiary purposes (pencatatan ciptaan);
 - keep dated evidence of authorship, such as signed Git commits and release tags (this repository's commit history serves this purpose);
 - send a written cease-and-desist demand before filing, and preserve screenshots, invoices, and marketplace listings as evidence.
 
-Under Law No. 28 of 2014 on Copyright (*UU Hak Cipta*), computer programs are protected works, and remedies for infringement include injunctions, compensation, seizure, and — for commercial-scale infringement — criminal sanctions.
+Under Law No. 28 of 2014 on Copyright (*UU Hak Cipta*), computer programs are protected works, and remedies for infringement include injunctions, compensation, seizure, and, for commercial-scale infringement, criminal sanctions.
 
 ### If you want to use it commercially
 

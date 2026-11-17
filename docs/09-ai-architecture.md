@@ -1,6 +1,6 @@
 # 09. Hybrid AI Engine Architecture
 
-**Phase:** 3 — Hybrid AI Engine  
+**Phase:** 3: Hybrid AI Engine  
 **Status:** Foundation Implemented (Core Engine, Providers, Router, Schemas, Prompts, Job Persistence & Privacy Modes; full user-facing AI career workflows intentionally deferred)  
 **Primary Directory:** `src/server/ai/`
 
@@ -74,7 +74,7 @@ Configured per user in `user_settings` (configurable in `/settings` Section 5):
 
 1. **`local_only` (Local AI Only):** Strictly permits local execution (`ollama`). Explicit requests for cloud providers raise `PRIVACY_MODE_BLOCKED`.
 2. **`cloud_allowed` (Cloud AI):** Allows configured cloud providers (`openai`, `gemini`), **but** still requires explicit consent (`user_settings.aiCloudDocumentConsent` or per-task `consentGranted`) before sending private career documents.
-3. **`ask_before_each` (Ask Before Every AI Task — Default):** Every AI job pauses at `status = "awaiting_consent"` with `ai_analysis_sources` persisted and **no provider call made**, until explicitly resumed via `approveAndRunAiJobService(userId, jobId)`.
+3. **`ask_before_each` (Ask Before Every AI Task, Default):** Every AI job pauses at `status = "awaiting_consent"` with `ai_analysis_sources` persisted and **no provider call made**, until explicitly resumed via `approveAndRunAiJobService(userId, jobId)`.
 
 **Key Isolation Guarantee:** `OPENAI_API_KEY` and `GEMINI_API_KEY` exist solely in `src/lib/env.ts` server memory. Only sanitized boolean `configured` statuses reach `/settings`.
 

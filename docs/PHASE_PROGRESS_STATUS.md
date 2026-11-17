@@ -1,4 +1,4 @@
-# Phase Progress Status — Career Application Tracker
+# Phase Progress Status: Career Application Tracker
 
 **Last updated:** 2026-11-17 · Evidence-based; every status verified against source and executed tests (see `PHASE_11_TEST_COVERAGE_MATRIX.md`).
 
@@ -26,10 +26,10 @@
 | DEF-11-003 | High | Global CSP header | ✅ FIXED |
 | DEF-11-004 | Med | CI/CD pipeline | ✅ FIXED (`.github/workflows/ci.yml`; activates on push) |
 | DEF-11-005 | Med | Missing handover docs | ✅ FIXED (this doc + `OPENCODE_HANDOVER_REPORT.md`) |
-| DEF-11-006 | Med | PostgreSQL RLS (cloud) | ⏸️ ACCEPTED exception — deferred to cloud-hardening phase |
+| DEF-11-006 | Med | PostgreSQL RLS (cloud) | ⏸️ ACCEPTED exception, deferred to cloud-hardening phase |
 | DEF-11-007 | Med | Accessibility/keyboard E2E coverage | ✅ FIXED (`tests/e2e/accessibility.spec.ts`, 3 tests PASS) |
 | DEF-11-008 | Low | Upload body pre-check + error sanitization | ✅ FIXED (`upload/route.ts`, `errors.ts`, `career.ts` DomainError) |
-| DEF-11-009 | — | PGlite corruption incident | ✅ FIXED (operational; backup zip retained) |
+| DEF-11-009 | n/a | PGlite corruption incident | ✅ FIXED (operational; backup zip retained) |
 
 ## Upcoming (post-Phase-11 backlog)
 

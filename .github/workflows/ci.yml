@@ -1,7 +1,7 @@
 name: CI
 
 # DEF-11-004: automated quality gates for the Career Application Tracker.
-# Mirrors the scripts defined in package.json — no additional tooling.
+# Mirrors the scripts defined in package.json; no additional tooling.
 
 on:
   push:

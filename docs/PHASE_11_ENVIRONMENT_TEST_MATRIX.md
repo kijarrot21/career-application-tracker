@@ -1,8 +1,8 @@
-# Phase 11 — Environment Test Matrix
+# Phase 11: Environment Test Matrix
 
 **Date:** 2026-11-17 · Secret values are never read or printed; variable names only.
 
-## 1. Local (PGlite) — ✅ FULLY VALIDATED
+## 1. Local (PGlite): ✅ FULLY VALIDATED
 
 | Aspect | Assessment | Evidence |
 |---|---|---|
@@ -14,19 +14,19 @@
 | Sync | Outbox + pull/push against local v1 API | sync tests (14) |
 | Known limitations | Single-process embedded Postgres; not for multi-instance deployment | architecture docs |
 
-## 2. Cloud (PostgreSQL) — ⚠️ STATIC ASSESSMENT ONLY
+## 2. Cloud (PostgreSQL): ⚠️ STATIC ASSESSMENT ONLY
 
 | Aspect | Assessment | Status |
 |---|---|---|
 | Configuration | `DATABASE_URL` via `postgres` 4.1.1 driver; `scripts/migrate.mjs` supports remote execution | PASS (static) |
 | Database compatibility | Drizzle SQL is Postgres-dialect; PGlite-specific CAS fallback noted in `credits.ts:26` with `FOR UPDATE` path for Postgres | PASS (static) |
-| Storage | Local FS assumption breaks in multi-instance/cloud — needs object storage (S3/R2) adapter | GAP (DEF-11-009) |
+| Storage | Local FS assumption breaks in multi-instance/cloud, needs object storage (S3/R2) adapter | GAP (DEF-11-009) |
 | Auth | Same Better Auth; production requires real `BETTER_AUTH_SECRET`, dedicated `ENCRYPTION_KEY` | config requirement documented |
 | AI | Cloud providers (OpenAI/Gemini) server-side keys only; never `NEXT_PUBLIC_*` | verified in `env.ts` |
-| RLS | **No row-level security policies** — isolation relies on app-layer `user_id` filters + composite FKs | GAP (DEF-11-006) |
-| Live test | NOT TESTED — no cloud environment in this audit | BLOCKED |
+| RLS | **No row-level security policies**, isolation relies on app-layer `user_id` filters + composite FKs | GAP (DEF-11-006) |
+| Live test | NOT TESTED, no cloud environment in this audit | BLOCKED |
 
-## 3. Hybrid — ✅ LOGIC VALIDATED / ⏸️ LIVE ROUND-TRIP NOT TESTED
+## 3. Hybrid: ✅ LOGIC VALIDATED / ⏸️ LIVE ROUND-TRIP NOT TESTED
 
 | Aspect | Assessment | Evidence |
 |---|---|---|
@@ -37,9 +37,9 @@
 | Conflict detection | Version-based detection | phase7-sync |
 | Conflict resolution | `resolve` endpoint with server-authoritative validation | phase7-sync |
 | Duplicate event prevention | Idempotency keys throughout credits/sync | credits.ts verified |
-| Known limitation | Live cloud round-trip untested (no cloud env); credits never mutated locally | — |
+| Known limitation | Live cloud round-trip untested (no cloud env); credits never mutated locally | n/a |
 
-## 4. Required Environment Variables (names only — see `.env.example`)
+## 4. Required Environment Variables (names only: see `.env.example`)
 
 `DATABASE_URL` · `PGLITE_DATA_DIR` · `BETTER_AUTH_SECRET` · `BETTER_AUTH_URL` · `ENCRYPTION_KEY` · `GOOGLE_CLIENT_ID` · `GOOGLE_CLIENT_SECRET` · `MICROSOFT_CLIENT_ID` · `MICROSOFT_CLIENT_SECRET` · `MICROSOFT_TENANT_ID` · AI provider keys (OpenAI/Gemini/Ollama endpoint) · payment provider keys (Midtrans/Stripe server keys)
 

@@ -1,6 +1,6 @@
 # 12. Credit-Based Monetization System
 
-**Phase:** 5 — Credit-Based Monetization  
+**Phase:** 5: Credit-Based Monetization  
 **Status:** Implemented (Database Schema, Atomic Reservation Engine, AI Router Integration, Wallet UI, Tests; Real-Money Payment Checkout Not Activated)  
 **Primary Route:** `/credits`
 

@@ -1,6 +1,6 @@
 # 13. Payment Architecture & Integration
 
-**Phase:** 6 — Payment Architecture and Integration  
+**Phase:** 6: Payment Architecture and Integration  
 **Status:** Implemented (Database Schema, Gateway Abstraction, Midtrans & Stripe Sandbox Adapters, Webhook Security, Reconciliation, Refunds, UI; Production/Real-Money Charges Blocked Until Explicit Approval)  
 **Primary UI Route:** `/credits`  
 **Webhook Endpoint:** `POST /api/payments/webhook/[provider]`

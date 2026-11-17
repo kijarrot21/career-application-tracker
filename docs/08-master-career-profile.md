@@ -1,6 +1,6 @@
 # 08. Master Career Profile
 
-**Phase:** 2 — Master Career Profile  
+**Phase:** 2: Master Career Profile  
 **Status:** Implemented  
 **Primary Route:** `/profile`
 

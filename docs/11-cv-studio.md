@@ -1,6 +1,6 @@
 # 11. AI CV Studio (CV Correction, Generation & Non-Destructive Export)
 
-**Phase:** 4 — AI Career Features  
+**Phase:** 4: AI Career Features  
 **Status:** Implemented  
 **Primary Route:** `/cv-studio`  
 **Export Endpoint:** `GET /api/ai/cv-studio/[analysisId]/export?format=pdf|docx|txt`
@@ -18,7 +18,7 @@
 
 ---
 
-## 2. Feature D — AI CV Correction (`cv-correction.service.ts`)
+## 2. Feature D: AI CV Correction (`cv-correction.service.ts`)
 
 - **7 Improvement Dimensions (`CV_CORRECTION_CATEGORIES`):**
   - `grammar`
@@ -29,11 +29,11 @@
   - `section_hierarchy`
   - `repetition_reduction`
 - **Before-and-After Comparisons:** Every suggestion returns `originalText`, `suggestedText`, `section`, `reason`, and `groundedInProfileFact`.
-- **Mandatory User Approval:** `applyApprovedCvCorrectionsService()` rejects empty selections, records `ai_feedback` (`accepted` or `partially_accepted`) plus `audit_logs`, and writes approved revisions ONLY to a preview draft or a **new `document_versions` row** — never overwriting original CV uploads or verified Master Career Profile records.
+- **Mandatory User Approval:** `applyApprovedCvCorrectionsService()` rejects empty selections, records `ai_feedback` (`accepted` or `partially_accepted`) plus `audit_logs`, and writes approved revisions ONLY to a preview draft or a **new `document_versions` row**: never overwriting original CV uploads or verified Master Career Profile records.
 
 ---
 
-## 3. Feature E — AI CV Generator & Exporter (`cv-generator.service.ts`)
+## 3. Feature E: AI CV Generator & Exporter (`cv-generator.service.ts`)
 
 - **Formats (`CV_FORMATS`):**
   - `indonesian_cv`: Indonesian Curriculum Vitae conventions and Bahasa Indonesia section headings.

@@ -1,4 +1,4 @@
-# Phase 11 — Test Coverage Matrix
+# Phase 11: Test Coverage Matrix
 
 **Date:** 2026-11-17 · **Official execution:** Vitest 125/125 PASS + Playwright 1/1 PASS + typecheck/lint/build PASS
 
@@ -35,7 +35,7 @@ Counts below are scenario definitions per file derived from source (`it(`/`test(
 | QA-I-11 | `tests/integration/sync.test.ts` | G | Integration | 8 | PASS | idem |
 | QA-E-01 | `tests/e2e/core-journey.spec.ts` | J (+ A–I traversal) | E2E | 1 | PASS | Playwright chromium, 6.1s, 2026-11-17 |
 
-## 2. Security Regression Detail (Module K) — all PASS
+## 2. Security Regression Detail (Module K): all PASS
 
 | ID | Scenario | Level | Status |
 |---|---|---|---|

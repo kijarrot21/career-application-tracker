@@ -1,4 +1,4 @@
-# Phase 10 — Security and Data Governance Architecture
+# Phase 10: Security and Data Governance Architecture
 
 ## 1. Executive Summary
 

@@ -1,6 +1,6 @@
 # 10. AI Career Intelligence
 
-**Phase:** 4 — AI Career Features  
+**Phase:** 4: AI Career Features  
 **Status:** Implemented (Backend Services, Schemas, UI Panels, Automated Tests)  
 **Routes:** `/cv-studio`, `/jobs/[id]`, `/profile` (Career Roadmap tab)
 
@@ -16,7 +16,7 @@ Phase 4 builds user-facing Career Intelligence services directly on top of the *
 
 ---
 
-## 2. Feature A — AI CV Parser
+## 2. Feature A: AI CV Parser
 
 **Service:** `src/server/ai/services/cv-parser.service.ts`  
 **Extractor:** `src/server/ai/extractors/document-text-extractor.ts`  
@@ -31,7 +31,7 @@ Phase 4 builds user-facing Career Intelligence services directly on top of the *
 
 ---
 
-## 3. Feature B — AI CV Evaluation
+## 3. Feature B: AI CV Evaluation
 
 **Service:** `src/server/ai/services/cv-evaluator.service.ts`  
 **Schema:** `src/server/ai/schemas/cv-analysis.schema.ts` (`cvEvaluationSchema`)
@@ -52,7 +52,7 @@ Returns `overallScore` (`0–100`), `categoryScores`, grounded `evidence`, `weak
 
 ---
 
-## 4. Feature C — AI Job Matching
+## 4. Feature C: AI Job Matching
 
 **Service:** `src/server/ai/services/job-matcher.service.ts`  
 **Schema:** `src/server/ai/schemas/job-match.schema.ts` (`jobMatchSchema`)  
@@ -62,7 +62,7 @@ Compares **both** the verified Master Career Profile and an optional selected `d
 
 ---
 
-## 5. Feature F — AI Career Roadmap
+## 5. Feature F: AI Career Roadmap
 
 **Service:** `src/server/ai/services/career-roadmap.service.ts`  
 **Schema:** `src/server/ai/schemas/career-roadmap.schema.ts` (`careerRoadmapSchema`)  

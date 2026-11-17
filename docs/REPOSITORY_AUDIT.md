@@ -1,4 +1,4 @@
-# Repository Audit — Career Application Tracker (Baseline)
+# Repository Audit: Career Application Tracker (Baseline)
 
 **Audit Date:** 2026-11-17  
 **Repository:** `career-application-tracker` (`v0.1.0`)  
@@ -54,23 +54,23 @@ All 5 original Personal ATS phases plus the Phase 1–2 UI/UX primitive foundati
 - **Settings (`/settings`):** Career profile & suitability weights, timezone (`Asia/Jakarta`), currency (`IDR`), follow-up cadence & Indonesian national holiday presets (`INDONESIAN_HOLIDAY_PRESETS`), custom pipeline stage management (add, rename, reorder, hide), sample data load/remove, JSON/CSV data export, password-verified account deletion.
 
 ### 3.2 API Route Handlers (`src/app/api/`)
-- `GET/POST /api/auth/[...all]` — Better Auth catch-all handler (`ensureDbReady()` + `getAuth().handler`).
-- `POST /api/documents/upload` — Multipart upload via `uploadOrVersionDocumentService`.
-- `GET /api/documents/versions/[versionId]/file` — User-scoped file download/inline view.
-- `GET /api/email/oauth/[provider]/start` & `callback` — PKCE OAuth flow for `gmail` and `outlook`.
-- `GET /api/export/account` — Full JSON account export.
-- `GET /api/export/applications` — CSV export with formula-injection protection (`src/lib/csv.ts`).
-- `GET /api/export/analytics` — Analytics CSV export.
+- `GET/POST /api/auth/[...all]`: Better Auth catch-all handler (`ensureDbReady()` + `getAuth().handler`).
+- `POST /api/documents/upload`: Multipart upload via `uploadOrVersionDocumentService`.
+- `GET /api/documents/versions/[versionId]/file`: User-scoped file download/inline view.
+- `GET /api/email/oauth/[provider]/start` & `callback`, PKCE OAuth flow for `gmail` and `outlook`.
+- `GET /api/export/account`: Full JSON account export.
+- `GET /api/export/applications`: CSV export with formula-injection protection (`src/lib/csv.ts`).
+- `GET /api/export/analytics`: Analytics CSV export.
 
 ### 3.3 Domain Logic (`src/lib/domain/`)
 Pure, deterministic business-rule modules (no AI/LLM dependencies):
-- `stages.ts` — 11 `stageType` primitives, 13 `DEFAULT_STAGES`, transition classifier (`same`, `forward`, `skip`, `backward`, `terminal`, `reopen`, `invalid`), `deriveOutcome`, `progressRank`.
-- `suitability.ts` — Deterministic 6-criterion scoring (`skills`, `experience`, `education`, `salary`, `location`, `growth`) with skill alias normalization.
-- `email-classifier.ts` — Regex/heuristic bilingual (EN/ID) email classifier & application matcher.
-- `follow-ups.ts` — Follow-up sequence generator and `No Response` suggestion evaluator.
-- `business-days.ts` — Timezone-safe `YYYY-MM-DD` arithmetic with Indonesian holiday presets (2026–2027).
-- `duplicates.ts` — URL normalization, platform detection (`SYSTEM_SOURCES`), external job ID extraction, company/title normalization.
-- `kpi.ts` — Honest-metrics KPI, funnel, response rate, cycle duration, and breakdown calculations.
+- `stages.ts`: 11 `stageType` primitives, 13 `DEFAULT_STAGES`, transition classifier (`same`, `forward`, `skip`, `backward`, `terminal`, `reopen`, `invalid`), `deriveOutcome`, `progressRank`.
+- `suitability.ts`: Deterministic 6-criterion scoring (`skills`, `experience`, `education`, `salary`, `location`, `growth`) with skill alias normalization.
+- `email-classifier.ts`: Regex/heuristic bilingual (EN/ID) email classifier & application matcher.
+- `follow-ups.ts`: Follow-up sequence generator and `No Response` suggestion evaluator.
+- `business-days.ts`: Timezone-safe `YYYY-MM-DD` arithmetic with Indonesian holiday presets (2026–2027).
+- `duplicates.ts`: URL normalization, platform detection (`SYSTEM_SOURCES`), external job ID extraction, company/title normalization.
+- `kpi.ts`: Honest-metrics KPI, funnel, response rate, cycle duration, and breakdown calculations.
 
 ### 3.4 Existing Tests (`tests/`)
 - **Unit (`tests/unit/`):** `domain.test.ts` (8 tests), `phase3-email.test.ts` (4 tests), `phase4-storage.test.ts` (3 tests), `phase5-analytics.test.ts` (3 tests).

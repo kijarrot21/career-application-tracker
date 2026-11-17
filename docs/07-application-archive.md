@@ -1,6 +1,6 @@
 # 07. Application Archive Module
 
-**Phase:** 1 — Application Archive  
+**Phase:** 1: Application Archive  
 **Status:** Implemented  
 **Primary Routes:** `/archive`, `/archive/[id]`
 
@@ -12,7 +12,7 @@ The **Application Archive** preserves a complete, tamper-evident historical reco
 
 Core guarantees:
 1. **Original Records Remain Intact:** Archival creates closure metadata and an immutable snapshot while keeping `applications` and all related records intact.
-2. **Immutable Historical Snapshots:** `application_archive_snapshots` captures a frozen point-in-time JSONB payload and a canonical SHA-256 `content_hash` computed via recursive key-sorted JSON serialization (`computeSnapshotContentHash`). Snapshots are never updated or overwritten—even when an application is later edited or restored.
+2. **Immutable Historical Snapshots:** `application_archive_snapshots` captures a frozen point-in-time JSONB payload and a canonical SHA-256 `content_hash` computed via recursive key-sorted JSON serialization (`computeSnapshotContentHash`). Snapshots are never updated or overwritten, even when an application is later edited or restored.
 3. **Idempotent / Duplicate-Safe:** A partial unique index (`app_closure_active_app_uq` on `(application_id) WHERE status = 'archived'`) plus transactional pre-checks ensure an application can never have duplicate active closure records.
 4. **Per-User Tenant Isolation:** All three archive tables enforce `user_id` ownership and composite foreign keys `(parent_id, user_id)` referencing `applications`, `job_vacancies`, `application_closure_records`, and `application_archive_snapshots`.
 5. **Document & Version Preservation:** `application_archive_documents` captures document metadata (`document_title`, `version_no`, `version_label`, `filename`, `mime_type`, `size_bytes`, `sha256`, `storage_key`) with `ON DELETE SET NULL` references to `documents` and `document_versions`, ensuring archive document history survives even if the live document is later deleted.

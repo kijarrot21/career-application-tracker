@@ -1,9 +1,9 @@
-# Phase 9 — Global Localization & Regional Readiness
+# Phase 9: Global Localization & Regional Readiness
 
 ## Supported Locales & Defaults
 
-- **Bahasa Indonesia (`id-ID`)** — Default application locale (`DEFAULT_LOCALE = "id-ID"`).
-- **English (`en-US`)** — Global / international English locale.
+- **Bahasa Indonesia (`id-ID`)**: Default application locale (`DEFAULT_LOCALE = "id-ID"`).
+- **English (`en-US`)**: Global / international English locale.
 - Users may switch language dynamically from either the top header bar toggle (`ID` / `EN`) or **Settings → Workspace Locale & Search Status** (`preferredLocale`).
 - Preferences are persisted per user in `user_settings.preferred_locale` and mirrored in the `app_locale` HTTP cookie for SSR `<html lang>` consistency.
 
@@ -13,11 +13,11 @@
 
 Translations live strictly outside business rules and database state:
 
-- `src/lib/i18n/types.ts` — Strong `TranslationMessages` schema defining UI navigation, actions, statuses, CV section headings, settings labels, and domain error messages.
-- `src/lib/i18n/messages/id-id.ts` — Complete `id-ID` catalog.
-- `src/lib/i18n/messages/en-us.ts` — Complete `en-US` catalog.
-- `src/lib/i18n/index.ts` — Declarative `MARKET_CONFIGS`, `normalizeLocale`, `toAiLocale`, `getDefaultCvFormatForLocale`, runtime key lookup with missing-key detection (`translate`), recursive translation completeness validator (`findMissingTranslationKeys`), and localized domain label helpers.
-- `src/components/i18n/locale-provider.tsx` — Client React context exposing `useLocale()`, `useTranslations()`, and `useLocalizedFormatters()`.
+- `src/lib/i18n/types.ts`: Strong `TranslationMessages` schema defining UI navigation, actions, statuses, CV section headings, settings labels, and domain error messages.
+- `src/lib/i18n/messages/id-id.ts`: Complete `id-ID` catalog.
+- `src/lib/i18n/messages/en-us.ts`: Complete `en-US` catalog.
+- `src/lib/i18n/index.ts`: Declarative `MARKET_CONFIGS`, `normalizeLocale`, `toAiLocale`, `getDefaultCvFormatForLocale`, runtime key lookup with missing-key detection (`translate`), recursive translation completeness validator (`findMissingTranslationKeys`), and localized domain label helpers.
+- `src/components/i18n/locale-provider.tsx`: Client React context exposing `useLocale()`, `useTranslations()`, and `useLocalizedFormatters()`.
 
 ---
 

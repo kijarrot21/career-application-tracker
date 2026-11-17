@@ -94,36 +94,36 @@ Unexpected internal errors return a generic `500 INTERNAL_ERROR` without databas
 
 ### Application Archive
 
-- `GET /api/v1/archive` — Paginated list of archived applications with filters (`search`, `outcome`, `status`, `company`, `jobTitle`, `fromDate`, `toDate`) + aggregate stats & retention policy.
-- `POST /api/v1/archive` — Archive an application snapshot & closure record (`201 Created`).
-- `GET /api/v1/archive/[id]` — Fetch full immutable snapshot, SHA-256 integrity flag, preserved archive documents, and sibling attempts.
-- `POST /api/v1/archive/[id]/analyze` — Trigger grounded AI gap analysis on an archived application snapshot (`200` or `202` if awaiting consent).
+- `GET /api/v1/archive`: Paginated list of archived applications with filters (`search`, `outcome`, `status`, `company`, `jobTitle`, `fromDate`, `toDate`) + aggregate stats & retention policy.
+- `POST /api/v1/archive`: Archive an application snapshot & closure record (`201 Created`).
+- `GET /api/v1/archive/[id]`: Fetch full immutable snapshot, SHA-256 integrity flag, preserved archive documents, and sibling attempts.
+- `POST /api/v1/archive/[id]/analyze`: Trigger grounded AI gap analysis on an archived application snapshot (`200` or `202` if awaiting consent).
 
 ### AI Services
 
-- `POST /api/v1/ai/cv/parse` — Supports `multipart/form-data` (PDF/DOCX/TXT/MD file) or JSON (`documentVersionId` / `cvText`); marks uncertain fields for verification.
-- `POST /api/v1/ai/cv/evaluate` — Structured 10-dimension CV quality evaluation grounded in Master Career Profile.
-- `POST /api/v1/ai/cv/correct` — Before-and-after CV improvement suggestions requiring explicit user approval.
-- `POST /api/v1/ai/cv/generate` — Generates tailored Indonesian CV or international resume payloads (`vacancyId` or `targetRole` required).
-- `POST /api/v1/ai/job-match` — Matches Master Career Profile & selected CV against a vacancy or job description.
-- `POST /api/v1/ai/career-roadmap` — Generates grounded 6-month & 12-month career roadmap (`targetRole`, `horizonMonths`).
-- `GET /api/v1/ai/jobs/[id]` — Polls asynchronous AI job status, usage metadata, linked career analysis, and source provenance.
-- `POST /api/v1/ai/jobs/[id]` — `{ action: "approve" | "cancel" }` for `awaiting_consent` jobs.
+- `POST /api/v1/ai/cv/parse`: Supports `multipart/form-data` (PDF/DOCX/TXT/MD file) or JSON (`documentVersionId` / `cvText`); marks uncertain fields for verification.
+- `POST /api/v1/ai/cv/evaluate`: Structured 10-dimension CV quality evaluation grounded in Master Career Profile.
+- `POST /api/v1/ai/cv/correct`: Before-and-after CV improvement suggestions requiring explicit user approval.
+- `POST /api/v1/ai/cv/generate`: Generates tailored Indonesian CV or international resume payloads (`vacancyId` or `targetRole` required).
+- `POST /api/v1/ai/job-match`: Matches Master Career Profile & selected CV against a vacancy or job description.
+- `POST /api/v1/ai/career-roadmap`: Generates grounded 6-month & 12-month career roadmap (`targetRole`, `horizonMonths`).
+- `GET /api/v1/ai/jobs/[id]`: Polls asynchronous AI job status, usage metadata, linked career analysis, and source provenance.
+- `POST /api/v1/ai/jobs/[id]`: `{ action: "approve" | "cancel" }` for `awaiting_consent` jobs.
 
 ### Credit Services
 
-- `GET /api/v1/credits/wallet` — Returns authoritative user credit wallet summary, active reservations, and AI task pricing catalog.
-- `GET /api/v1/credits/ledger` — Paginated append-only credit ledger (`page`, `pageSize`, optional `entryType`).
-- `GET /api/v1/credits/packages` — Paginated active credit top-up packages (`page`, `pageSize`, optional `currency`).
+- `GET /api/v1/credits/wallet`: Returns authoritative user credit wallet summary, active reservations, and AI task pricing catalog.
+- `GET /api/v1/credits/ledger`: Paginated append-only credit ledger (`page`, `pageSize`, optional `entryType`).
+- `GET /api/v1/credits/packages`: Paginated active credit top-up packages (`page`, `pageSize`, optional `currency`).
 
 ### Payment Services
 
-- `POST /api/v1/payments/checkout` — Server-authoritative checkout order creation from `credit_packages` catalog (`packageKey`, `provider`, idempotent).
-- `POST /api/v1/payments/webhooks/[provider]` — Cryptographically authenticated payment webhook ingestion (`midtrans` | `stripe`), amount/currency check, idempotent event deduplication, and atomic credit ledger grant.
+- `POST /api/v1/payments/checkout`: Server-authoritative checkout order creation from `credit_packages` catalog (`packageKey`, `provider`, idempotent).
+- `POST /api/v1/payments/webhooks/[provider]`: Cryptographically authenticated payment webhook ingestion (`midtrans` | `stripe`), amount/currency check, idempotent event deduplication, and atomic credit ledger grant.
 
 ### Synchronization
 
-- `POST /api/v1/sync/push` — Processes explicit batch events or drains `sync_outbox` (`{ mode: "outbox", deviceId }`). Blocks cloud-authoritative credit/payment entities (`403 SYNC_FORBIDDEN_ENTITY`).
-- `GET / POST /api/v1/sync/pull` — Incremental cursor-based pull of committed `sync_events`.
-- `GET /api/v1/sync/status` — Returns device list, checkpoints, outbox queue counts, active errors, open conflicts, and paginated sync events.
-- `POST /api/v1/sync/resolve` — Applies manual conflict resolution (`keep_local`, `keep_cloud`, `merged`, `dismissed`).
+- `POST /api/v1/sync/push`: Processes explicit batch events or drains `sync_outbox` (`{ mode: "outbox", deviceId }`). Blocks cloud-authoritative credit/payment entities (`403 SYNC_FORBIDDEN_ENTITY`).
+- `GET / POST /api/v1/sync/pull`: Incremental cursor-based pull of committed `sync_events`.
+- `GET /api/v1/sync/status`: Returns device list, checkpoints, outbox queue counts, active errors, open conflicts, and paginated sync events.
+- `POST /api/v1/sync/resolve`: Applies manual conflict resolution (`keep_local`, `keep_cloud`, `merged`, `dismissed`).

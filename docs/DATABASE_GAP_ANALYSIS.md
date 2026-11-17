@@ -79,15 +79,15 @@ To evolve into the target platform without duplicating existing tables, the foll
 ### 3.2 Structured Candidate Profile & Grounded CV Evidence Gaps
 - `user_settings` currently stores only flat `headline`, `skills[]`, `yearsExperience`, `educationLevel`, `expectedSalaryMin/Max`.
 - **Missing:**
-  - `candidate_profiles` / `career_experiences`, `career_projects`, `career_educations`, `career_certifications` — verified factual source-of-truth records required so AI CV/cover-letter generation never fabricates achievements (Rule 11).
-  - `document_extracted_contents` (or text/parsed JSON column on `document_versions`) — stores extracted CV text, parsed sections, extraction method, and SHA-256 checksum to avoid re-parsing unchanged PDFs/DOCX.
+  - `candidate_profiles` / `career_experiences`, `career_projects`, `career_educations`, `career_certifications`, verified factual source-of-truth records required so AI CV/cover-letter generation never fabricates achievements (Rule 11).
+  - `document_extracted_contents` (or text/parsed JSON column on `document_versions`), stores extracted CV text, parsed sections, extraction method, and SHA-256 checksum to avoid re-parsing unchanged PDFs/DOCX.
 
 ### 3.3 Provider-Independent Hybrid AI Gaps
 - **Missing:**
   - `ai_provider_configs` (per-user or system provider preferences: local Ollama/LM Studio/WebGPU vs. cloud OpenAI/Anthropic/Gemini; encrypted BYOK API keys if supported, never exposed to client).
   - `ai_runs` / `ai_generations` (traceable audit log of AI task type, provider/model used, execution mode `local | cloud`, prompt template version, input/output token counts, latency, credit cost, status, and grounded source entity IDs).
   - `ai_artifacts` / `tailored_cv_drafts` (draft CV tailoring, cover letters, JD summaries, interview prep briefs, linked to `vacancy_id` / `application_id` and `document_version_id`, with explicit `accepted_by_user` approval state).
-  - Note: `suitability_evaluations` and `email_communications` already have `suggestions` (`jsonb`), `confidence`, and `classifier_reasons` — AI enhancements should extend these with `evaluation_source` / `ai_run_id` rather than duplicating tables.
+  - Note: `suitability_evaluations` and `email_communications` already have `suggestions` (`jsonb`), `confidence`, and `classifier_reasons`, AI enhancements should extend these with `evaluation_source` / `ai_run_id` rather than duplicating tables.
 
 ### 3.4 Credit-Based Monetization & Indonesia Market Gaps
 - **Missing:**
