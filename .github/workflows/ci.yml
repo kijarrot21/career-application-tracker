@@ -16,6 +16,14 @@ jobs:
   quality:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    # CI-only placeholder configuration. `next build` runs with
+    # NODE_ENV=production, where src/lib/env.ts requires BETTER_AUTH_SECRET;
+    # local .env.local is gitignored, so CI supplies throwaway values.
+    # The embedded DB is in-memory and discarded when the job ends.
+    env:
+      BETTER_AUTH_SECRET: ci-placeholder-secret-do-not-use-in-production-000
+      BETTER_AUTH_URL: http://localhost:3105
+      PGLITE_DATA_DIR: memory://
     steps:
       - uses: actions/checkout@v4
 
