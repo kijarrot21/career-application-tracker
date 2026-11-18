@@ -1,6 +1,6 @@
 # Phase Progress Status: Career Application Tracker
 
-**Last updated:** 2026-11-17 · Evidence-based; every status verified against source and executed tests (see `PHASE_11_TEST_COVERAGE_MATRIX.md`).
+**Last updated:** 2026-11-18 · Evidence-based; every status verified against source and executed tests (see `PHASE_11_TEST_COVERAGE_MATRIX.md`).
 
 | Phase | Scope | Status | Evidence |
 |---|---|---|---|
@@ -16,6 +16,7 @@
 | 9 | Localization | ✅ COMPLETE | en-US/id-ID, IDR/USD, timezone Asia/Jakarta, locale provider (html lang verified); phase9 + localization (10 PASS) |
 | 10 | Security | ✅ COMPLETE (3 High items fixed in Phase 11) | prompt-guard, malware scan, signed downloads, UU PDP erasure/export; phase10 + security (23 PASS). DEF-11-001/002/003 fixed 2026-11-17 |
 | 11 | QA & Testing | ✅ COMPLETE (signed off 2026-11-17) | Audit + strategy + coverage matrix + env matrix + defect register delivered; 125/125 unit+integration, 4/4 E2E, build PASS; DEF-11-006 accepted exception; committed `ba26d3a` + docs `00129ab`, pushed to `origin/main` |
+| 12 | Roadmap & Backlog | ✅ COMPLETE (2026-11-18) | `DEVELOPMENT_BACKLOG.md` (evidence-based task board, Sprints 0 to 10 plus E-series), `docs/DEVELOPMENT_ROADMAP.md`, `docs/RELEASE_PLAN.md`; milestones defined as ordered gates without invented dates |
 
 ## Phase 11 Defect Board (live)
 

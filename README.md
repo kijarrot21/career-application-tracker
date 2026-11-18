@@ -197,8 +197,9 @@ Open `http://localhost:3000` in your browser.
 
 ### Other References
 - [Current Architecture](docs/CURRENT_ARCHITECTURE.md): actual technical architecture
+- [Development Roadmap](docs/DEVELOPMENT_ROADMAP.md) · [Release Plan](docs/RELEASE_PLAN.md) · [Development Backlog](DEVELOPMENT_BACKLOG.md)
 - [Database Gap Analysis](docs/DATABASE_GAP_ANALYSIS.md) · [Security Review](docs/SECURITY_REVIEW_REPORT.md) · [Security Gap Analysis](docs/SECURITY_GAP_ANALYSIS.md) · [Repository Audit](docs/REPOSITORY_AUDIT.md)
-- [UI/UX Audit](docs/ui-ux-audit.md) · [UI/UX Roadmap](docs/ui-ux-improvement-roadmap.md) · [Development Backlog](DEVELOPMENT_BACKLOG.md)
+- [UI/UX Audit](docs/ui-ux-audit.md) · [UI/UX Roadmap](docs/ui-ux-improvement-roadmap.md)
 
 ## License
 
