@@ -2,7 +2,7 @@
 
 **Date:** 2026-11-17
 **Branch:** `main` @ `8a070ff` (refactor(ui): build accessible UI primitive layer and modernize workspace screens)
-**Audit scope:** Phases 0–10 verification + full quality assessment prior to Phase 11 sign-off.
+**Audit scope:** Phases 0 to 10 verification + full quality assessment prior to Phase 11 sign-off.
 
 ---
 

@@ -1,7 +1,7 @@
-# 09. Hybrid AI Engine Architecture
+# 08. Hybrid AI Engine Architecture
 
-**Phase:** 3: Hybrid AI Engine  
-**Status:** Foundation Implemented (Core Engine, Providers, Router, Schemas, Prompts, Job Persistence & Privacy Modes; full user-facing AI career workflows intentionally deferred)  
+**Phase:** 3: Hybrid AI Engine
+**Status:** Core engine, adapters, router, schemas, prompts, job persistence, privacy modes and consent gates COMPLETE. Live cloud providers NOT TESTED.
 **Primary Directory:** `src/server/ai/`
 
 ---
@@ -100,3 +100,23 @@ Added via migration `src/db/migrations/0003_modern_the_fury.sql`:
 2. **Cloud PII Minimization:** Before invoking any `cloud` provider (`openai`, `gemini`), `minimizeCloudPii()` redacts accidental Bearer tokens, API keys (`sk-...`, `AIza...`), and explicit Indonesian `NIK`/`KTP` 16-digit markers.
 3. **Local Endpoint SSRF Protection (`endpoint-validator.ts`):** User-configured Ollama URLs require `http:`/`https:`, reject embedded credentials and cloud metadata IPs (`169.254.*`), and allow loopback targets (`127.0.0.1`, `localhost`, `::1`) by default.
 4. **No Silent Overwrites:** AI analyses never mutate `career_profiles`, `career_experiences`, `career_educations`, `career_skills`, `career_certifications`, or `career_projects`.
+
+---
+
+## Implementation status
+
+| Area | Status | Notes |
+|---|---|---|
+| Provider contract, JSON extraction and Zod validation | COMPLETE | `src/server/ai/providers/provider.types.ts`, `src/server/ai/providers/json-output.ts`. |
+| Ollama, OpenAI and Gemini adapters | COMPLETE at the adapter and contract level | `src/server/ai/providers/ollama.provider.ts`, `openai.provider.ts`, `gemini.provider.ts`. Verified with mocked HTTP `fetchFn` only. |
+| Router, privacy modes, consent gate and async jobs | COMPLETE | `src/server/ai/router/ai-task-router.ts`, `src/server/ai/router/provider-selector.ts`. |
+| Versioned bilingual prompts and deterministic hashing | COMPLETE | `src/server/ai/prompts/`, `src/server/ai/prompts/prompt-registry.ts`. |
+| AI tables with usage metadata (input/output tokens, cost, latency) | COMPLETE | `src/db/schema/ai.ts`, migration `src/db/migrations/0003_modern_the_fury.sql`, type in `src/lib/domain/ai.ts`. |
+| Prompt guard and cloud PII minimization (`minimizeCloudPii`) | COMPLETE | `src/server/ai/security/prompt-guard.ts`, `src/server/ai/security/endpoint-validator.ts`. |
+| Live Ollama, OpenAI or Gemini calls against real endpoints | NOT TESTED | No credentials or local daemon were available in the test environment. |
+
+## Test evidence
+
+- Unit: `tests/unit/phase3-ai.test.ts` covers SSRF validation, untrusted input sanitization, prompt injection signals, cloud PII minimization, deterministic prompt hashes, Ollama JSON parsing and normalized provider errors.
+- Integration: `tests/integration/ai-engine.test.ts` (in-memory PGlite) covers privacy modes, `awaiting_consent` pause and resume via `approveAndRunAiJobService`, retries, job persistence, feedback, user isolation and Zod-validated service execution using mocked providers.
+- Suite totals: 125/125 Vitest tests pass across 25 files, 4/4 Playwright E2E tests pass, typecheck, lint and build are green, and CI is green on commit `2a9540c`.

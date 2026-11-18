@@ -41,7 +41,7 @@ Full task-level detail lives in [DEVELOPMENT_BACKLOG.md](../DEVELOPMENT_BACKLOG.
 - **Sprint 3 asked for "AI job processing".** The code persists auditable jobs in `ai_analysis_jobs` and executes them synchronously inside the request. There is no background worker. This is acceptable for MVP but is tracked as E-13.
 - **Sprint 5 asked for PDF/DOCX export.** Implemented with dependency-free native writers: a minimal PDF writer and a minimal OOXML ZIP writer. Tests confirm valid output and DOCX text re-extraction.
 - **Sprint 6 asked for "credit package management".** The catalog exists in schema, seeds, read API, and pricing updates, but there is no admin CRUD UI. Marked PARTIAL.
-- **Sprint 4 listed four AI tasks.** The code adds career roadmap, archive analysis, and interview coach. The interview coach is service-only, not wired to the UI.
+- **Sprint 4 listed four AI tasks.** The code adds career roadmap, archive analysis, and interview coach. The interview coach is service-only, not wired to the UI. Archive analysis has a tested service and API, but its UI entry point on the archive detail page is still a disabled placeholder (tracked as E-15).
 - **Sprint 9 asked for "international resume templates".** Implemented as two CV formats (`indonesian_cv`, `international_resume`) and five styles, not as a gallery of visual templates.
 
 ---

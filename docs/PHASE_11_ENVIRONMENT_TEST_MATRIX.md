@@ -7,7 +7,7 @@
 | Aspect | Assessment | Evidence |
 |---|---|---|
 | Configuration | `DATABASE_URL` optional (empty ⇒ PGlite); `PGLITE_DATA_DIR` selects data dir; `serverExternalPackages: ["@electric-sql/pglite"]` in `next.config.ts` | config inspected |
-| Database | PGlite 0.5.16 + Drizzle migrations 0000–0007 applied cleanly in every test run | 125/125 tests |
+| Database | PGlite 0.5.16 + Drizzle migrations 0000 to 0007 applied cleanly in every test run | 125/125 tests |
 | Storage | Local FS under `storage/` (gitignored); validated magic bytes, 10 MB cap, purge on deletion | phase4-storage + SEC-21 |
 | Auth | Better Auth 1.7.25 cookie sessions; `requireUser()` server-side | security tests |
 | AI | Local Ollama provider + mocked cloud providers; consent gate enforced | phase3-ai, ai-engine tests |

@@ -4,13 +4,15 @@
 **Repository:** `career-application-tracker` (`v0.1.0`)  
 **Objective:** Establish a verified technical baseline before incrementally evolving the application into a Hybrid AI Career Management Platform.
 
+> **Historical snapshot:** this audit records the Phase 0 baseline. Statements such as "no CI/CD pipeline" and "no CSP configured" describe that earlier point in time. For current state, read `docs/PHASE_PROGRESS_STATUS.md`, `docs/CURRENT_ARCHITECTURE.md`, and `IMPLEMENTATION_REPORT.md`.
+
 ---
 
 ## 1. Executive Summary
 
 The repository contains a well-structured, functional **Personal Applicant Tracking System (ATS)** built on **Next.js 16.4.6 (App Router, Turbopack)**, **React 19.3**, **TypeScript (strict)**, **Tailwind CSS v4**, **Drizzle ORM**, **PGlite / PostgreSQL**, and **Better Auth**.
 
-All 5 original Personal ATS phases plus the Phase 1–2 UI/UX primitive foundation (`src/components/ui/` + `DESIGN.md`) are implemented:
+All 5 original Personal ATS phases plus the Phase 1 to 2 UI/UX primitive foundation (`src/components/ui/` + `DESIGN.md`) are implemented:
 - **Verified Passing:** TypeScript (`npm run typecheck`), ESLint (`npm run lint`), Vitest unit & integration suite (`npm run test`: 5 files, 25 tests), and Next.js production build (`npm run build`, executed outside sandbox due to Turbopack worker IPC restriction inside sandbox).
 - **Not Executed in Phase 0:** Playwright E2E (`npm run test:e2e`) was inspected (`tests/e2e/core-journey.spec.ts`) but not executed during this audit.
 - **No CI/CD Pipeline:** No `.github/workflows` or deployment manifest exists in the repository.
@@ -21,15 +23,15 @@ All 5 original Personal ATS phases plus the Phase 1–2 UI/UX primitive foundati
 
 | File | Key Findings |
 |---|---|
-| [package.json](file:///Users/arhel/Documents/Project/Personal%20Job%20Applicant%20Tracking%20System/package.json) | Next `16.4.6`, React `19.3.0`, Drizzle ORM `0.45.4`, `@electric-sql/pglite` `0.5.16`, `postgres` `4.1.1`, `better-auth` `1.7.25`, `zod` `4.6.7`, `radix-ui` `1.8.1`, `recharts` `3.10.1`, `@dnd-kit/*`, `cmdk` `1.1.1`, `vitest` `5.1.0`, `@playwright/test` `1.65.1`. Scripts: `dev`, `build`, `start`, `lint`, `typecheck`, `setup`, `db:generate`, `db:migrate`, `test`, `test:e2e`. |
-| [tsconfig.json](file:///Users/arhel/Documents/Project/Personal%20Job%20Applicant%20Tracking%20System/tsconfig.json) | `strict: true`, `noEmit: true`, `target: ES2017`, `moduleResolution: bundler`, `@/* -> ./src/*`, excludes `node_modules` and `design-references`. |
-| [next.config.ts](file:///Users/arhel/Documents/Project/Personal%20Job%20Applicant%20Tracking%20System/next.config.ts) | `serverExternalPackages: ["@electric-sql/pglite"]`, Turbopack CSS loader (`@tailwindcss/turbopack`), security headers (`X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy`, `Permissions-Policy`). Note: **No CSP or HSTS header configured.** |
-| [drizzle.config.ts](file:///Users/arhel/Documents/Project/Personal%20Job%20Applicant%20Tracking%20System/drizzle.config.ts) | Schema `./src/db/schema/index.ts`, migrations `./src/db/migrations`, dialect `postgresql`. |
-| [eslint.config.mjs](file:///Users/arhel/Documents/Project/Personal%20Job%20Applicant%20Tracking%20System/eslint.config.mjs) | Flat config using `eslint-config-next/core-web-vitals` and `eslint-config-next/typescript`. |
-| [vitest.config.ts](file:///Users/arhel/Documents/Project/Personal%20Job%20Applicant%20Tracking%20System/vitest.config.ts) | `environment: "node"`, `fileParallelism: false`, `testTimeout: 30000`, includes `tests/unit/**/*.test.ts` and `tests/integration/**/*.test.ts`. |
-| [playwright.config.ts](file:///Users/arhel/Documents/Project/Personal%20Job%20Applicant%20Tracking%20System/playwright.config.ts) | Single worker, `npx next start -p 3105` with `PGLITE_DATA_DIR=memory://`. |
-| [.env.example](file:///Users/arhel/Documents/Project/Personal%20Job%20Applicant%20Tracking%20System/.env.example) | `DATABASE_URL` (optional; empty = PGlite), `PGLITE_DATA_DIR`, `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, `ENCRYPTION_KEY`, `GOOGLE_CLIENT_ID/SECRET`, `MICROSOFT_CLIENT_ID/SECRET/TENANT_ID`. |
-| [AGENTS.md](file:///Users/arhel/Documents/Project/Personal%20Job%20Applicant%20Tracking%20System/AGENTS.md) | Next.js 16 rule requiring inspection of `node_modules/next/dist/docs/` before modifying code. |
+| [package.json](../package.json) | Next `16.4.6`, React `19.3.0`, Drizzle ORM `0.45.4`, `@electric-sql/pglite` `0.5.16`, `postgres` `4.1.1`, `better-auth` `1.7.25`, `zod` `4.6.7`, `radix-ui` `1.8.1`, `recharts` `3.10.1`, `@dnd-kit/*`, `cmdk` `1.1.1`, `vitest` `5.1.0`, `@playwright/test` `1.65.1`. Scripts: `dev`, `build`, `start`, `lint`, `typecheck`, `setup`, `db:generate`, `db:migrate`, `test`, `test:e2e`. |
+| [tsconfig.json](../tsconfig.json) | `strict: true`, `noEmit: true`, `target: ES2017`, `moduleResolution: bundler`, `@/* -> ./src/*`, excludes `node_modules` and `design-references`. |
+| [next.config.ts](../next.config.ts) | `serverExternalPackages: ["@electric-sql/pglite"]`, Turbopack CSS loader (`@tailwindcss/turbopack`), security headers (`X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy`, `Permissions-Policy`). Note: **No CSP or HSTS header configured.** |
+| [drizzle.config.ts](../drizzle.config.ts) | Schema `./src/db/schema/index.ts`, migrations `./src/db/migrations`, dialect `postgresql`. |
+| [eslint.config.mjs](../eslint.config.mjs) | Flat config using `eslint-config-next/core-web-vitals` and `eslint-config-next/typescript`. |
+| [vitest.config.ts](../vitest.config.ts) | `environment: "node"`, `fileParallelism: false`, `testTimeout: 30000`, includes `tests/unit/**/*.test.ts` and `tests/integration/**/*.test.ts`. |
+| [playwright.config.ts](../playwright.config.ts) | Single worker, `npx next start -p 3105` with `PGLITE_DATA_DIR=memory://`. |
+| [.env.example](../.env.example) | `DATABASE_URL` (optional; empty = PGlite), `PGLITE_DATA_DIR`, `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, `ENCRYPTION_KEY`, `GOOGLE_CLIENT_ID/SECRET`, `MICROSOFT_CLIENT_ID/SECRET/TENANT_ID`. |
+| [AGENTS.md](../AGENTS.md) | Next.js 16 rule requiring inspection of `node_modules/next/dist/docs/` before modifying code. |
 
 ---
 
@@ -68,7 +70,7 @@ Pure, deterministic business-rule modules (no AI/LLM dependencies):
 - `suitability.ts`: Deterministic 6-criterion scoring (`skills`, `experience`, `education`, `salary`, `location`, `growth`) with skill alias normalization.
 - `email-classifier.ts`: Regex/heuristic bilingual (EN/ID) email classifier & application matcher.
 - `follow-ups.ts`: Follow-up sequence generator and `No Response` suggestion evaluator.
-- `business-days.ts`: Timezone-safe `YYYY-MM-DD` arithmetic with Indonesian holiday presets (2026–2027).
+- `business-days.ts`: Timezone-safe `YYYY-MM-DD` arithmetic with Indonesian holiday presets (2026 to 2027).
 - `duplicates.ts`: URL normalization, platform detection (`SYSTEM_SOURCES`), external job ID extraction, company/title normalization.
 - `kpi.ts`: Honest-metrics KPI, funnel, response rate, cycle duration, and breakdown calculations.
 

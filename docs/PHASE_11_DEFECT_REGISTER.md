@@ -13,7 +13,7 @@ None identified.
 
 ### DEF-11-001: OAuth state: timing-unsafe comparison, no TTL
 - **Module:** K. Security (Email OAuth)
-- **Files:** `src/lib/crypto.ts` (`verifyOAuthState`, lines 77–91)
+- **Files:** `src/lib/crypto.ts` (`verifyOAuthState`, lines 77 to 91)
 - **Reproduction:** inspect `verifyOAuthState`. `if (sig !== expected) return null` uses JS string comparison; the `ts` field inside the state payload is never validated, so a captured state is replayable indefinitely.
 - **Expected:** constant-time comparison (`crypto.timingSafeEqual`) + strict TTL (e.g. 10 minutes) on the state timestamp.
 - **Actual:** timing side-channel possible; captured state never expires.
@@ -26,7 +26,7 @@ None identified.
 
 ### DEF-11-002: No CSP sandbox on inline document file responses
 - **Module:** K. Security (Documents)
-- **Files:** `src/app/api/documents/versions/[versionId]/file/route.ts` (headers block, lines 46–52)
+- **Files:** `src/app/api/documents/versions/[versionId]/file/route.ts` (headers block, lines 46 to 52)
 - **Reproduction:** request an inline PDF/text document; response headers include only `X-Content-Type-Options: nosniff` and `Cache-Control`.
 - **Expected:** `Content-Security-Policy: sandbox; default-src 'none'` on file responses (per Phase 10 gap analysis).
 - **Actual:** inline-rendered documents execute without a restrictive CSP; a malicious PDF/HTML can run scripts in the app origin context.
@@ -56,7 +56,7 @@ None identified.
 - **Files:** repository root (no `.github/workflows/`)
 - **Impact:** all quality gates (typecheck, lint, vitest, playwright, build) are manual; regressions can land unnoticed.
 - **Recommended fix:** GitHub Actions workflow running the five existing gates on PR/push. (Requires approval; touches no source code.)
-- **Status:** FIXED (2026-11-17). `.github/workflows/ci.yml` created: npm ci → typecheck → lint → vitest → production build → Playwright chromium E2E, triggered on push to `main` and PRs. Caveat: workflow execution can only be demonstrated after a push (prohibited without approval); all five gates verified passing locally.
+- **Status:** FIXED (2026-11-17). `.github/workflows/ci.yml` created: npm ci → typecheck → lint → vitest → production build → Playwright chromium E2E, triggered on push to `main` and PRs. Verified by successful GitHub Actions runs on `main`, most recently commit `2a9540c` (run `44213136629`). Phase 13 splits unit and integration tests into separate CI steps.
 
 ### DEF-11-005: Missing handover documentation
 - **Files:** `docs/` (missing `OPENCODE_HANDOVER_REPORT.md`, `PHASE_PROGRESS_STATUS.md`)

@@ -41,8 +41,11 @@ jobs:
       - name: Lint
         run: npm run lint
 
-      - name: Unit & integration tests (isolated in-memory PGlite)
-        run: npm run test
+      - name: Unit tests
+        run: npx vitest run tests/unit
+
+      - name: Integration tests (isolated in-memory PGlite)
+        run: npx vitest run tests/integration
 
       - name: Production build
         run: npm run build

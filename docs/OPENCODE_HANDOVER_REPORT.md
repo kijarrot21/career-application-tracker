@@ -1,7 +1,7 @@
 # OpenCode Handover Report: Career Application Tracker
 
 **Date:** 2026-11-17 · **Branch:** `main` · **Version:** 0.1.0
-**Status:** Phases 0–11 complete and verified (Phase 11 signed off 2026-11-17 with one accepted exception, DEF-11-006).
+**Status:** Phases 0 to 11 complete and verified (Phase 11 signed off 2026-11-17 with one accepted exception, DEF-11-006).
 
 ---
 
@@ -33,7 +33,7 @@
 | `src/app/(app)/` | Authenticated pages: dashboard, jobs, applications (13-stage kanban), archive, interviews, emails, documents, analytics, credits, cv-studio, sync, settings, profile, shortlist |
 | `src/app/(auth)/` | sign-in / sign-up (UU PDP notice) |
 | `src/app/api/` | Route handlers: auth, documents (upload/download/versions), email OAuth (PKCE), payments webhooks, AI, `api/v1/*` (versioned API incl. sync + credits + payments) |
-| `src/db/` | Drizzle schema (11 domain modules), migrations 0000–0007, seeds (system/demo/credits) |
+| `src/db/` | Drizzle schema (11 domain modules), migrations 0000 to 0007, seeds (system/demo/credits) |
 | `src/lib/` | session/auth, crypto (AES-256-GCM, HMAC tokens, PKCE), storage (magic bytes, 10 MB cap, malware hooks), rate-limit, i18n, csv, audit |
 | `src/server/` | actions, queries, services, AI engine (providers/router/schemas/security), payments providers, sync |
 | `docs/` | 18 phase/spec documents + audits (see `PHASE_PROGRESS_STATUS.md`) |
@@ -71,7 +71,7 @@ npm run typecheck / lint / build / db:migrate / db:generate
 
 ## 7. Working-Tree State (⚠️ important for the next engineer)
 
-The working tree is **clean**. All Phase 1–10 implementation work and Phase 11 QA fixes are committed on `main`:
+The working tree is **clean**. All Phase 1 to 10 implementation work and Phase 11 QA fixes are committed on `main`:
 
 - `ba26d3a`: `feat: complete Phases 1-10 implementation and Phase 11 QA hardening` (221 files, 94,313 insertions)
 - `00129ab`: `docs: refresh README and architecture doc for Phases 1-11`

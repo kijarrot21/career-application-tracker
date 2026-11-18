@@ -1,7 +1,7 @@
 # 07. Application Archive Module
 
-**Phase:** 1: Application Archive  
-**Status:** Implemented  
+**Phase:** 1: Application Archive
+**Status:** Core archive workflows COMPLETE. AI post-mortem PARTIAL (backend only). Live cloud AI NOT TESTED.
 **Primary Routes:** `/archive`, `/archive/[id]`
 
 ---
@@ -72,5 +72,24 @@ Added in migration `0001_parallel_omega_flight.sql` (`src/db/schema/applications
 
 - **Navigation:** `Archive` link in `AppSidebar` (`src/components/layout/app-sidebar.tsx`) and `CommandMenu` (`src/components/layout/command-menu.tsx`), protected by `src/proxy.ts` and `requireUser()`.
 - **Archive Table (`/archive`):** Outcome KPI strip, retention status banner, search & filter bar (search, outcome, company, job title, closure date range, archive status), sortable `DataTable`, manual archive dialog, restore dialog, re-apply dialog, and retention policy modal.
-- **Archive Detail (`/archive/[id]`):** SHA-256 integrity verification badge, retention editor, restore/re-apply/delete controls, **AI Career Post-Mortem & Outcome Insights** placeholder (explicitly disabled until the Hybrid AI phase), and 4 tabs (`Overview & Fit`, `Historical Timeline`, `Comms, Interviews & Offers`, `Document History`).
+- **Archive Detail (`/archive/[id]`):** SHA-256 integrity verification badge, retention editor, restore/re-apply/delete controls, an **AI Career Post-Mortem & Outcome Insights** placeholder that is still disabled in the UI, and 4 tabs (`Overview & Fit`, `Historical Timeline`, `Comms, Interviews & Offers`, `Document History`). A backend analysis service (`src/server/ai/services/archive-analysis.service.ts`) and API route (`src/app/api/v1/archive/[id]/analyze/route.ts`) exist and are exercised by tests, but the page has not been wired to them.
 - **Application Detail Integration (`/applications/[id]`):** Displays `Archive` button for unarchived applications or `View Archive Snapshot` link when archived.
+
+---
+
+## Implementation status
+
+| Area | Status | Notes |
+|---|---|---|
+| Closure records, immutable SHA-256 snapshots, document preservation | COMPLETE | `src/server/services/archive.ts`, `src/db/schema/applications.ts`, migration `src/db/migrations/0001_parallel_omega_flight.sql`. |
+| Auto-archive on terminal stage, restore, reapply, retention and purge | COMPLETE | Driven by `user_settings.auto_archive_on_terminal` in `src/server/services/applications.ts`. |
+| Tenant isolation on all archive records | COMPLETE | Ownership and composite foreign keys, verified in tests. |
+| AI post-mortem and outcome insights | PARTIAL | Backend service and API route are implemented and tested. The UI entry point in `src/components/archive/archive-detail-client.tsx` remains a disabled placeholder. |
+| Live cloud AI execution for the post-mortem | NOT TESTED | No cloud credentials or running providers were available. Mock providers only. |
+
+## Test evidence
+
+- Unit: `tests/unit/phase1-archive.test.ts` covers outcome mapping, retention deadlines and snapshot hashing helpers.
+- Integration: `tests/integration/archive.test.ts` (in-memory PGlite) covers auto-archive, duplicate prevention, document preservation, restore, reapply, retention purge and cross-user isolation.
+- API: `tests/integration/api-v1.test.ts` covers the archive analyze endpoint, including a 404 case for a missing closure record.
+- Suite totals: 125/125 Vitest tests pass across 25 files, 4/4 Playwright E2E tests pass (core journey plus 3 accessibility), typecheck, lint and build are green, and CI is green on commit `2a9540c`.

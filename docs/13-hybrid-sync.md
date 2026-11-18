@@ -1,4 +1,10 @@
-# Phase 7: Hybrid Local-Cloud Synchronization
+# 13. Hybrid Local-Cloud Synchronization
+
+**Phase:** 7: Hybrid Local-Cloud Synchronization
+**Status:** Outbox, push/pull/resolve/status endpoints, conflict detection and resolution, Sync Center UI and tenant isolation COMPLETE with local mocks. Live cloud sync NOT TESTED. Cloud exchange BLOCKED until `SYNC_MODE` is enabled.
+**Primary Route:** `/sync`
+
+---
 
 ## Overview
 
@@ -44,3 +50,23 @@ Phase 7 introduces an explicit, additive synchronization subsystem that works al
 ## Approval Gate (`SYNC_MODE`)
 
 Cloud synchronization exchange defaults to **`SYNC_MODE=disabled`**, returning HTTP `403 SYNC_CLOUD_DISABLED` on remote push/pull until explicitly switched to **`SYNC_MODE=sandbox`** (or activated after explicit production approval). Offline device registration and local outbox capture continue operating safely even when `SYNC_MODE=disabled`.
+
+---
+
+## Implementation status
+
+| Area | Status | Notes |
+|---|---|---|
+| Sync schema, domain rules and device registration | COMPLETE | `src/db/schema/sync.ts`, `src/lib/domain/sync.ts`, `src/server/services/sync.ts`. |
+| Outbox push, incremental cursor pull, status and conflict resolution endpoints | COMPLETE | `src/app/api/v1/sync/push/route.ts`, `pull/route.ts`, `status/route.ts`, `resolve/route.ts`. |
+| Conflict detection and keep_cloud, keep_local and merged resolution | COMPLETE | `resolveSyncConflictService()` in `src/server/services/sync.ts`, tested in `tests/integration/sync.test.ts`. |
+| Sync Center UI | COMPLETE | `src/components/sync/sync-center-client.tsx`, page `src/app/(app)/sync/page.tsx`. |
+| Tenant isolation and forbidden-entity audit logging | COMPLETE | Verified in integration tests. |
+| Live cloud synchronization against a real remote | NOT TESTED | `SYNC_MODE` defaults to `"disabled"` and no live remote was configured. Tests exercise mock handlers and in-memory PGlite only. |
+| Activating cloud exchange for production | BLOCKED | Requires `SYNC_MODE=sandbox` or explicit production approval. |
+
+## Test evidence
+
+- Unit: `tests/unit/phase7-sync.test.ts` covers forbidden credit/payment entities, archive snapshot and document version immutability, syncable entity set, sliding-window rate limiting and Zod input schemas.
+- Integration: `tests/integration/sync.test.ts` (in-memory PGlite) covers offline outbox capture in `local_only`, the `SYNC_MODE=disabled` gate, multi-device hybrid push, cursor pull, idempotency, retry recovery, conflict detection and manual resolution, append-only `application_history` merge, forbidden-entity security audit, cross-user isolation and device revocation.
+- Suite totals: 125/125 Vitest tests pass across 25 files, 4/4 Playwright E2E tests pass, typecheck, lint and build are green, and CI is green on commit `2a9540c`.

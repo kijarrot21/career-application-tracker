@@ -1,9 +1,11 @@
 # Development Backlog
 
-**Baseline:** Personal ATS v0.1.0, `main` at `620f7d8` (2026-11-18)
-**Scope:** Phases 0 to 11 delivered; Phase 12 defines the roadmap and backlog from here.
+**Baseline:** Personal ATS v0.1.0, `main` at `2a9540c` (2026-11-18)
+**Scope:** Phases 0 to 13 delivered or in final documentation; Phase 12 defines the roadmap and backlog from here.
 **Priority order:** Data integrity, then security, then reliability, then AI quality, then monetization, then UX.
 **Rule:** Do not duplicate existing modules (`suitability.ts`, `email-classifier.ts`, documents, interviews, analytics, Better Auth, Drizzle with PGlite/PostgreSQL).
+
+**Phase 13 update (2026-11-18):** Documentation was consolidated into the canonical `docs/01` to `docs/19` numbering without duplicating documents. `.env.example` now documents variable names and behavior only. CI reports unit tests and integration tests as separate gates. Final gate evidence and the production readiness assessment are recorded in `IMPLEMENTATION_REPORT.md`.
 
 ---
 
@@ -59,7 +61,7 @@ Every status in this document is backed by source code and executed tests, never
 |---|---|---|---|---|---|---|---|---|
 | S0-01 | Repository audit | Full inventory of modules, routes, schema, and gaps | P1 | None | S | `docs/REPOSITORY_AUDIT.md` published and consistent with tree | COMPLETE | PASS (documented) |
 | S0-02 | Architecture review | Layer map and data flow review | P1 | S0-01 | S | `docs/CURRENT_ARCHITECTURE.md` and `docs/03-architecture.md` match code | COMPLETE | PASS (documented) |
-| S0-03 | Security review | Threat surface and control review | P1 | S0-02 | M | `docs/SECURITY_REVIEW_REPORT.md`, `SECURITY_GAP_ANALYSIS.md`, `18-security-and-data-governance.md` published | COMPLETE | PASS (Phase 11 fixes tested in `phase10-security.test.ts`, `security.test.ts`) |
+| S0-03 | Security review | Threat surface and control review | P1 | S0-02 | M | `docs/SECURITY_REVIEW_REPORT.md`, `SECURITY_GAP_ANALYSIS.md`, `14-security-and-data-governance.md` published | COMPLETE | PASS (Phase 11 fixes tested in `phase10-security.test.ts`, `security.test.ts`) |
 | S0-04 | Functionality inventory | Phase-by-phase feature inventory | P1 | S0-01 | S | `docs/PHASE_PROGRESS_STATUS.md` lists every phase with evidence | COMPLETE | PASS (documented) |
 | S0-05 | Baseline tests | Establish passing baseline | P1 | S0-04 | S | Vitest, E2E, typecheck, lint, build all green | COMPLETE | PASS (125/125, 4/4) |
 
@@ -105,7 +107,8 @@ Every status in this document is backed by source code and executed tests, never
 | S4-04 | Skill gap analysis | Gap list against target role | P1 | S3, S2 | M | Gaps map to skills and suggested actions | COMPLETE | PASS |
 | S4-05 | Career roadmap | Structured growth roadmap generation | P2 | S4-04 | M | Roadmap items are time-bounded and stored per user | COMPLETE | PASS |
 | S4-06 | Interview coach | Grounded interview preparation service | P2 | S4-03 | M | Service returns grounded question and answer guidance | PARTIAL (service exists in `interview-coach.service.ts`; no action or UI wiring) | NOT TESTED (no API/UI path) |
-| S4-07 | Archive analysis | AI analysis of archived applications | P2 | S1, S3 | M | Archived snapshot analysis requires consent and records usage | COMPLETE | PASS |
+| S4-07 | Archive analysis | AI analysis of archived applications | P2 | S1, S3 | M | Archived snapshot analysis requires consent and records usage | PARTIAL (service and API complete; UI placeholder disabled) | PASS (service and API tests) |
+| E-15 | Archive post-mortem UI | Wire archive detail page to the existing analysis service | P2 | S4-07 | M | Analysis runs from the archive detail page and results are displayed | NOT STARTED | NOT TESTED |
 
 ### Sprint 5: CV Studio
 

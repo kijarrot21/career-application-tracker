@@ -18,7 +18,20 @@
 | Phase 10 (Security and UU PDP data governance) | Complete |
 | Phase 11 (QA and Testing) | Complete, with one accepted exception (PostgreSQL RLS, deferred to a cloud hardening phase) |
 
-**Verified quality gates:** 125/125 unit and integration tests (Vitest), 4/4 E2E tests (Playwright: core journey and accessibility suite), typecheck, lint, and production build. All gates also run automatically through [GitHub Actions CI](.github/workflows/ci.yml) on every push and pull request.
+**Verified quality gates:** 125/125 unit and integration tests (Vitest, 66 unit plus 59 integration), 4/4 E2E tests (Playwright: core journey and accessibility suite), typecheck, lint, and production build. All gates also run automatically through [GitHub Actions CI](.github/workflows/ci.yml) on every push and pull request.
+
+## Implementation Status
+
+This table separates what exists from what is only planned. It is deliberately conservative: a feature is "Implemented" only when code and passing tests exist.
+
+| Category | Features |
+|---|---|
+| **Implemented** | Core ATS (jobs, applications, interviews, emails, documents, analytics), application archive, master career profile, hybrid AI engine, AI career features, CV Studio with PDF and DOCX export, credit wallet and ledger, Midtrans and Stripe integrations with simulated providers, hybrid sync with conflict resolution, versioned API v1, en-US and id-ID localization, and Phase 10 and 11 security controls |
+| **Partially implemented** | Credit package catalog has no admin CRUD UI; interview coach exists as a service only with no UI; archive AI post-mortem has a tested service and API but a disabled UI placeholder; AI jobs execute synchronously with no background worker; E2E coverage does not yet include AI, sync, or billing journeys; resume templates are two formats with five styles rather than a visual template gallery |
+| **Planned** | PostgreSQL row-level security (accepted deferral DEF-11-006), cloud object storage adapter, CSP nonce tightening, UU PDP retention reminders, performance and backup automation, and a background AI worker |
+| **Not available** | Live cloud multi-tenancy, live AI provider verification, live payment gateway verification, live cloud sync round-trip, and automated axe-core accessibility scans |
+
+---
 
 ## Background and Context
 
@@ -171,7 +184,7 @@ Open `http://localhost:3000` in your browser.
 
 ## Architecture and Design Documentation
 
-### Phase Specifications (01 to 18)
+### Specification Documents
 - [01. Requirements Analysis](docs/01-requirements-analysis.md)
 - [02. User Journeys](docs/02-user-journeys.md)
 - [03. Architecture](docs/03-architecture.md)
@@ -179,16 +192,19 @@ Open `http://localhost:3000` in your browser.
 - [05. UI/UX Wireframes](docs/05-wireframes.md)
 - [06. Privacy and Security (UU PDP)](docs/06-privacy-and-security.md)
 - [07. Application Archive](docs/07-application-archive.md)
-- [08. Master Career Profile](docs/08-master-career-profile.md)
-- [09. AI Architecture](docs/09-ai-architecture.md)
-- [10. AI Career Intelligence](docs/10-ai-career-intelligence.md)
-- [11. CV Studio](docs/11-cv-studio.md)
-- [12. Credit System](docs/12-credit-system.md)
-- [13. Payment Architecture](docs/13-payment-architecture.md)
-- [14. Hybrid Sync](docs/14-hybrid-sync.md)
+- [08. AI Architecture](docs/08-ai-architecture.md)
+- [09. AI Career Intelligence](docs/09-ai-career-intelligence.md)
+- [10. CV Studio](docs/10-cv-studio.md)
+- [11. Credit System](docs/11-credit-system.md)
+- [12. Payment Architecture](docs/12-payment-architecture.md)
+- [13. Hybrid Sync](docs/13-hybrid-sync.md)
+- [14. Security and Data Governance](docs/14-security-and-data-governance.md)
 - [15. API Reference](docs/15-api-reference.md)
 - [16. Global Localization](docs/16-global-localization.md)
-- [18. Security and Data Governance](docs/18-security-and-data-governance.md)
+- [17. Deployment Guide](docs/17-deployment-guide.md)
+- [18. Master Career Profile](docs/18-master-career-profile.md)
+
+> The owner-only license and IP notes (`docs/19-license-and-ip.md`) are deliberately kept out of the public repository and are therefore not linked here. The published [LICENSE](LICENSE) is the governing notice for public users.
 
 ### Status and QA (Phase 11)
 - [Phase Progress Status](docs/PHASE_PROGRESS_STATUS.md): evidence-based status table per phase
@@ -196,6 +212,7 @@ Open `http://localhost:3000` in your browser.
 - [Handover Report](docs/OPENCODE_HANDOVER_REPORT.md): handover guide for the next contributor
 
 ### Other References
+- [Implementation Report](IMPLEMENTATION_REPORT.md): final delivery report and production readiness assessment
 - [Current Architecture](docs/CURRENT_ARCHITECTURE.md): actual technical architecture
 - [Development Roadmap](docs/DEVELOPMENT_ROADMAP.md) · [Release Plan](docs/RELEASE_PLAN.md) · [Development Backlog](DEVELOPMENT_BACKLOG.md)
 - [Database Gap Analysis](docs/DATABASE_GAP_ANALYSIS.md) · [Security Review](docs/SECURITY_REVIEW_REPORT.md) · [Security Gap Analysis](docs/SECURITY_GAP_ANALYSIS.md) · [Repository Audit](docs/REPOSITORY_AUDIT.md)
@@ -203,7 +220,7 @@ Open `http://localhost:3000` in your browser.
 
 ## License
 
-This project is **source-available** under the [Career Application Tracker Personal, Non-Commercial Use License v1.0](LICENSE). The source code is public so anyone can read it, learn from it, run it for their own job search, and improve it, but it is **not** free to commercialise.
+This project is **source-available** under the [Career Application Tracker Personal, Non-Commercial Use License v1.0](LICENSE). The source code is public so anyone can read it, learn from it, run it for their own job search, and improve it, but it is **not** free to commercialise. The LICENSE text is a template prepared **for owner legal review**; it is not legal advice, and no repository visibility or ownership changes were made as part of the documentation work.
 
 © 2026 Ari ([kijarrot21](https://github.com/kijarrot21)).
 

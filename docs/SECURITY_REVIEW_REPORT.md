@@ -1,7 +1,7 @@
 # Security Review & Audit Report
 
 **Project**: Career Application Tracker  
-**Audit Scope**: End-to-End Security Architecture (Phases 1–10)  
+**Audit Scope**: End-to-End Security Architecture (Phases 1 to 10)  
 **Classification**: Confidential / Engineering Assessment  
 **Date**: November 2026  
 
@@ -30,7 +30,7 @@ The review confirmed that:
 | **Prompt Injection / Override** | Malicious CV text hijacks AI evaluation instructions | High | Delimiter escaping, system prompt directives, passive data wrapping (`<untrusted_data>`), PII minimization. | Low |
 | **Payment & Credit Tampering** | Client spoofs payment success or alters credit balances | Critical | Server-authoritative credit ledger; webhook cryptographic signature verification (Midtrans & Stripe); idempotency keys. | Low |
 | **Unauthorized Sync Push** | Malicious device overwrites cloud application state | High | Device registration with token authentication; version-based conflict detection; sync outbox isolation; zero local credit mutation. | Low |
-| **Data Retention Breach** | Stale candidate data retained indefinitely | Medium | Configurable archive retention policy (30–3650 days); automated expired archive purge service. | Low |
+| **Data Retention Breach** | Stale candidate data retained indefinitely | Medium | Configurable archive retention policy (30 to 3650 days); automated expired archive purge service. | Low |
 
 ---
 

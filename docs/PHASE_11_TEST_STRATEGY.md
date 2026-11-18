@@ -4,7 +4,7 @@
 
 ## 1. Objectives
 
-1. Verify every Phase 0–10 feature claim against executable evidence.
+1. Verify every Phase 0 to 10 feature claim against executable evidence.
 2. Establish a repeatable, zero-baseline-failure quality gate.
 3. Classify all defects with reproducible evidence; fix only with owner approval.
 4. Report honestly: never report an unexecuted test as PASS.

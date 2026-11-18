@@ -1,7 +1,7 @@
-# 12. Credit-Based Monetization System
+# 11. Credit-Based Monetization System
 
-**Phase:** 5: Credit-Based Monetization  
-**Status:** Implemented (Database Schema, Atomic Reservation Engine, AI Router Integration, Wallet UI, Tests; Real-Money Payment Checkout Not Activated)  
+**Phase:** 5: Credit-Based Monetization
+**Status:** Wallet, ledger, reservation engine, router integration, pricing and UI COMPLETE. Credit package admin CRUD PARTIAL (catalog only). Live payment gateway NOT TESTED.
 **Primary Route:** `/credits`
 
 ---
@@ -70,9 +70,29 @@ New wallets initialize idempotently via `ensureCreditWalletService()` with a con
 
 ## 5. UI (`/credits`)
 
-[CreditsWalletClient](file:///Users/arhel/Documents/Project/Personal%20Job%20Applicant%20System/src/components/credits/credits-wallet-client.tsx) displays:
+`src/components/credits/credits-wallet-client.tsx` (`CreditsWalletClient`) displays:
 - **Credit Wallet KPIs:** Available balance, reserved credits, lifetime spent, lifetime granted.
 - **Low-Balance Warning:** Alert banner when `availableBalance <= lowBalanceThreshold`.
 - **Credit Packages Preview:** IDR & USD package cards clearly labeled `"Online Checkout Not Activated"`.
 - **AI Task Pricing Schedule & Reservation Status:** Live configurable DB pricing and active/settled holds.
 - **Append-Only Credit Ledger Table:** Complete transaction history with deltas, post-balances, reference types, and reasons.
+
+---
+
+## Implementation status
+
+| Area | Status | Notes |
+|---|---|---|
+| Wallet, ledger and reserve/capture/release/refund/adjust | COMPLETE | `src/server/services/credits.ts`, `src/db/schema/credits.ts`, migration `src/db/migrations/0004_hesitant_goblin_queen.sql`. |
+| Optimistic and pessimistic concurrency controls, strict idempotency | COMPLETE | Verified under concurrent requests in integration tests. |
+| Ledger integrity check and configurable pricing table | COMPLETE | `verifyWalletLedgerIntegrityService()`, `resolveAiTaskPricingService()`, `src/db/seed/credits.ts`. |
+| AI router credit integration (consent gate, reserve, capture, release) | COMPLETE | `src/server/ai/router/ai-task-router.ts`. |
+| `credit_packages` display catalog | COMPLETE | Seeded idempotently by `seedCreditCatalog()`. |
+| Admin CRUD for `credit_packages` | PARTIAL | Catalog exists for display and checkout, but no admin create/update/delete action was found in `src/server/actions/` or `src/app/api/`. |
+| Live real-money payment gateway checkout | NOT TESTED | Out of scope for this module. Sandbox adapters are described in `docs/12-payment-architecture.md` and were tested only with simulated providers. |
+
+## Test evidence
+
+- Unit: `tests/unit/phase5-credits.test.ts` covers initial pricing assumptions, IDR-first packages, error messages and Zod validation for reservations, refunds, adjustments and pricing updates.
+- Integration: `tests/integration/credits.test.ts` (in-memory PGlite) covers wallet initialization with ledger grant, insufficient balance, reservation to capture and failure release, duplicate request idempotency, overdraft prevention under concurrency, configurable pricing, refunds, adjustments, ledger auditability and cross-user isolation.
+- Suite totals: 125/125 Vitest tests pass across 25 files, 4/4 Playwright E2E tests pass, typecheck, lint and build are green, and CI is green on commit `2a9540c`.

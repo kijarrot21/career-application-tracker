@@ -1,8 +1,8 @@
-# 13. Payment Architecture & Integration
+# 12. Payment Architecture and Integration
 
-**Phase:** 6: Payment Architecture and Integration  
-**Status:** Implemented (Database Schema, Gateway Abstraction, Midtrans & Stripe Sandbox Adapters, Webhook Security, Reconciliation, Refunds, UI; Production/Real-Money Charges Blocked Until Explicit Approval)  
-**Primary UI Route:** `/credits`  
+**Phase:** 6: Payment Architecture and Integration
+**Status:** Schema, gateway abstraction, Midtrans and Stripe sandbox adapters, webhook security, reconciliation, refunds and UI COMPLETE with simulated providers. Live payment gateways NOT TESTED. Production charging BLOCKED until explicit approval.
+**Primary UI Route:** `/credits`
 **Webhook Endpoint:** `POST /api/payments/webhook/[provider]`
 
 ---
@@ -57,3 +57,23 @@ Business orchestration (`src/server/services/payments.ts`) programs strictly aga
 ## 5. UI Verification Guarantee (`/credits`)
 
 `CreditsWalletClient` (`src/components/credits/credits-wallet-client.tsx`) renders package selection, gateway selection, pending checkout links, order status details, transaction logs, and manual verification (`Verify Status`). Success confirmation is rendered **strictly** from verified server order state (`order.status === "paid" && order.creditsGranted === true`), never from URL parameters alone.
+
+---
+
+## Implementation status
+
+| Area | Status | Notes |
+|---|---|---|
+| Payment schema and gateway abstraction | COMPLETE | `src/db/schema/payments.ts`, migration `src/db/migrations/0005_tiresome_siren.sql`, `src/server/payments/providers/payment-provider.types.ts`. |
+| Midtrans sandbox adapter (IDR, Snap, SHA-512 webhook) | COMPLETE | `src/server/payments/providers/midtrans.provider.ts`. |
+| Stripe sandbox adapter (USD cents, Checkout Sessions, HMAC-SHA256) | COMPLETE | `src/server/payments/providers/stripe.provider.ts`. |
+| Checkout, webhook verification, dedup and replay protection | COMPLETE | `src/server/services/payments.ts`, endpoints `src/app/api/payments/webhook/[provider]/route.ts` and `src/app/api/v1/payments/checkout/route.ts`. |
+| Reconciliation and refunds with single authoritative credit grant | COMPLETE | `reconcilePaymentOrderService()`, `refundPaymentOrderService()` in `src/server/services/payments.ts`. |
+| Live Midtrans or Stripe charges against real accounts | NOT TESTED | `PAYMENT_MODE` defaults to `"disabled"` and only simulated providers were used in tests. No live credentials were available. |
+| Production charging with live keys | BLOCKED | Requires explicit approval; sandbox adapters reject live keys by design. |
+
+## Test evidence
+
+- Unit: `tests/unit/phase6-payments.test.ts` verifies Midtrans SHA-512 and Stripe HMAC-SHA256 signatures, rejects invalid signatures and stale replays, and blocks live production keys.
+- Integration: `tests/integration/payments.test.ts` (in-memory PGlite) covers successful Midtrans checkout, duplicate webhook deduplication, reconciliation idempotency with exactly one credit grant, rejection of invalid signatures, replays, incorrect amounts and currencies, failed checkout, Stripe reconciliation recovery and full refund clawback, all with simulated providers.
+- Suite totals: 125/125 Vitest tests pass across 25 files, 4/4 Playwright E2E tests pass, typecheck, lint and build are green, and CI is green on commit `2a9540c`.

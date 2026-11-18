@@ -1,7 +1,7 @@
-# 10. AI Career Intelligence
+# 09. AI Career Intelligence
 
-**Phase:** 4: AI Career Features  
-**Status:** Implemented (Backend Services, Schemas, UI Panels, Automated Tests)  
+**Phase:** 4: AI Career Features
+**Status:** Backend services, schemas, UI panels and automated tests COMPLETE. Live cloud AI NOT TESTED.
 **Routes:** `/cv-studio`, `/jobs/[id]`, `/profile` (Career Roadmap tab)
 
 ---
@@ -48,7 +48,7 @@ Evaluates an uploaded/stored CV version and/or verified Master Career Profile ac
 9. `readability`
 10. `ats_compatibility`
 
-Returns `overallScore` (`0–100`), `categoryScores`, grounded `evidence`, `weaknesses`, `recommendations`, and `priorityActions`. Both the system prompts (`en` and `id`) and `cvEvaluationSchema.scoreDisclaimer` prohibit describing the evaluation score as a hiring probability.
+Returns `overallScore` (`0 to 100`), `categoryScores`, grounded `evidence`, `weaknesses`, `recommendations`, and `priorityActions`. Both the system prompts (`en` and `id`) and `cvEvaluationSchema.scoreDisclaimer` prohibit describing the evaluation score as a hiring probability.
 
 ---
 
@@ -72,3 +72,21 @@ Analyzes verified profile info, skills, experiences, career preferences, and fac
 
 - **Verified Facts vs. AI Inferences:** Outputs strictly separate `verifiedFacts` from advisory `aiInferences`.
 - **Rejection Honesty Guarantee:** Employer rejection reasons are cited only when explicitly documented in closure notes or interview feedback; unrecorded rejection reasons are never fabricated.
+
+---
+
+## Implementation status
+
+| Feature | Status | Notes |
+|---|---|---|
+| A: AI CV Parser | COMPLETE | `src/server/ai/services/cv-parser.service.ts`, extractor `src/server/ai/extractors/document-text-extractor.ts`, safe staging via `stageAiParsedCvToProfileService()`. |
+| B: AI CV Evaluation | COMPLETE | `src/server/ai/services/cv-evaluator.service.ts`, 10 categories in `src/server/ai/schemas/cv-analysis.schema.ts`. |
+| C: AI Job Matching | COMPLETE | `src/server/ai/services/job-matcher.service.ts`, panel `src/components/jobs/job-match-ai-panel.tsx`. |
+| F: AI Career Roadmap | COMPLETE | `src/server/ai/services/career-roadmap.service.ts`, panel `src/components/profile/career-roadmap-panel.tsx`. |
+| All features with live cloud providers | NOT TESTED | Verified only with mocked providers and in-memory PGlite. No cloud credentials were available. |
+
+## Test evidence
+
+- Unit: `tests/unit/phase4-ai-career.test.ts` covers binary extraction (DOCX, TXT/MD, uncompressed and FlateDecode PDF), rejection of unsupported formats, CV format/template ordering and the non-hiring-probability guard.
+- Integration: `tests/integration/ai-career-features.test.ts` (in-memory PGlite) covers Features A, B, C, D, E and F, including safe staging, 10-dimension evaluation, job matching, approval gates and provider failure handling. `tests/integration/ai-engine.test.ts` additionally exercises all 8 AI career services.
+- Suite totals: 125/125 Vitest tests pass across 25 files, 4/4 Playwright E2E tests pass, typecheck, lint and build are green, and CI is green on commit `2a9540c`.

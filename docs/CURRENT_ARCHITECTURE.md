@@ -86,7 +86,7 @@ The database layer supports two modes via a single Drizzle schema (`dialect: "po
 
 ### 2.5 Document Storage & Email OAuth
 - **Document Storage (`src/lib/storage.ts`):**
-  - Validates file buffer size (1 B – 10 MB) and inspects binary magic bytes (PDF, PNG, JPEG, WebP, DOCX ZIP with `.docx` extension, or `.txt`/`.md` without null bytes or HTML/SVG/script tags).
+  - Validates file buffer size (1 B to 10 MB) and inspects binary magic bytes (PDF, PNG, JPEG, WebP, DOCX ZIP with `.docx` extension, or `.txt`/`.md` without null bytes or HTML/SVG/script tags).
   - Writes files under `storage/documents/<sanitizedUserId>/<uuid>.<ext>`.
   - Served through `GET /api/documents/versions/[versionId]/file` after verifying `(versionId, userId)` ownership.
 - **Email OAuth (`src/lib/email-oauth.ts`, `src/lib/crypto.ts`):**

@@ -33,7 +33,7 @@ Counts below are scenario definitions per file derived from source (`it(`/`test(
 | QA-I-09 | `tests/integration/security.test.ts` | K | Integration/Security | 9 | PASS | idem |
 | QA-I-10 | `tests/integration/services.test.ts` | Cross-cutting + isolation | Integration/DB | 7 | PASS | idem |
 | QA-I-11 | `tests/integration/sync.test.ts` | G | Integration | 8 | PASS | idem |
-| QA-E-01 | `tests/e2e/core-journey.spec.ts` | J (+ A–I traversal) | E2E | 1 | PASS | Playwright chromium, 6.1s, 2026-11-17 |
+| QA-E-01 | `tests/e2e/core-journey.spec.ts` | J (+ A to I traversal) | E2E | 1 | PASS | Playwright chromium, 6.1s, 2026-11-17 |
 
 ## 2. Security Regression Detail (Module K): all PASS
 

@@ -25,7 +25,7 @@
 | `recruiter_contacts` | `id` (`uuid`) | `userId -> user.id` (`cascade`), composite FK `(companyId, userId) -> companies(id, userId)` (`cascade`) | `UNIQUE(id, userId)`, idx `(userId, companyId)` |
 | `job_sources` | `id` (`uuid`) | `userId -> user.id` (`cascade`, nullable for system rows) | Partial unique `key WHERE user_id IS NULL`, partial unique `(userId, key) WHERE user_id IS NOT NULL` |
 | `job_vacancies` | `id` (`uuid`) | `userId -> user.id` (`cascade`), `sourceId -> job_sources.id` (`set null`), composite FK `(companyId, userId) -> companies(id, userId)` (`cascade`) | `UNIQUE(id, userId)`, `UNIQUE(userId, code)`, partial `UNIQUE(userId, normalizedUrl) WHERE normalized_url IS NOT NULL`, salary/score/experience `CHECK`s, idx `(userId, triageStatus)` |
-| `suitability_evaluations` | `id` (`uuid`) | `userId -> user.id` (`cascade`), composite FK `(vacancyId, userId) -> job_vacancies(id, userId)` (`cascade`) | `UNIQUE(vacancyId)`, 0–100 `CHECK` on all 6 scores |
+| `suitability_evaluations` | `id` (`uuid`) | `userId -> user.id` (`cascade`), composite FK `(vacancyId, userId) -> job_vacancies(id, userId)` (`cascade`) | `UNIQUE(vacancyId)`, 0 to 100 `CHECK` on all 6 scores |
 | `application_stages` | `id` (`uuid`) | `userId -> user.id` (`cascade`) | `UNIQUE(id, userId)`, `UNIQUE(userId, key)`, idx `(userId, sortOrder)` |
 
 ### 1.3 Applications, Career Lifecycle, Documents & Audit Tables (`src/db/schema/applications.ts`)
