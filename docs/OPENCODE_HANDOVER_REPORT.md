@@ -11,7 +11,7 @@
 |---|---|
 | Product | Personal Applicant Tracking System (ATS) → evolving into a Hybrid AI Career Management Platform |
 | Repository | `career-application-tracker` (origin: `github.com/kijarrot21/career-application-tracker`) |
-| Canonical working directory | `/Users/arhel/Documents/Project/Personal Job Applicant Tracking System` |
+| Canonical working directory | `<project-root>` |
 | Deployment model | **Hybrid** (local-first with cloud sync) |
 | AI strategy | **Hybrid Local + Cloud** (Ollama local; OpenAI/Gemini cloud, consent-gated) |
 | Monetization | **Credits** (server-authoritative wallet, Midtrans + Stripe) |

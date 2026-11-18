@@ -41,26 +41,26 @@ The review confirmed that:
 - **CSRF Protection**: Native SameSite cookie policies and Next.js Server Action CSRF tokens.
 - **Account Deletion Gate**: Requires explicit password verification (`deleteAccountWithPasswordAction`) before triggering account deletion.
 
-### 3.2 Document Storage Security ([storage.ts](file:///Users/arhel/Documents/Project/Personal Job Applicant Tracking System/src/lib/storage.ts))
+### 3.2 Document Storage Security ([storage.ts](../src/lib/storage.ts))
 - **Path Traversal**: Storage keys are verified against `..` traversals and restricted to `storage/documents/<safeUserId>/`.
 - **Magic Bytes**: Binary headers are validated for PDF (`%PDF-`), PNG, JPEG, WebP, and DOCX (`PK\x03\x04`). Text/Markdown files are checked for null bytes and prohibited from containing `<script>`, `<svg>`, or `<iframe>` tags.
 - **Anti-Malware Scanner**: Pre-save hook detects EICAR signatures, Windows PE (`MZ`), Linux ELF, and Mach-O headers. Integrates with ClamAV and cloud sandbox scanners.
 - **Signed Download URLs**: `/api/documents/download?token=...` enforces short-lived (5 min) HMAC signatures, preventing link leakage or brute-force access.
 
-### 3.3 AI Intelligence & Privacy Protection ([prompt-guard.ts](file:///Users/arhel/Documents/Project/Personal Job Applicant Tracking System/src/server/ai/security/prompt-guard.ts))
+### 3.3 AI Intelligence & Privacy Protection ([prompt-guard.ts](../src/server/ai/security/prompt-guard.ts))
 - **Prompt Injection Defense**: Detection of override phrases (`ignore previous instructions`, `role spoofing`, `delimiter breakout`).
 - **Tag Neutralization**: Replaces `<untrusted_data>` with `[untrusted_data]` in user text so users cannot prematurely close wrapper delimiters.
 - **Data Minimization**: Automatically redacts 16-digit Indonesian NIKs (`[REDACTED_NIK]`) and API keys before sending prompts to external providers.
 - **Consent Gate**: Database flags `containsPrivateDocuments` and `consentRequired` prevent cloud execution without explicit user consent.
 
-### 3.4 Payment & Credit Security ([payments.ts](file:///Users/arhel/Documents/Project/Personal Job Applicant Tracking System/src/server/services/payments.ts))
+### 3.4 Payment & Credit Security ([payments.ts](../src/server/services/payments.ts))
 - **Authoritative Ledgers**: Wallets and ledgers are maintained server-side in PostgreSQL. Local devices cannot modify credit balances.
 - **Signature Verification**:
   - Midtrans: SHA-512 over `order_id + status_code + gross_amount + server_key`.
   - Stripe: HMAC-SHA256 signature verification over the raw webhook payload.
 - **Idempotency**: Webhook events are tracked in `payment_webhook_events`. Repeated deliveries are acknowledged without re-granting credits.
 
-### 3.5 Hybrid Synchronization Security ([sync.ts](file:///Users/arhel/Documents/Project/Personal Job Applicant Tracking System/src/server/services/sync.ts))
+### 3.5 Hybrid Synchronization Security ([sync.ts](../src/server/services/sync.ts))
 - **Device Authorization**: Each sync client registers a distinct device token linked to the authenticated user.
 - **Cross-User Protection**: Push and pull queries strictly filter by `sync_devices.userId`.
 - **Financial Boundary**: Synchronizing credit or payment mutations from local devices is strictly forbidden and rejected at the API boundary.
@@ -70,7 +70,7 @@ The review confirmed that:
 ## 4. Indonesian PDP Law (UU No. 27 Tahun 2022) Governance Review
 
 1. **Right to Access & Portability (Art. 7)**:
-   - Implemented via `exportAccountJsonService` ([settings.ts](file:///Users/arhel/Documents/Project/Personal Job Applicant Tracking System/src/server/services/settings.ts)).
+   - Implemented via `exportAccountJsonService` ([settings.ts](../src/server/services/settings.ts)).
    - Exports all candidate applications, documents, stages, AI evaluations, credits, and audit records in JSON format.
    - Authentication passwords and encryption keys are scrubbed from exported data.
 2. **Right to Erasure (Art. 8)**:
@@ -85,9 +85,9 @@ The review confirmed that:
 ## 5. Security Test Suite Summary
 
 The security architecture is verified through dedicated unit and integration suites:
-- **Unit Suite** ([phase10-security.test.ts](file:///Users/arhel/Documents/Project/Personal Job Applicant Tracking System/tests/unit/phase10-security.test.ts)):
+- **Unit Suite** ([phase10-security.test.ts](../tests/unit/phase10-security.test.ts)):
   - 14 tests: Signed token lifecycle, tamper rejection, expiry handling, EICAR detection, binary header blocking, tag neutralization, NIK redaction, size limits.
-- **Integration Suite** ([security.test.ts](file:///Users/arhel/Documents/Project/Personal Job Applicant Tracking System/tests/integration/security.test.ts)):
+- **Integration Suite** ([security.test.ts](../tests/integration/security.test.ts)):
   - 9 tests: Cross-user document isolation, cross-user application isolation, signed download URL verification, upload threat rejection, cascade DB and physical file deletion, PDP JSON export sanitization, retention purge verification.
 
 **Result**: 100% Pass across all security test cases.
@@ -96,7 +96,7 @@ The security architecture is verified through dedicated unit and integration sui
 
 ## 6. Recommendations & Deployment Restrictions
 
-1. **Transport Layer**: Enforce TLS 1.3 in production environments. Strict-Transport-Security (`max-age=31536000; includeSubDomains; preload`) is already configured in [next.config.ts](file:///Users/arhel/Documents/Project/Personal Job Applicant Tracking System/next.config.ts).
+1. **Transport Layer**: Enforce TLS 1.3 in production environments. Strict-Transport-Security (`max-age=31536000; includeSubDomains; preload`) is already configured in [next.config.ts](../next.config.ts).
 2. **Operational Policies**:
    - Establish a 72-hour security incident notification runbook to comply with PDP Article 36.
    - Execute formal Data Processing Agreements (DPAs) with payment and cloud AI vendors.

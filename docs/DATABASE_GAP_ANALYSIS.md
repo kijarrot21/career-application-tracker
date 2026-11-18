@@ -2,7 +2,7 @@
 
 **Database Engines:** PGlite (`@electric-sql/pglite` 0.5.16) & PostgreSQL (`postgres` 4.1.1)  
 **ORM / Migrations:** Drizzle ORM `0.45.4` + `drizzle-kit` `0.31.11`  
-**Schema Entry:** [src/db/schema/index.ts](file:///Users/arhel/Documents/Project/Personal%20Job%20Applicant%20Tracking%20System/src/db/schema/index.ts)  
+**Schema Entry:** [src/db/schema/index.ts](../src/db/schema/index.ts)  
 **Current Migrations:** 1 baseline migration (`0000_messy_komodo.sql`)
 
 ---
