@@ -29,6 +29,10 @@ import {
   triageStatusEnum,
   workArrangementEnum,
 } from "./enums";
+import {
+  DEFAULT_ONBOARDING_STATE,
+  type OnboardingState,
+} from "@/lib/domain/onboarding";
 import type { Weights, Criterion, Suggestion } from "@/lib/domain/suitability";
 
 const timestamps = {
@@ -75,6 +79,11 @@ export const userSettings = pgTable(
     noResponseDays: smallint("no_response_days").notNull().default(30),
     holidays: text("holidays").array().notNull().default(sql`'{}'::text[]`),
     suitabilityWeights: jsonb("suitability_weights").$type<Weights>(),
+    /** UX-only onboarding preferences; never a source of business progress. */
+    onboardingState: jsonb("onboarding_state")
+      .$type<OnboardingState>()
+      .notNull()
+      .default(DEFAULT_ONBOARDING_STATE),
     /** null = automatic (include sample data only while there are no real applications). */
     includeSampleInAnalytics: boolean("include_sample_in_analytics"),
     autoArchiveOnTerminal: boolean("auto_archive_on_terminal").notNull().default(true),

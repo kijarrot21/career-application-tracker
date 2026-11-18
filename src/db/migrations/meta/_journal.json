@@ -57,6 +57,13 @@
       "when": 1794901239599,
       "tag": "0007_ordinary_lord_tyger",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1794970138183,
+      "tag": "0008_dapper_newton_destine",
+      "breakpoints": true
     }
   ]
 }

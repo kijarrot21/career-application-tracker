@@ -1,7 +1,7 @@
 # OpenCode Handover Report: Career Application Tracker
 
 **Date:** 2026-11-17 · **Branch:** `main` · **Version:** 0.1.0
-**Status:** Phases 0 to 11 complete and verified (Phase 11 signed off 2026-11-17 with one accepted exception, DEF-11-006).
+**Status:** Phases 0 to 11 complete and verified (Phase 11 signed off 2026-11-17 with one accepted exception, DEF-11-006). OpenCode Stages 1 to 9 added the progress-driven onboarding and recommendation system on 2026-11-18; see `docs/USER_ONBOARDING_DESIGN.md` and `docs/USER_ONBOARDING_TEST_PLAN.md`.
 
 ---
 

@@ -15,6 +15,7 @@ import {
   RecordSubmissionDialog,
   type VacancyOptionForSubmission,
 } from "@/components/applications/record-submission-dialog";
+import { ContextualHelp } from "@/components/help/contextual-help";
 import {
   Button,
   Card,
@@ -83,9 +84,12 @@ export function ShortlistClient({
         title="Job Shortlist & Suitability Comparison"
         description="Interested and Shortlisted opportunities ranked by overall suitability score and upcoming deadlines."
         actions={
-          <Button variant="secondary" size="lg" asChild>
-            <Link href="/jobs">Browse All Vacancies</Link>
-          </Button>
+          <>
+            <ContextualHelp module="shortlist" />
+            <Button variant="secondary" size="lg" asChild>
+              <Link href="/jobs">Browse All Vacancies</Link>
+            </Button>
+          </>
         }
       />
 

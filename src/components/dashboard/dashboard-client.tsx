@@ -58,8 +58,11 @@ import {
   updateSearchStatusAction,
 } from "@/server/actions/settings";
 import type { getDashboardData } from "@/server/queries/dashboard";
+import type { getDashboardInsights } from "@/server/queries/dashboard-insights";
+import { DashboardGuidance } from "./dashboard-guidance";
 
 type DashboardData = Awaited<ReturnType<typeof getDashboardData>>;
+type DashboardInsights = Awaited<ReturnType<typeof getDashboardInsights>>;
 
 const OUTCOME_COLORS: Record<string, string> = {
   active: "var(--primary)",
@@ -72,9 +75,11 @@ const OUTCOME_COLORS: Record<string, string> = {
 export function DashboardClient({
   user,
   data,
+  insights,
 }: {
   user: { name: string; email: string };
   data: DashboardData;
+  insights: DashboardInsights;
 }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -203,6 +208,8 @@ export function DashboardClient({
             )}
         </div>
       </Card>
+
+      <DashboardGuidance insights={insights} />
 
       {/* KPI SECTION: 4 Primary Executive Ribbon Tiles + 6 Secondary KPIs */}
       <section aria-label="Key Performance Indicators" className="space-y-4">

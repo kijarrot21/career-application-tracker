@@ -15,6 +15,7 @@ import {
   RecordSubmissionDialog,
   type VacancyOptionForSubmission,
 } from "@/components/applications/record-submission-dialog";
+import { ContextualHelp } from "@/components/help/contextual-help";
 import {
   Badge,
   Button,
@@ -150,12 +151,15 @@ export function JobsListClient({
         title="Find & Discover Job Opportunities"
         description="Organize vacancies by industry, position, location, salary, and suitability score before applying."
         actions={
-          <Button variant="primary" size="lg" asChild>
-            <Link href="/jobs/new">
-              <Plus className="h-3.5 w-3.5" />
-              Add Job Vacancy
-            </Link>
-          </Button>
+          <>
+            <ContextualHelp module="jobDiscovery" />
+            <Button variant="primary" size="lg" asChild data-tour="add-job">
+              <Link href="/jobs/new">
+                <Plus className="h-3.5 w-3.5" />
+                Add Job Vacancy
+              </Link>
+            </Button>
+          </>
         }
       />
 

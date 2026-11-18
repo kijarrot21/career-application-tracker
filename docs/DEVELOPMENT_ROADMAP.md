@@ -1,7 +1,7 @@
 # Development Roadmap
 
 **Product:** Career Application Tracker (Trackr ATS), hybrid local-first career management platform
-**Baseline:** `main` at `620f7d8`, 2026-11-18. Phases 0 to 11 complete.
+**Baseline:** `main` at `620f7d8`, 2026-11-18. Phases 0 to 11 complete. OpenCode Stages 1 to 9 added the progress-driven onboarding and deterministic recommendation system documented in `docs/USER_ONBOARDING_DESIGN.md`.
 **Purpose:** Position the requested Sprint 0 to Sprint 10 structure against the code that actually exists, expose dependencies and blockers, and define a realistic path to release without inventing calendar dates.
 
 ---
@@ -50,6 +50,8 @@ Full task-level detail lives in [DEVELOPMENT_BACKLOG.md](../DEVELOPMENT_BACKLOG.
 
 | Capability | Source of truth | Automated proof |
 |---|---|---|
+| Progress detection, workflow rules, next best action | `src/lib/domain/{progress,workflow,recommendations}.ts`, matching services/queries | `tests/unit/{progress,workflow,recommendations}.test.ts`, `tests/integration/{progress,workflow,recommendations}.test.ts` |
+| Onboarding state, guided setup, tour, contextual help | `src/lib/domain/{onboarding,guided-setup,product-tour,contextual-help}.ts`, dashboard/settings components | `tests/unit/{onboarding,guided-setup,product-tour,contextual-help,dashboard-guidance}.test.ts`, matching integration suites |
 | Archive lifecycle and snapshots | `src/server/services/archive.ts` | `tests/integration/archive.test.ts`, `tests/unit/phase1-archive.test.ts` |
 | Career profile | `src/server/services/career-profile.ts`, `src/db/schema/career.ts` | `tests/integration/career-profile.test.ts` |
 | AI providers and routing | `src/server/ai/providers/*`, `src/server/ai/router/*` | `tests/integration/ai-engine.test.ts` |

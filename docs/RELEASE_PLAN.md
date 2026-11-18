@@ -36,19 +36,20 @@ Estimated remaining effort from M2 through M4 is roughly 9 to 13 engineer-weeks 
 
 **Entry criteria:** Repository baseline established.
 
-**Scope included:** Phases 0 to 11: core ATS, archive, career profile, AI engine, AI career features, CV Studio, credits, payments with simulated providers, sync, API v1, localization, and security controls.
+**Scope included:** Phases 0 to 11: core ATS, archive, career profile, AI engine, AI career features, CV Studio, credits, payments with simulated providers, sync, API v1, localization, and security controls. OpenCode Stages 1 to 9 added progress detection, workflow rules, deterministic next best action, onboarding preferences, dashboard guidance, guided setup, product tour, contextual help, and onboarding settings.
 
 **Exit criteria (all met):**
 
 | Criterion | Evidence |
 |---|---|
-| Unit and integration tests green | 125/125 across 25 files |
-| Browser tests green | 4/4 Playwright tests (core journey, three accessibility tests) |
-| Typecheck, lint, and build green | `npm run typecheck`, `npm run lint`, `npm run build` |
-| CI pipeline active | GitHub Actions run on `620f7d8` completed successfully |
-| Documentation current | README, architecture, phase status, and QA documents |
+| Unit and integration tests green | 298 passed, 9 skipped across 42 files (current Stage 1-9 run) |
+| Browser tests | 3 passed, 1 pre-existing sign-in Enter-submits assertion failing; documented in `docs/USER_ONBOARDING_TEST_PLAN.md` |
+| Typecheck and build green | `npm run typecheck` and `npm run build` passed |
+| Lint | Stage 1-9 files pass scoped ESLint; full command blocked by unrelated `.ua/.trash-*/tmp/*.js` scratch files |
+| CI pipeline active | GitHub Actions workflow present; historic successful run recorded on `620f7d8` |
+| Documentation current | README, architecture, phase status, QA documents, and Stage 1-9 onboarding docs |
 
-**Status:** ACHIEVED on 2026-11-17.
+**Status:** Phase 11 baseline ACHIEVED on 2026-11-17. Stage 1-9 additions verified on 2026-11-18 with the caveats above; no new production gate claimed.
 
 ---
 

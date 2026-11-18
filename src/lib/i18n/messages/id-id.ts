@@ -123,6 +123,155 @@ export const ID_ID_MESSAGES: TranslationMessages = {
     workspaceSavedToast: "Pengaturan workspace diperbarui.",
     languageSwitchedToast: "Bahasa diubah ke Bahasa Indonesia (id-ID).",
   },
+  help: {
+    button: "Panduan modul",
+    dialogTitle: "Cara kerja modul ini",
+    purposeLabel: "Tujuan",
+    fieldsLabel: "Kolom dan aksi penting",
+    outcomeLabel: "Hasil yang diharapkan",
+    stageLabel: "Tahapan alur kerja terkait",
+    nextLabel: "Aksi berikutnya",
+    close: "Tutup panduan",
+    modules: {
+      careerProfile: {
+        title: "Profil Karier",
+        purpose:
+          "Simpan satu sumber data profesional terverifikasi untuk penilaian kesesuaian dan alat AI.",
+        fields:
+          "Isi data profesional, pengalaman, pendidikan, keahlian, sertifikasi, dan proyek. Hanya keahlian terverifikasi pengguna yang dihitung.",
+        outcome:
+          "Profil memenuhi aturan isReadyForAi: data profesional, satu pengalaman, dan tiga keahlian terverifikasi.",
+        stage: "Profil Karier",
+        next: "Simpan CV utama di Dokumen.",
+      },
+      cvStudio: {
+        title: "Studio CV",
+        purpose:
+          "Urai CV, nilai kualitas ATS, tinjau usulan suntingan, dan ekspor CV yang didasarkan data.",
+        fields:
+          "Pilih sumber berkas, bahasa, mode privasi, dan setujui suntingan AI sebelum diterapkan.",
+        outcome: "Draf CV siap diekspor dan disimpan sebagai versi dokumen.",
+        stage: "Unggah CV",
+        next: "Simpan CV hasil ekspor di Dokumen.",
+      },
+      documents: {
+        title: "Repositori Dokumen",
+        purpose:
+          "Simpan versi CV, surat lamaran, sertifikat, dan dokumen lamaran lainnya.",
+        fields:
+          "Pilih kategori, judul, dan label versi. Unggahan memeriksa jenis berkas, ukuran, dan tanda malware.",
+        outcome:
+          "Minimal satu CV utama atau khusus memiliki versi berkas tersimpan.",
+        stage: "Unggah CV",
+        next: "Temukan dan simpan lowongan pekerjaan.",
+      },
+      jobDiscovery: {
+        title: "Penemuan Lowongan",
+        purpose:
+          "Catat lowongan, cegah duplikasi, dan urutkan peluang sebelum melamar.",
+        fields:
+          "Isi URL, perusahaan, posisi, gaji, tenggat, platform, dan status triase. Skor kesesuaian dapat diubah di detail lowongan.",
+        outcome: "Tersedia lowongan tersimpan dengan data yang cukup untuk dinilai.",
+        stage: "Penemuan Lowongan",
+        next: "Nilai kesesuaian lowongan tersebut.",
+      },
+      shortlist: {
+        title: "Daftar Pendek",
+        purpose:
+          "Bandingkan lowongan menarik dan terseleksi berdasarkan skor serta tenggat.",
+        fields:
+          "Gunakan status triase, perbandingan, skor, dan tenggat. Menandai shortlist belum membuat lamaran.",
+        outcome: "Minimal satu lowongan berstatus shortlisted atau interested.",
+        stage: "Daftar Pendek",
+        next: "Catat lamaran untuk lowongan terpilih.",
+      },
+      applications: {
+        title: "Lamaran",
+        purpose:
+          "Lacak lamaran melalui tahapan rekrutmen yang dapat disesuaikan.",
+        fields:
+          "Gunakan papan Kanban atau tabel untuk memindahkan tahap, mencatat alasan, menautkan CV, dan mencatat aktivitas rekruter.",
+        outcome: "Lamaran nyata memiliki riwayat tahap dan tindak lanjut terjadwal.",
+        stage: "Pembuatan Lamaran",
+        next: "Catat wawancara, asesmen, atau tindak lanjut.",
+      },
+      interviews: {
+        title: "Wawancara dan Asesmen",
+        purpose:
+          "Kelola jadwal wawancara, catatan persiapan, umpan balik, dan asesmen teknis.",
+        fields:
+          "Catat tanggal, jenis, hasil, dan tahap. Asesmen mencatat tenggat, penyelesaian, skor, dan hasil.",
+        outcome: "Aktivitas pelacakan nyata tercatat pada lamaran.",
+        stage: "Pelacakan Rekrutmen",
+        next: "Buka Lamaran, pilih lamaran, lalu catat penawaran atau hasil akhir.",
+      },
+      archive: {
+        title: "Arsip",
+        purpose:
+          "Periksa lamaran ditutup, snapshot permanen, dan status retensi tanpa menghapus riwayat.",
+        fields:
+          "Gunakan hasil penutupan, dokumen tersimpan, kebijakan retensi, pemulihan, dan pengajuan ulang yang disengaja.",
+        outcome: "Lamaran selesai memiliki catatan penutupan dan snapshot.",
+        stage: "Penawaran dan Hasil",
+        next: "Tinjau rekomendasi di dasbor untuk pekerjaan tersisa.",
+      },
+    },
+  },
+  onboardingSettings: {
+    sectionTitle: "Onboarding & Panduan",
+    sectionDescription:
+      "Kelola pengaturan guided setup dan tur produk. Tidak mengubah data lamaran.",
+    statusTitle: "Status onboarding",
+    progressTitle: "Progres alur kerja aktual",
+    modeLabel: "Mode",
+    guidedStartedLabel: "Guided setup dimulai",
+    positionLabel: "Posisi tutorial saat ini",
+    completedSectionsLabel: "Bagian tutorial selesai",
+    skippedSectionsLabel: "Bagian tutorial dilewati",
+    tourActiveLabel: "Langkah tur produk aktif",
+    dismissedRemindersLabel: "Pengingat ditutup",
+    yes: "Ya",
+    no: "Tidak",
+    none: "Tidak ada",
+    resumeGuidedButton: "Lanjutkan Guided Setup",
+    restartGuidedButton: "Ulangi Guided Setup",
+    restartTourButton: "Ulangi Tur Produk",
+    dismissRemindersButton: "Tutup Pengingat Onboarding",
+    resumeToast: "Guided setup siap dilanjutkan.",
+    restartGuidedToast: "Guided setup diulang. Data lamaran tidak berubah.",
+    restartTourToast: "Tur produk diulang dan dibuka.",
+    dismissToast: "Pengingat onboarding ditutup. Rekomendasi tetap aktif.",
+    labels: {
+      mode: { guided: "Terpandu", self_paced: "Mandiri" },
+      section: {
+        career_profile: "Profil Karier",
+        cv_upload: "Unggah CV",
+        job_discovery: "Penemuan Lowongan",
+        suitability_evaluation: "Evaluasi Kesesuaian",
+        shortlist: "Daftar Pendek",
+        job_application: "Lamaran",
+        recruitment_tracking: "Pelacakan Rekrutmen",
+        offers_outcomes: "Penawaran dan Hasil",
+      },
+      tourStep: {
+        navigation: "Navigasi workspace",
+        global_search: "Pencarian global",
+        getting_started: "Memulai",
+        next_best_action: "Aksi terbaik berikutnya",
+        add_vacancy: "Tambah lowongan",
+      },
+      stage: {
+        career_profile: "Profil Karier",
+        cv_upload: "Unggah CV",
+        job_discovery: "Penemuan Lowongan",
+        suitability_evaluation: "Evaluasi Kesesuaian",
+        shortlist: "Daftar Pendek",
+        job_application: "Lamaran",
+        recruitment_tracking: "Pelacakan Rekrutmen",
+        offers_outcomes: "Penawaran dan Hasil",
+      },
+    },
+  },
   cv: {
     indonesianTemplateLabel: "Format CV Indonesia (Terstruktur & ATS)",
     internationalTemplateLabel: "Resume Internasional (Gaya AS/Global)",

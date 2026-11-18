@@ -5,6 +5,13 @@ import type {
   TriageStatus,
 } from "@/lib/constants";
 import type { ArchiveOutcome } from "@/lib/domain/archive";
+import type { HelpModuleKey } from "@/lib/domain/contextual-help";
+import type {
+  OnboardingMode,
+  TutorialSection,
+} from "@/lib/domain/onboarding";
+import type { ProductTourStepId } from "@/lib/domain/product-tour";
+import type { WorkflowStageKey } from "@/lib/domain/progress";
 import type { Outcome, StageType } from "@/lib/domain/stages";
 
 export const SUPPORTED_LOCALES = ["id-ID", "en-US"] as const;
@@ -105,6 +112,57 @@ export interface TranslationMessages {
     saveWorkspaceButton: string;
     workspaceSavedToast: string;
     languageSwitchedToast: string;
+  };
+  help: {
+    button: string;
+    dialogTitle: string;
+    purposeLabel: string;
+    fieldsLabel: string;
+    outcomeLabel: string;
+    stageLabel: string;
+    nextLabel: string;
+    close: string;
+    modules: Record<
+      HelpModuleKey,
+      {
+        title: string;
+        purpose: string;
+        fields: string;
+        outcome: string;
+        stage: string;
+        next: string;
+      }
+    >;
+  };
+  onboardingSettings: {
+    sectionTitle: string;
+    sectionDescription: string;
+    statusTitle: string;
+    progressTitle: string;
+    modeLabel: string;
+    guidedStartedLabel: string;
+    positionLabel: string;
+    completedSectionsLabel: string;
+    skippedSectionsLabel: string;
+    tourActiveLabel: string;
+    dismissedRemindersLabel: string;
+    yes: string;
+    no: string;
+    none: string;
+    resumeGuidedButton: string;
+    restartGuidedButton: string;
+    restartTourButton: string;
+    dismissRemindersButton: string;
+    resumeToast: string;
+    restartGuidedToast: string;
+    restartTourToast: string;
+    dismissToast: string;
+    labels: {
+      mode: Record<OnboardingMode, string>;
+      section: Record<TutorialSection, string>;
+      tourStep: Record<ProductTourStepId, string>;
+      stage: Record<WorkflowStageKey, string>;
+    };
   };
   cv: {
     indonesianTemplateLabel: string;

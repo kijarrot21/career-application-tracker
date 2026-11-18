@@ -2,7 +2,9 @@
 
 **Date:** 2026-11-17 · **Official execution:** Vitest 125/125 PASS + Playwright 1/1 PASS + typecheck/lint/build PASS
 
-Counts below are scenario definitions per file derived from source (`it(`/`test(` declarations); the official runner total is 125 (runner counts parameterized/combined cases differently from static declarations).
+Counts below are scenario definitions per file derived from source (`it(`/`test(` declarations); the official runner total was 125 at Phase 11 signing.
+
+> **Stage 1-9 addendum (2026-11-18):** the current full Vitest run is 298 passed and 9 skipped across 42 files. New suites cover progress, workflow, recommendations, onboarding, dashboard insights, guided setup, product tour, contextual help, and onboarding settings. See `docs/USER_ONBOARDING_TEST_PLAN.md` for the current matrix. Playwright currently reports 3 passed and 1 pre-existing sign-in assertion failure; the Phase 11 numbers in this historical matrix are not the current gate.
 
 ## 1. File-Level Matrix
 

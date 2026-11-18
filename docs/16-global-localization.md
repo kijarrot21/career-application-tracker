@@ -11,6 +11,7 @@
 | Timezone (Asia/Jakarta default) | **COMPLETE** | Stored timestamps remain UTC |
 | Document `lang` attribute | **COMPLETE** | Set from `MARKET_CONFIGS[locale].htmlLang` in `src/app/layout.tsx` |
 | Localized AI prompts and CV templates | **COMPLETE** | Prompt and template selection by locale |
+| Contextual help and onboarding text | **COMPLETE** | `help.*` and `onboardingSettings.*` keys exist in both catalogs and are used by the module guides and onboarding settings |
 | Additional regional markets | **NOT IMPLEMENTED** | Registry is extensible, but only two locales are shipped |
 
 ---
@@ -29,7 +30,7 @@
 
 Translations live strictly outside business rules and database state:
 
-- `src/lib/i18n/types.ts`: Strong `TranslationMessages` schema defining UI navigation, actions, statuses, CV section headings, settings labels, and domain error messages.
+- `src/lib/i18n/types.ts`: Strong `TranslationMessages` schema defining UI navigation, actions, statuses, CV section headings, settings labels, contextual help, onboarding settings, and domain error messages.
 - `src/lib/i18n/messages/id-id.ts`: Complete `id-ID` catalog.
 - `src/lib/i18n/messages/en-us.ts`: Complete `en-US` catalog.
 - `src/lib/i18n/index.ts`: Declarative `MARKET_CONFIGS`, `normalizeLocale`, `toAiLocale`, `getDefaultCvFormatForLocale`, runtime key lookup with missing key detection (`translate`), recursive translation completeness validator (`findMissingTranslationKeys`), and localized domain label helpers.

@@ -3,6 +3,7 @@ import { AppShell } from "@/components/layout/app-shell";
 import { SampleDataBanner } from "@/components/layout/sample-data-banner";
 import { requireUser } from "@/lib/session";
 import { getNotificationsSummary } from "@/server/queries/emails";
+import { getOnboardingPreferencesService } from "@/server/services/onboarding";
 import {
   getSampleDataStatus,
   getUserSettings,
@@ -16,10 +17,11 @@ export default async function AuthenticatedAppLayout({
   children: React.ReactNode;
 }) {
   const user = await requireUser();
-  const [settings, sampleStatus, notifSummary] = await Promise.all([
+  const [settings, sampleStatus, notifSummary, onboarding] = await Promise.all([
     getUserSettings(user.id),
     getSampleDataStatus(user.id),
     getNotificationsSummary(user.id),
+    getOnboardingPreferencesService(user.id),
   ]);
 
   return (
@@ -31,6 +33,7 @@ export default async function AuthenticatedAppLayout({
       <AppShell
         user={user}
         notifications={notifSummary.items}
+        onboardingState={onboarding.state}
         banner={
           <SampleDataBanner
             hasSampleData={sampleStatus.hasSampleData}

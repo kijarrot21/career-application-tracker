@@ -1,6 +1,8 @@
 import { SettingsClient } from "@/components/settings/settings-client";
 import { requireUser } from "@/lib/session";
 import { getSanitizedProviderStatuses } from "@/server/ai/providers";
+import { getOnboardingPreferencesService } from "@/server/services/onboarding";
+import { detectProgress } from "@/server/services/progress";
 import {
   getSampleDataStatus,
   getUserSettings,
@@ -11,11 +13,14 @@ export const dynamic = "force-dynamic";
 
 export default async function SettingsPage() {
   const user = await requireUser();
-  const [settings, stages, sampleStatus] = await Promise.all([
-    getUserSettings(user.id),
-    getUserStages(user.id, true),
-    getSampleDataStatus(user.id),
-  ]);
+  const [settings, stages, sampleStatus, onboarding, progress] =
+    await Promise.all([
+      getUserSettings(user.id),
+      getUserStages(user.id, true),
+      getSampleDataStatus(user.id),
+      getOnboardingPreferencesService(user.id),
+      detectProgress(user.id),
+    ]);
   const aiProviders = getSanitizedProviderStatuses();
 
   return (
@@ -24,6 +29,8 @@ export default async function SettingsPage() {
       stages={stages}
       sampleStatus={sampleStatus}
       aiProviders={aiProviders}
+      onboarding={onboarding}
+      progress={progress}
     />
   );
 }

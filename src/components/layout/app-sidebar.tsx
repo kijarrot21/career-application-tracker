@@ -288,7 +288,11 @@ export function AppSidebar({
                 {messages.nav.pipelineGroup}
               </span>
             </div>
-            <nav className="flex flex-col gap-1" aria-label="Pipeline navigation">
+            <nav
+              className="flex flex-col gap-1"
+              aria-label="Pipeline navigation"
+              data-tour="sidebar-nav"
+            >
               {renderNavGroup(
                 PIPELINE_NAV_ITEMS,
                 labelVisibilityClass,

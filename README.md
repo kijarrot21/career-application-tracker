@@ -17,8 +17,9 @@
 | Phase 9 (id-ID/en-US localization, IDR/USD) | Complete |
 | Phase 10 (Security and UU PDP data governance) | Complete |
 | Phase 11 (QA and Testing) | Complete, with one accepted exception (PostgreSQL RLS, deferred to a cloud hardening phase) |
+| OpenCode Stages 1 to 9 (Progress, Rules, Recommendations, Onboarding, Dashboard UX, Tour, Help, QA) | Complete; one pre-existing E2E sign-in assertion remains failing and is documented in the Stage 9 test plan |
 
-**Verified quality gates:** 125/125 unit and integration tests (Vitest, 66 unit plus 59 integration), 4/4 E2E tests (Playwright: core journey and accessibility suite), typecheck, lint, and production build. All gates also run automatically through [GitHub Actions CI](.github/workflows/ci.yml) on every push and pull request.
+**Latest verification:** `npm run typecheck` passed; `npm test` 298 passed and 9 skipped across 42 files; `npm run build` passed; `npm run test:e2e` 3 passed and 1 failed (pre-existing sign-in Enter-submits assertion). Full `npm run lint` is blocked by unrelated `.ua/.trash-*/tmp/*.js` scratch files; Stage 1-9 files pass scoped ESLint. Gates also run through [GitHub Actions CI](.github/workflows/ci.yml) on pushes and pull requests.
 
 ## Implementation Status
 
@@ -26,7 +27,7 @@ This table separates what exists from what is only planned. It is deliberately c
 
 | Category | Features |
 |---|---|
-| **Implemented** | Core ATS (jobs, applications, interviews, emails, documents, analytics), application archive, master career profile, hybrid AI engine, AI career features, CV Studio with PDF and DOCX export, credit wallet and ledger, Midtrans and Stripe integrations with simulated providers, hybrid sync with conflict resolution, versioned API v1, en-US and id-ID localization, and Phase 10 and 11 security controls |
+| **Implemented** | Core ATS (jobs, applications, interviews, emails, documents, analytics), application archive, master career profile, hybrid AI engine, AI career features, CV Studio with PDF and DOCX export, credit wallet and ledger, Midtrans and Stripe integrations with simulated providers, hybrid sync with conflict resolution, versioned API v1, en-US and id-ID localization, Phase 10 and 11 security controls, deterministic progress detection, workflow rules, next best action engine, onboarding preferences, dashboard guidance, guided setup wizard, product tour, contextual help, and onboarding settings |
 | **Partially implemented** | Credit package catalog has no admin CRUD UI; interview coach exists as a service only with no UI; archive AI post-mortem has a tested service and API but a disabled UI placeholder; AI jobs execute synchronously with no background worker; E2E coverage does not yet include AI, sync, or billing journeys; resume templates are two formats with five styles rather than a visual template gallery |
 | **Planned** | PostgreSQL row-level security (accepted deferral DEF-11-006), cloud object storage adapter, CSP nonce tightening, UU PDP retention reminders, performance and backup automation, and a background AI worker |
 | **Not available** | Live cloud multi-tenancy, live AI provider verification, live payment gateway verification, live cloud sync round-trip, and automated axe-core accessibility scans |
@@ -94,6 +95,8 @@ Job hunting in the modern era often feels messy and exhausting because of severa
   Versioned API (`/api/v1/*`) with session/API-key authentication, Zod validation, rate limiting, and idempotency keys for external clients and synchronization.
 - **Global Localization**  
   Support for two markets: **Indonesia** (id-ID, IDR, Asia/Jakarta time zone) and **Global** (en-US, USD), with a matching document `lang` attribute and automatic date/currency formatting.
+- **Progress-Driven Onboarding**  
+  Dashboard Getting Started and Next Best Action widgets derive progress and recommendations from real records. A guided setup wizard, product tour, contextual module guides, and onboarding settings are persisted per user without changing business progress.
 
 ## Usage
 
@@ -128,6 +131,9 @@ Open `http://localhost:3000` in your browser.
 3. On the initial **Dashboard**, you can choose to:
    - **Load sample data** to explore the Kanban view, analytics, and application details using demo data (removable at any time and automatically excluded from analytics once you have real applications).
    - **Complete your profile** in **Settings** (skills, years of experience, education, salary expectations, preferred locations) so the Suitability Score gives accurate recommendations.
+   - **Resume Guided Setup** from the Getting Started widget. The wizard follows real progress, never tutorial clicks, and can be skipped or resumed later.
+   - Follow the **Next Best Action** card for the highest-priority relevant action. Urgent follow-ups, interviews, assessments, and offer deadlines are highlighted.
+4. Use **Settings -> Onboarding & Guidance** to view onboarding status and actual workflow progress, resume or restart guided setup, restart the product tour, and dismiss onboarding reminders. Dismissing guidance never disables application features or recommendations.
 
 ### 3. Daily Workflow
 
@@ -158,7 +164,7 @@ Open `http://localhost:3000` in your browser.
 - **AI**: Ollama (local) / OpenAI / Gemini (cloud) behind a provider-agnostic router with a consent gate and prompt-injection defense
 - **Payments**: Midtrans (SHA-512) and Stripe (HMAC webhooks), atomic server-authoritative credit wallet
 - **Interaction and Visualization**: `@dnd-kit` (Kanban), `recharts` (Analytics), `react-hook-form`, `cmdk`, `sonner`
-- **Testing**: Vitest 5 (125 unit and integration tests on in-memory PGlite) and Playwright (E2E: core journey plus accessibility/keyboard suite)
+- **Testing**: Vitest 5 (298 passing, 9 skipped unit and integration tests on in-memory PGlite) and Playwright (E2E: core journey plus accessibility/keyboard suite; 3 passing, 1 pre-existing sign-in assertion failing)
 
 ## Scripts
 
@@ -205,6 +211,10 @@ Open `http://localhost:3000` in your browser.
 - [18. Master Career Profile](docs/18-master-career-profile.md)
 
 > The owner-only license and IP notes (`docs/19-license-and-ip.md`) are deliberately kept out of the public repository and are therefore not linked here. The published [LICENSE](LICENSE) is the governing notice for public users.
+
+### Progress, Guidance & Onboarding (Stages 1 to 9)
+- [User Onboarding Design](docs/USER_ONBOARDING_DESIGN.md) · [User Onboarding Flow](docs/USER_ONBOARDING_FLOW.md) · [Implementation](docs/USER_ONBOARDING_IMPLEMENTATION.md) · [Test Plan and Results](docs/USER_ONBOARDING_TEST_PLAN.md)
+- [Next Best Action Engine](docs/NEXT_BEST_ACTION_ENGINE.md) · [Progress Detection](docs/PROGRESS_DETECTION.md) · [Workflow Rules](docs/WORKFLOW_RULES.md) · [Onboarding State](docs/ONBOARDING_STATE.md) · [Original Next Best Action Notes](docs/NEXT_BEST_ACTION.md)
 
 ### Status and QA (Phase 11)
 - [Phase Progress Status](docs/PHASE_PROGRESS_STATUS.md): evidence-based status table per phase

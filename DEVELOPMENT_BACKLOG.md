@@ -7,6 +7,8 @@
 
 **Phase 13 update (2026-11-18):** Documentation was consolidated into the canonical `docs/01` to `docs/19` numbering without duplicating documents. `.env.example` now documents variable names and behavior only. CI reports unit tests and integration tests as separate gates. Final gate evidence and the production readiness assessment are recorded in `IMPLEMENTATION_REPORT.md`.
 
+**OpenCode Stages 1-9 update (2026-11-18):** Added deterministic progress detection, workflow rules, a next best action engine, persistent onboarding preferences, dashboard guidance, guided setup wizard, product tour, contextual help, onboarding settings, and QA documentation. Details are in `docs/USER_ONBOARDING_DESIGN.md`, `docs/USER_ONBOARDING_IMPLEMENTATION.md`, `docs/USER_ONBOARDING_TEST_PLAN.md`, and `docs/NEXT_BEST_ACTION_ENGINE.md`. Known gaps: timezone boundary handling for UTC instants, limited Stage 5-8 browser E2E, and one pre-existing sign-in E2E assertion failure.
+
 ---
 
 ## 1. Method and Status Vocabulary

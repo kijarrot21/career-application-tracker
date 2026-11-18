@@ -15,6 +15,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
+import { ContextualHelp } from "@/components/help/contextual-help";
 import {
   Badge,
   Button,
@@ -262,6 +263,7 @@ export function InterviewsClient({
         description="Monitor upcoming interviews, calendar schedules, preparation notes, interview feedback, and technical assessments."
         actions={
           <div className="flex flex-wrap items-center gap-2">
+            <ContextualHelp module="interviews" />
             <Button
               variant="secondary"
               size="lg"

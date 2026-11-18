@@ -19,6 +19,7 @@ import {
   RestoreArchiveDialog,
   RetentionPolicyDialog,
 } from "@/components/archive/archive-dialogs";
+import { ContextualHelp } from "@/components/help/contextual-help";
 import {
   Badge,
   Button,
@@ -313,6 +314,7 @@ export function ArchiveListClient({
         description="Inspect historical closures, preserved CV/document versions, restore incorrect archivals, or re-apply intentionally while keeping original application records intact."
         actions={
           <div className="flex flex-wrap items-center gap-2">
+            <ContextualHelp module="archive" />
             <Button
               variant="secondary"
               onClick={() => setRetentionDialogOpen(true)}

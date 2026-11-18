@@ -18,6 +18,7 @@ import {
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
+import { ContextualHelp } from "@/components/help/contextual-help";
 import { CareerRoadmapPanel } from "@/components/profile/career-roadmap-panel";
 import {
   ReviewStagedCvImportDialog,
@@ -313,10 +314,13 @@ export function CareerProfileClient({
         title="Master Career Profile"
         description="Your single, user-verified source of professional truth for suitability evaluation and future grounded AI career tools."
         actions={
-          <Button variant="secondary" onClick={() => setStageCvOpen(true)}>
-            <FileUp className="h-4 w-4" />
-            Stage CV Import
-          </Button>
+          <>
+            <ContextualHelp module="careerProfile" />
+            <Button variant="secondary" onClick={() => setStageCvOpen(true)}>
+              <FileUp className="h-4 w-4" />
+              Stage CV Import
+            </Button>
+          </>
         }
       />
 

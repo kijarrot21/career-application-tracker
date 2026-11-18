@@ -24,8 +24,10 @@ import { cn } from "@/lib/utils";
 import { dismissNotificationAction } from "@/server/actions/emails";
 import { updatePreferredLocaleAction } from "@/server/actions/settings";
 import type { LiveNotificationItem } from "@/server/queries/emails";
+import type { OnboardingState } from "@/lib/domain/onboarding";
 import { AppSidebar } from "./app-sidebar";
 import { CommandMenu } from "./command-menu";
+import { ProductTour } from "./product-tour";
 
 function getUserInitials(name: string) {
   return (
@@ -42,11 +44,13 @@ export function AppShell({
   user,
   notifications = [],
   banner,
+  onboardingState,
   children,
 }: {
   user: { name: string; email: string };
   notifications?: LiveNotificationItem[];
   banner?: React.ReactNode;
+  onboardingState: OnboardingState;
   children: React.ReactNode;
 }) {
   const router = useRouter();
@@ -108,6 +112,7 @@ export function AppShell({
               size="icon"
               onClick={() => setMobileOpen(true)}
               aria-label="Open navigation menu"
+              data-tour="mobile-nav"
               className="md:hidden"
             >
               <Menu className="h-5 w-5" />
@@ -117,6 +122,7 @@ export function AppShell({
               type="button"
               onClick={() => setCmdOpen(true)}
               aria-label="Open global search"
+              data-tour="global-search"
               className="flex h-10 w-full max-w-md cursor-pointer items-center justify-between gap-2 rounded-xl border border-transparent bg-surface-subtle px-3.5 text-xs text-muted-foreground transition-all hover:border-border hover:bg-card hover:text-foreground hover:shadow-xs"
             >
               <span className="flex items-center gap-2 truncate">
@@ -289,6 +295,7 @@ export function AppShell({
       </div>
 
       <CommandMenu open={cmdOpen} onOpenChange={setCmdOpen} />
+      <ProductTour onboardingState={onboardingState} />
     </div>
   );
 }

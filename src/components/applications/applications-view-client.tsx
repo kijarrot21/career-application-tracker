@@ -4,6 +4,7 @@ import { Download, Kanban, Plus, Search, Table } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { ApplicationsTable } from "@/components/applications/applications-table";
+import { ContextualHelp } from "@/components/help/contextual-help";
 import { KanbanBoard } from "@/components/applications/kanban-board";
 import {
   RecordSubmissionDialog,
@@ -119,6 +120,7 @@ export function ApplicationsViewClient({
         description="Manage submitted job applications across HR recruitment stages via Kanban Board or Data Table."
         actions={
           <div className="flex flex-wrap items-center gap-2.5">
+            <ContextualHelp module="applications" />
             <div className="inline-flex rounded-xl bg-surface-subtle p-1">
               <button
                 type="button"

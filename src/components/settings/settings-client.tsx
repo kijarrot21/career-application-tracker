@@ -16,6 +16,7 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { useTranslations } from "@/components/i18n/locale-provider";
+import { OnboardingSettingsCard } from "@/components/settings/onboarding-settings-card";
 import {
   Badge,
   Button,
@@ -75,11 +76,13 @@ import {
   updateSuitabilityWeightsAction,
   updateWorkspaceSettingsAction,
 } from "@/server/actions/settings";
+import type { ProgressSnapshot } from "@/lib/domain/progress";
 import type {
   getSampleDataStatus,
   getUserSettings,
   getUserStages,
 } from "@/server/queries/settings";
+import type { OnboardingPreferencesResult } from "@/server/services/onboarding";
 
 type SettingsData = Awaited<ReturnType<typeof getUserSettings>>;
 type StagesData = Awaited<ReturnType<typeof getUserStages>>;
@@ -90,11 +93,15 @@ export function SettingsClient({
   stages,
   sampleStatus,
   aiProviders,
+  onboarding,
+  progress,
 }: {
   settings: SettingsData;
   stages: StagesData;
   sampleStatus: SampleStatus;
   aiProviders: AiProviderSanitizedStatus[];
+  onboarding: OnboardingPreferencesResult;
+  progress: ProgressSnapshot;
 }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -308,6 +315,8 @@ export function SettingsClient({
         title={messages.settings.pageTitle}
         description={messages.settings.pageDescription}
       />
+
+      <OnboardingSettingsCard onboarding={onboarding} progress={progress} />
 
       {/* 1. Workspace Locale & Search Status */}
       <Card padding="md">

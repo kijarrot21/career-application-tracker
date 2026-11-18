@@ -57,7 +57,7 @@ flowchart TB
 
 ### 2.1 Routing & Request Protection
 - **`src/proxy.ts`:** Runs as Next.js Proxy (Middleware) on protected page and `/api/export`, `/api/documents` paths. Checks for cookie name containing `better-auth.session_token`; unauthenticated page requests redirect to `/sign-in?next=...` and API requests return HTTP `401`.
-- **`src/app/(app)/layout.tsx`:** Marks authenticated workspace as `dynamic = "force-dynamic"`, invokes `requireUser()`, loads `getSampleDataStatus` and `getNotificationsSummary`, and wraps all child pages in `AppShell`.
+- **`src/app/(app)/layout.tsx`:** Marks authenticated workspace as `dynamic = "force-dynamic"`, invokes `requireUser()`, loads `getSampleDataStatus`, `getNotificationsSummary`, and `getOnboardingPreferencesService`, and wraps all child pages in `AppShell`.
 - **Every Page & Server Action:** Independently calls `requireUser()` (`src/lib/session.ts`), which executes `ensureDbReady()`, validates the Better Auth database session via `getAuth().api.getSession({ headers })`, redirects to `/sign-in` if absent, and runs idempotent `ensureUserInitialized(db, user.id)`.
 
 ### 2.2 Database Runtime Abstraction (`src/db/index.ts`)
@@ -79,10 +79,10 @@ The database layer supports two modes via a single Drizzle schema (`dialect: "po
 - Mounted via `src/app/api/auth/[...all]/route.ts`.
 
 ### 2.4 Business Logic & Server Services
-- **Server Queries (`src/server/queries/`):** `analytics.ts`, `applications.ts`, `career.ts`, `dashboard.ts`, `emails.ts`, `settings.ts`, `vacancies.ts`. Every query receives `userId` from the authenticated session and filters explicitly on `userId`.
-- **Server Services (`src/server/services/`):** `applications.ts`, `career.ts`, `emails.ts`, `settings.ts`, `vacancies.ts`. Contain Zod input schemas, business checks, database mutations, and `writeAudit(...)` calls (`src/lib/audit.ts`).
-- **Server Actions (`src/server/actions/`):** Thin wrappers calling `requireUser()`, invoking services, and calling `revalidatePath(...)`.
-- **Pure Domain Modules (`src/lib/domain/`):** Deterministic logic separated from DB/IO (`stages.ts`, `suitability.ts`, `email-classifier.ts`, `follow-ups.ts`, `business-days.ts`, `duplicates.ts`, `kpi.ts`).
+- **Server Queries (`src/server/queries/`):** `analytics.ts`, `applications.ts`, `career.ts`, `dashboard.ts`, `emails.ts`, `settings.ts`, `vacancies.ts`, plus Stage 1-3 readers `progress.ts`, `recommendations.ts`, `dashboard-insights.ts`, and `onboarding.ts`. Every query receives `userId` from the authenticated session and filters explicitly on `userId`.
+- **Server Services (`src/server/services/`):** Existing business services plus `progress.ts`, `workflow.ts`, `recommendations.ts`, and `onboarding.ts`. They contain Zod input schemas, business checks, database mutations, and `writeAudit(...)` calls (`src/lib/audit.ts`).
+- **Server Actions (`src/server/actions/`):** Thin wrappers calling `requireUser()`, invoking services, and calling `revalidatePath(...)`. `onboarding.ts` is the write boundary for onboarding and tour preferences.
+- **Pure Domain Modules (`src/lib/domain/`):** Existing deterministic modules plus `progress.ts`, `workflow.ts`, `recommendations.ts`, `onboarding.ts`, `guided-setup.ts`, `product-tour.ts`, and `contextual-help.ts`. Progress is recalculated from business records; onboarding JSONB never overrides it.
 
 ### 2.5 Document Storage & Email OAuth
 - **Document Storage (`src/lib/storage.ts`):**
@@ -121,6 +121,12 @@ The database layer supports two modes via a single Drizzle schema (`dialect: "po
 ### 2.11 Security Headers & Error Handling
 - Global environment-aware `Content-Security-Policy` in `next.config.ts`; inline document responses served with `CSP: sandbox`.
 - Server services throw typed `DomainError` (`src/lib/errors.ts`); route handlers return domain messages as 400 and sanitize unexpected errors to a generic 500.
+
+### 2.12 Progress-Driven Guidance & Onboarding
+- `getDashboardInsights(userId)` composes Stage 1 progress, Stage 2 workflow, Stage 3 recommendations, and Stage 4 onboarding state once per dashboard request.
+- Dashboard guidance, guided setup wizard, product tour, contextual help, and onboarding settings consume service outputs; they do not reimplement ranking or completion rules.
+- `user_settings.onboarding_state` JSONB (migration 0008) stores UX preferences only. `user_settings` is not a sync entity, so no cross-device sync is assumed.
+- Help and onboarding strings use the existing `TranslationMessages` catalogs in `id-ID` and `en-US`.
 
 ---
 

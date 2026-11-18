@@ -8,7 +8,7 @@
 
 ## 1. Executive summary
 
-This repository contains a working, local-first Personal Applicant Tracking System built on Next.js 16.4.6 (`package.json`, dependency `next: 16.4.6`). The original ATS feature set is intact, and Phases 1 through 11 added an application archive, a master career profile, a hybrid AI engine, AI career features and CV Studio, a credit economy, payment integration, local-cloud sync, REST API v1, en-US/id-ID localization, and security hardening. Phase 12 added an evidence-based roadmap, backlog, and release plan (`docs/DEVELOPMENT_ROADMAP.md`, `DEVELOPMENT_BACKLOG.md`, `docs/RELEASE_PLAN.md`).
+This repository contains a working, local-first Personal Applicant Tracking System built on Next.js 16.4.6 (`package.json`, dependency `next: 16.4.6`). The original ATS feature set is intact, and Phases 1 through 11 added an application archive, a master career profile, a hybrid AI engine, AI career features and CV Studio, a credit economy, payment integration, local-cloud sync, REST API v1, en-US/id-ID localization, and security hardening. Phase 12 added an evidence-based roadmap, backlog, and release plan. OpenCode Stages 1 through 9 added deterministic progress detection, workflow rules, a next best action engine, persistent onboarding preferences, dashboard guidance, a guided setup wizard, a product tour, contextual help, onboarding settings, and final QA documentation.
 
 **Evidence vocabulary used throughout this report:**
 
@@ -22,16 +22,16 @@ This repository contains a working, local-first Personal Applicant Tracking Syst
 
 | Gate | Result | Evidence |
 |---|---|---|
-| Vitest unit and integration | 125/125 passing across 25 test files | `npm run test`; `tests/unit/**` (14 files) and `tests/integration/**` (11 files); per-file counts sum to 125 |
-| Playwright E2E | 4/4 passing | `tests/e2e/core-journey.spec.ts` (1 test) and `tests/e2e/accessibility.spec.ts` (3 tests) |
+| Vitest unit and integration | 298 passing, 9 skipped across 42 test files | `npm run test`; includes Stage 1-9 progress, workflow, recommendation, onboarding, guidance, wizard, tour, and help suites |
+| Playwright E2E | 3 passed, 1 failed | `npm run test:e2e`; failing `tests/e2e/accessibility.spec.ts:63` sign-in Enter-submits assertion is pre-existing and unrelated to Stages 1-9 |
 | TypeScript strict | passing | `npm run typecheck` (`tsc --noEmit`) |
-| ESLint | passing | `npm run lint` |
+| ESLint | full command blocked by unrelated `.ua/.trash-*/tmp/*.js` scratch files; Stage 1-9 files pass scoped ESLint | `npm run lint`; scoped `npx eslint` on Stage 1-9 files clean |
 | Production build | passing | `npm run build` (`next build`, Turbopack) |
 | GitHub Actions CI | successful run on commit `2a9540c` | `.github/workflows/ci.yml`; earlier green runs also recorded in `docs/RELEASE_PLAN.md` (commit `620f7d8`) and `docs/PHASE_PROGRESS_STATUS.md` |
 
 The CI workflow runs `npm ci`, typecheck, lint, Vitest, production build, Playwright Chromium install, and E2E on pushes to `main` and on pull requests. It uses throwaway placeholder environment values and an in-memory PGlite data directory; no production secret is stored in the workflow (`.github/workflows/ci.yml`).
 
-**Bottom line:** the local-first MVP and all automated gates are green. Live cloud sync, live AI providers, live payments, PostgreSQL row-level security, performance testing, and backup drills are untested or deferred. The chosen production readiness assessment is recorded in the final section.
+**Bottom line:** the local-first MVP and Stage 1-9 onboarding/guidance system are implemented. Typecheck, build, and the full Vitest suite pass. One pre-existing E2E sign-in assertion fails and full lint is blocked by unrelated scratch files; both are documented in `docs/USER_ONBOARDING_TEST_PLAN.md`. Live cloud sync, live AI providers, live payments, PostgreSQL row-level security, performance testing, and backup drills remain untested or deferred.
 
 ---
 

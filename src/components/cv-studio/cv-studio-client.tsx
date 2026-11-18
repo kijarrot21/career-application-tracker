@@ -18,6 +18,7 @@ import {
   AiConsentDialog,
   type PendingConsentPrompt,
 } from "@/components/ai/ai-consent-dialog";
+import { ContextualHelp } from "@/components/help/contextual-help";
 import {
   Badge,
   Button,
@@ -391,6 +392,7 @@ export function CvStudioClient({
         description="Parse uploaded CVs, evaluate ATS & content quality, approve before-and-after wording edits, and generate grounded Indonesian or International CVs with PDF/DOCX export."
         actions={
           <div className="flex flex-wrap items-center gap-2">
+            <ContextualHelp module="cvStudio" />
             <Badge variant="secondary">
               Privacy: {AI_PRIVACY_MODE_LABELS[aiPrivacyMode]}
             </Badge>

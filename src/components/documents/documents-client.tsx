@@ -16,6 +16,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
+import { ContextualHelp } from "@/components/help/contextual-help";
 import {
   Badge,
   Button,
@@ -210,10 +211,12 @@ export function DocumentsClient({ data }: { data: DocumentsData }) {
         title="Career Document Repository & Version Control"
         description="Upload and version Master CVs, Customized CVs, Cover Letters, Portfolios, Certificates, Transcripts, and Offers."
         actions={
-          <Button
-            variant="primary"
-            size="lg"
-            onClick={() => {
+          <>
+            <ContextualHelp module="documents" />
+            <Button
+              variant="primary"
+              size="lg"
+              onClick={() => {
               setTargetDocId("");
               setTitle("");
               setVersionLabel("v1.0");
@@ -222,7 +225,8 @@ export function DocumentsClient({ data }: { data: DocumentsData }) {
           >
             <Plus className="h-4 w-4" />
             {showUploadPanel ? "Close Uploader" : "Upload Document"}
-          </Button>
+            </Button>
+          </>
         }
       />
 

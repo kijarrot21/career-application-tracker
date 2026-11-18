@@ -1,0 +1,1 @@
+ALTER TABLE "user_settings" ADD COLUMN "onboarding_state" jsonb DEFAULT '{"version":1,"mode":"self_paced","welcomeViewed":false,"guidedSetupStarted":false,"currentPosition":null,"completedSections":[],"skippedSections":[],"dismissedReminders":[],"lastActivityAt":null,"completedAt":null}'::jsonb NOT NULL;
