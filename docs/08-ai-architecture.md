@@ -70,6 +70,12 @@ Every provider implements `AiProvider`:
 
 OpenAI and Gemini rows describe adapter-level implementation. Neither provider can be selected through the active Settings interface while Cloud AI is coming soon.
 
+### Local provider configuration and transport
+
+The Ollama adapter resolves its endpoint from the per-user Settings override first, then from `OLLAMA_BASE_URL` (default `http://127.0.0.1:11434`). `validateLocalAiEndpoint()` rejects invalid and unsafe URLs. The model name resolves from the Settings override, then `OLLAMA_MODEL` (default `qwen2.5:7b` in `src/lib/env.ts`). Health checks call `GET /api/tags` with a 5 second default timeout (capped at 10 seconds) and return the installed model names. Generation posts to `POST /api/chat` with `stream: false`, `format: "json"`, and `temperature` / `num_predict` options. The response content is parsed and validated against the task's Zod schema; token counts come from `prompt_eval_count` and `eval_count` when Ollama provides them.
+
+Local inference stays on the host that runs Ollama. The documented installation and verification workflow lives in [README.md](../README.md#local-ai-setup-with-ollama). On 2026-11-20 a live application-path task with Ollama 0.40.16 and `qwen2.5:3b` confirmed local provider selection, a 1-credit reservation captured on success, `PRIVACY_MODE_BLOCKED` for an explicit cloud request in `local_only`, and automatic release after a missing-model failure.
+
 ---
 
 ## 3. AI Privacy Modes & Consent Enforcement

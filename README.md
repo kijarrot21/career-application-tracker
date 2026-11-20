@@ -168,6 +168,162 @@ Open `http://localhost:3000` in your browser.
    - Open **Analytics** to evaluate the conversion funnel, the most effective platforms, and company response rates.
    - Open **Settings** to customize pipeline stages, export all data (JSON/CSV), clear sample data, or permanently delete the account.
 
+## Local AI Setup with Ollama
+
+### Overview
+
+Local AI runs career intelligence tasks on your own machine through [Ollama](https://ollama.com/). The Next.js server calls the Ollama HTTP API at `/api/chat`; the model inference stays on the host running Ollama. The adapter requests JSON output and validates every result against the application's Zod schemas before persisting it.
+
+Local AI is the available AI direction. Cloud AI (OpenAI and Gemini) is preserved in the codebase but its provider selection and consent controls are disabled in the UI while it is coming soon. Credit Wallet and Payment & Billing are in development. Using Local AI does not require opening Wallet, topping up, checking out, or buying a subscription. The internal Credit Service still reserves and captures credits for each task, using the existing welcome-credit allocation (100 credits on a new wallet, `chargeLocalRuns: true`).
+
+### System requirements
+
+Verified in this repository's development environment:
+
+- macOS 27.2.1 on `arm64`, 8 GB unified memory, Ollama 0.40.16.
+- Roughly 14 GiB free disk was available when the 3B model was installed. Model files, caches, and logs live under `~/.ollama`.
+
+Ollama officially supports macOS, Linux, and Windows; this guide was executed on macOS arm64 only. Treat other platforms as supported by Ollama but unverified here.
+
+Model sizing guidance for 8 GB of memory:
+
+| Model | Approximate download | Trade-off |
+|---|---|---|
+| `qwen2.5:3b` | about 2 GB | Recommended here. Leaves memory for the app and browser, faster responses, good structured-output support. |
+| `qwen2.5:7b` | about 4.7 GB | Current application fallback model. Higher quality, but slower and tighter on 8 GB systems. |
+
+Sizes are approximate and depend on the quantized variant Ollama selects. No benchmark numbers are claimed here.
+
+Network requirements: the application expects Ollama on `http://127.0.0.1:11434`. Both processes must share the same host or network namespace. Docker is not used in this development environment. If you run the application in a container, `127.0.0.1` inside the container is the container itself; use the appropriate host address (for example `host.docker.internal` on Docker Desktop) and do not publish Ollama to the public internet.
+
+### Install Ollama
+
+Official source: <https://ollama.com/download>.
+
+macOS options:
+
+1. Download the macOS app from the official page and drag `Ollama.app` into `/Applications`.
+2. Or, with Homebrew already installed, run:
+
+```bash
+brew install --cask ollama
+```
+
+The Homebrew cask installed Ollama 0.40.16 in this environment without `sudo`. It links the CLI to `/opt/homebrew/bin/ollama`.
+
+Verify the installation:
+
+```bash
+ollama --version
+ollama list
+```
+
+Start the service with `open -a Ollama`, or launch `Ollama` from Applications / Spotlight. The first launch may take several seconds before the API accepts connections. Stop it by quitting Ollama from the menu bar icon or Activity Monitor.
+
+### Download a model
+
+Use a model that the application's JSON-mode adapter can drive. This guide uses `qwen2.5:3b` because the test machine has 8 GB of memory.
+
+```bash
+ollama pull qwen2.5:3b
+ollama list
+curl -sS http://127.0.0.1:11434/api/tags
+```
+
+A direct inference smoke test:
+
+```bash
+ollama run qwen2.5:3b "Reply with exactly: LOCAL_AI_RUNTIME_OK"
+```
+
+`qwen2.5:7b` remains the application's fallback model name. It is an example default, not proof that the model is installed. To change the model the application uses, set `OLLAMA_MODEL` or use **Settings -> AI Privacy & Local Provider Mode -> Local Model Override**. The per-user Settings override takes precedence over the environment variable.
+
+### Configure the application
+
+Use the existing variable names. There is no `AI_PROVIDER` environment variable; provider choice is a per-user setting.
+
+| Variable | Default | Purpose |
+|---|---|---|
+| `OLLAMA_BASE_URL` | `http://127.0.0.1:11434` | Local Ollama endpoint. The adapter rejects invalid or unsafe URLs. |
+| `OLLAMA_MODEL` | `qwen2.5:7b` | Model name used when no per-user override is set. |
+| `AI_REQUEST_TIMEOUT_MS` | `30000` | Per-request timeout in milliseconds. |
+| `AI_ALLOW_PRIVATE_LOCAL_ENDPOINT` | `false` | Advanced endpoint-validation toggle. Leave `false` for normal loopback use. |
+
+These names are already documented in `.env.example`. To use the recommended model on this machine, add or update this line in `.env.local`:
+
+```env
+OLLAMA_MODEL=qwen2.5:3b
+```
+
+Do not commit `.env.local`. Restart `npm run dev` after changing environment files. In Settings, choose **AI Privacy Mode = Local AI Only** and **Preferred Provider = Ollama (Local)** or **Automatic (Respect Privacy Mode)**. `local_only` permits Ollama and rejects OpenAI/Gemini with `PRIVACY_MODE_BLOCKED`.
+
+### Run the application
+
+```bash
+npm install
+npm run setup    # stop the dev server first if it is running
+npm run dev
+```
+
+Open `http://localhost:3000`. Confirm both sides independently:
+
+```bash
+curl -sS http://127.0.0.1:11434/api/tags   # Ollama side
+curl -sS -o /dev/null -w "%{http_code}\n" http://localhost:3000/sign-in   # app side
+```
+
+Then sign in and run an AI task from an existing feature such as CV Studio. The task should report provider `ollama`, locality `local`, and the configured model.
+
+### Verify Local AI
+
+Checklist:
+
+1. `ollama --version` succeeds.
+2. `ollama list` shows the configured model.
+3. `curl -sS http://127.0.0.1:11434/api/tags` returns HTTP 200 and lists the model.
+4. Settings shows **Local AI — Available**, and the endpoint/model fields are editable.
+5. AI Privacy Mode is `local_only` (or `auto` with Ollama reachable).
+6. A task completes and its job record shows provider `ollama` and locality `local`.
+7. A successful task reserves then captures credits; a failed provider call releases the reservation without capture.
+8. Explicit cloud provider selection fails with `PRIVACY_MODE_BLOCKED` in `local_only`.
+
+A healthy Ollama service only proves the local runtime works. Application integration is proven when the application's own task router selects Ollama, records the result, and handles credits correctly. The repository's integration tests cover the router and credit behavior with mocked HTTP; they do not replace a live Ollama run.
+
+Live verification on 2026-11-20 used macOS 27.2.1 (arm64, 8 GB RAM), Ollama 0.40.16, and `qwen2.5:3b`. A task submitted through `executeAiTask` with `local_only` returned `provider: ollama`, `locality: local`, and the expected response. The credit reservation moved 1 credit from available to reserved and was captured on success; the ledger integrity check passed. An explicit `openai` request was rejected with `PRIVACY_MODE_BLOCKED`, and a missing-model request failed with a readable HTTP 404 error, released its reservation, and left the balance unchanged.
+
+### Troubleshooting
+
+| Symptom | Likely cause | Diagnostic command | Fix |
+|---|---|---|---|
+| `ollama: command not found` | CLI not installed or PATH stale | `command -v ollama` | Install with the official app or `brew install --cask ollama`; reopen the terminal. |
+| Ollama app launches but API is unavailable | Service still starting | `curl -sS --max-time 5 http://127.0.0.1:11434/api/tags` | Wait a few seconds and retry; quit and relaunch Ollama if needed. |
+| Port 11434 connection refused | Ollama stopped or bound elsewhere | `pgrep -fl ollama` | Start Ollama; verify no other process owns 11434. |
+| `model not found` / `model not available` | Model name not pulled or wrong override | `ollama list` | `ollama pull <model>` or correct `OLLAMA_MODEL` / Settings override. |
+| Application reports `ENDPOINT_INVALID` | Endpoint is not a valid local URL | Inspect `OLLAMA_BASE_URL` | Use `http://127.0.0.1:11434`; keep `AI_ALLOW_PRIVATE_LOCAL_ENDPOINT=false` unless required. |
+| Application reports `PROVIDER_UNAVAILABLE` | Ollama reachable but model missing | `ollama list` and `/api/tags` | Pull the configured model or change the override to an installed model. |
+| Request times out | Large model or slow CPU | `AI_REQUEST_TIMEOUT_MS` value and Ollama logs | Increase the timeout up to 180000 ms, or use a smaller model such as `qwen2.5:3b`. |
+| Insufficient RAM or heavy swapping | Model too large for 8 GB | Activity Monitor memory pressure | Use `qwen2.5:3b`; close other memory-heavy apps. |
+| Slow inference | Model size / CPU limits | Ollama logs | Prefer a 3B quantized model; shorten prompts; avoid parallel heavy tasks. |
+| Docker cannot reach host Ollama | `127.0.0.1` resolves to the container | `curl http://host.docker.internal:11434/api/tags` from the container | Set `OLLAMA_BASE_URL=http://host.docker.internal:11434` for the container. |
+| Settings cannot select Ollama | Endpoint invalid or privacy mode conflict | Check Settings privacy mode and endpoint | Use `local_only`, set a valid loopback endpoint, then retry. |
+| Cloud fallback never happens | Privacy mode is `local_only` | Inspect AI Privacy Mode | Expected behavior. Use `auto` only if you intentionally allow cloud providers. |
+| Credit reservation fails | Welcome credits exhausted or configuration changed | Run the credit integration tests | The allocation is server-managed; do not edit balances manually. Wallet/top-up UI is in development. |
+
+### Security and privacy
+
+With `local_only`, career documents are sent only to the local Ollama endpoint. Cloud providers are blocked by the router and are not selectable in the active UI. A healthy local adapter does not imply cloud consent. Keep Ollama bound to loopback, do not expose port 11434 publicly without authentication and network controls, and keep all keys (including `BETTER_AUTH_SECRET` and `ENCRYPTION_KEY`) out of git. Cloud inference would transmit selected data off-machine; it is not part of the current Local AI path.
+
+### Uninstall and cleanup
+
+Quit Ollama, then remove the application using the method you installed it with:
+
+```bash
+brew uninstall --cask ollama          # Homebrew cask install
+# or delete /Applications/Ollama.app for a manual DMG install
+```
+
+Remove an individual model with `ollama rm qwen2.5:3b`. Deleting `~/.ollama` removes all downloaded models, caches, logs, and local keys; confirm before doing so because it can reclaim several gigabytes and requires re-downloading models.
+
 ## Tech Stack
 
 - **Framework**: Next.js 16.4.6 (App Router, Server Components, Server Actions, Turbopack), React 19, TypeScript (strict)

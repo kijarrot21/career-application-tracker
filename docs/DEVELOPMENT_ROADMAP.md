@@ -14,7 +14,7 @@
 | Payment & Billing | In Development |
 | Cloud AI | Coming Soon |
 
-Completed backend code for credits, payments, and cloud adapters is retained. User access to those workflows is deferred to the statuses above.
+Completed backend code for credits, payments, and cloud adapters is retained. User access to those workflows is deferred to the statuses above. Local AI received a live application-path verification on 2026-11-20 with Ollama 0.40.16 and `qwen2.5:3b`; setup instructions and verification steps are in [README.md](../README.md#local-ai-setup-with-ollama).
 
 ---
 

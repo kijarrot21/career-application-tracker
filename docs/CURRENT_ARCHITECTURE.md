@@ -102,6 +102,7 @@ The database layer supports two modes via a single Drizzle schema (`dialect: "po
 
 ### 2.7 Hybrid AI Engine (`src/server/ai/`)
 - **Providers:** Ollama (local) + OpenAI + Gemini (cloud) behind a provider-agnostic router (`src/server/ai/providers/`). Local AI is available in the UI; cloud provider selection is disabled while Cloud AI is coming soon.
+- **Local endpoint and model:** per-user Settings override first, then `OLLAMA_BASE_URL` (default `http://127.0.0.1:11434`) and `OLLAMA_MODEL` (default `qwen2.5:7b`). Health checks use `GET /api/tags`; generation uses `POST /api/chat` with JSON output mode and Zod validation. Installation and verification steps are in [README.md](../README.md#local-ai-setup-with-ollama).
 - **Consent gate:** cloud AI calls require explicit user consent; local mode and deterministic fallbacks work fully offline.
 - **Structured output:** Zod schemas per capability (CV parse/evaluate/correct/generate, job match, skill gap, roadmap) in `src/server/ai/schemas/`.
 - **Prompt-injection defense** and grounding rules: AI outputs never mutate career facts or pipeline state without explicit user confirmation (`src/server/ai/security/`).
