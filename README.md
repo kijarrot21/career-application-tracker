@@ -12,25 +12,38 @@
 |---|---|
 | Phases 0 to 2 (Foundation, Core ATS, Archive, Career Profile) | Complete |
 | Phases 3 to 4 (Hybrid AI Engine, AI Career Features, CV Studio) | Complete |
-| Phases 5 to 6 (Credits and Midtrans/Stripe Payments) | Complete |
+| Phases 5 to 6 (Credits and Midtrans/Stripe Payments) | Backend and API complete; user-facing wallet, checkout, and billing UI in development |
 | Phases 7 to 8 (Local-Cloud Sync and REST API v1) | Complete |
 | Phase 9 (id-ID/en-US localization, IDR/USD) | Complete |
 | Phase 10 (Security and UU PDP data governance) | Complete |
 | Phase 11 (QA and Testing) | Complete, with one accepted exception (PostgreSQL RLS, deferred to a cloud hardening phase) |
 | OpenCode Stages 1 to 9 (Progress, Rules, Recommendations, Onboarding, Dashboard UX, Tour, Help, QA) | Complete; one pre-existing E2E sign-in assertion remains failing and is documented in the Stage 9 test plan |
 
-**Latest verification:** `npm run typecheck` passed; `npm test` 298 passed and 9 skipped across 42 files; `npm run build` passed; `npm run test:e2e` 3 passed and 1 failed (pre-existing sign-in Enter-submits assertion). Full `npm run lint` is blocked by unrelated `.ua/.trash-*/tmp/*.js` scratch files; Stage 1-9 files pass scoped ESLint. Gates also run through [GitHub Actions CI](.github/workflows/ci.yml) on pushes and pull requests.
+### Feature availability
+
+| Feature | Status | What is available today |
+|---|---|---|
+| Core application management | Available | Jobs, applications, interviews, emails, documents, analytics, archive, and onboarding. |
+| Local AI | Available / Active development | Ollama endpoint and model configuration, local provider selection, and local task execution. |
+| Credit Wallet | In development | Wallet UI is not exposed. The server ledger, reservations, and internal credit allocation remain in place. |
+| Payment & Billing | In development | No checkout, top-up, payment method, or subscription UI. Backend services and API routes are preserved. |
+| Cloud AI | Coming soon | OpenAI and Gemini selection is disabled in Settings. Adapter code and configuration are preserved. |
+
+Local AI remains usable under the existing welcome-credit allocation without opening Credit Wallet, topping up, or paying. Internal Credit Service reservation is still part of the execution architecture.
+
+**Latest verification:** `npm run typecheck` passed; `npm test` 305 passed and 9 skipped across 44 files; `npm run build` passed; `npm run test:e2e` 3 passed and 1 failed (pre-existing sign-in Enter-submits assertion). Full `npm run lint` is blocked by unrelated `.ua/.trash-*/tmp/*.js` scratch files; task files pass scoped ESLint. Gates also run through [GitHub Actions CI](.github/workflows/ci.yml) on pushes and pull requests.
 
 ## Implementation Status
 
-This table separates what exists from what is only planned. It is deliberately conservative: a feature is "Implemented" only when code and passing tests exist.
+This table separates what exists in code from what users can currently access. "Implemented" means code and passing tests exist; it does not mean a user-facing workflow is exposed.
 
 | Category | Features |
 |---|---|
-| **Implemented** | Core ATS (jobs, applications, interviews, emails, documents, analytics), application archive, master career profile, hybrid AI engine, AI career features, CV Studio with PDF and DOCX export, credit wallet and ledger, Midtrans and Stripe integrations with simulated providers, hybrid sync with conflict resolution, versioned API v1, en-US and id-ID localization, Phase 10 and 11 security controls, deterministic progress detection, workflow rules, next best action engine, onboarding preferences, dashboard guidance, guided setup wizard, product tour, contextual help, and onboarding settings |
+| **Implemented** | Core ATS (jobs, applications, interviews, emails, documents, analytics), application archive, master career profile, AI engine and AI career features, CV Studio with PDF and DOCX export, hybrid sync with conflict resolution, versioned API v1, en-US and id-ID localization, Phase 10 and 11 security controls, deterministic progress detection, workflow rules, next best action engine, onboarding preferences, dashboard guidance, guided setup wizard, product tour, contextual help, and onboarding settings |
+| **Backend only, UI in development** | Credit ledger, reservations and pricing; Midtrans and Stripe sandbox adapters with webhook verification; checkout, reconciliation and refund services; OpenAI and Gemini adapters. Their user-facing interfaces are not exposed in the active product. |
 | **Partially implemented** | Credit package catalog has no admin CRUD UI; interview coach exists as a service only with no UI; archive AI post-mortem has a tested service and API but a disabled UI placeholder; AI jobs execute synchronously with no background worker; E2E coverage does not yet include AI, sync, or billing journeys; resume templates are two formats with five styles rather than a visual template gallery |
 | **Planned** | PostgreSQL row-level security (accepted deferral DEF-11-006), cloud object storage adapter, CSP nonce tightening, UU PDP retention reminders, performance and backup automation, and a background AI worker |
-| **Not available** | Live cloud multi-tenancy, live AI provider verification, live payment gateway verification, live cloud sync round-trip, and automated axe-core accessibility scans |
+| **Not available** | Credit Wallet and Payment & Billing user interfaces, Cloud AI provider selection, live cloud multi-tenancy, live AI provider verification, live payment gateway verification, live cloud sync round-trip, and automated axe-core accessibility scans |
 
 ---
 
@@ -83,12 +96,12 @@ Job hunting in the modern era often feels messy and exhausting because of severa
   Snapshot archiving of closed applications (Rejected/Withdrawn/No Response) with closure notes, automatic retention purge, and prevention of reapplications without confirmation.
 - **Master Career Profile**  
   A master career profile (skills, experience, education, certifications) that serves as the verified data source for Suitability Score, skill-gap analysis, and AI generation. Verified data is protected from automatic overwrites by AI.
-- **Hybrid AI Engine (Ollama / OpenAI / Gemini)**  
-  A provider-agnostic AI router that runs locally (Ollama) or in the cloud (OpenAI/Gemini) with an explicit consent gate, prompt-injection defense, and deterministic fallback. It handles: CV extraction, CV evaluation, CV correction, CV/cover letter generation, job match analysis, skill-gap analysis, and career roadmap.
+- **AI Engine (Local AI available, Cloud AI coming soon)**
+  A provider-agnostic AI router with an explicit consent gate, prompt-injection defense, and deterministic fallback. Local AI through Ollama is the active development path: endpoint and model configuration, local provider selection, and task execution are available. OpenAI and Gemini adapters remain in the codebase, but cloud provider selection and cloud consent controls are not exposed in the active UI. Tasks cover CV extraction, evaluation, correction, generation, job match analysis, skill-gap analysis, and career roadmap.
 - **CV Studio**  
   An AI-assisted CV editing and generation studio with preview, version control, and human-in-the-loop principles (every AI output requires confirmation).
-- **Credits and Payments**  
-  A server-authoritative credit wallet (atomic: `FOR UPDATE` + CAS + idempotency keys) for purchasing AI feature quotas, with payments through **Midtrans** (SHA-512 signature verification) and **Stripe** (HMAC webhooks), including a ledger, credit reservations, and refunds.
+- **Credit Wallet and Billing (In development)**
+  The server-authoritative credit ledger and payment adapters are preserved, including atomic reservations, Midtrans SHA-512 webhook verification, Stripe HMAC webhooks, and refund handling. Wallet, checkout, top-up, and billing controls are not exposed to users. Local AI uses the existing internal Credit Service reservation and welcome-credit allocation; no wallet access, top-up, or payment is required.
 - **Hybrid Local-Cloud Sync**  
   Outbox pattern for pushing local changes to cloud storage, pulling remote changes, version-based conflict detection with explicit resolution, and safe replay.
 - **REST API v1**  
@@ -161,10 +174,10 @@ Open `http://localhost:3000` in your browser.
 - **Styling and UI**: Tailwind CSS v4, Radix UI primitives, Lucide icons, Geist and Plus Jakarta Sans fonts
 - **Database and ORM**: Drizzle ORM 0.45 with PGlite (local) / PostgreSQL (production)
 - **Authentication and Security**: Better Auth 1.7 (database sessions, scrypt hashing, rate limiting), Zod validation, AES-256-GCM (OAuth tokens), PKCE + HMAC state, global CSP, magic-byte upload validation, malware scan hooks, signed download tokens
-- **AI**: Ollama (local) / OpenAI / Gemini (cloud) behind a provider-agnostic router with a consent gate and prompt-injection defense
-- **Payments**: Midtrans (SHA-512) and Stripe (HMAC webhooks), atomic server-authoritative credit wallet
+- **AI**: Ollama for available Local AI; OpenAI and Gemini adapters preserved for future Cloud AI work, behind a provider-agnostic router with a consent gate and prompt-injection defense
+- **Payments**: Preserved backend adapters for Midtrans (SHA-512) and Stripe (HMAC webhooks), with an atomic server-authoritative credit ledger. User-facing checkout is in development.
 - **Interaction and Visualization**: `@dnd-kit` (Kanban), `recharts` (Analytics), `react-hook-form`, `cmdk`, `sonner`
-- **Testing**: Vitest 5 (298 passing, 9 skipped unit and integration tests on in-memory PGlite) and Playwright (E2E: core journey plus accessibility/keyboard suite; 3 passing, 1 pre-existing sign-in assertion failing)
+- **Testing**: Vitest 5 (305 passing, 9 skipped unit and integration tests on in-memory PGlite) and Playwright (E2E: core journey plus accessibility/keyboard suite; 3 passing, 1 pre-existing sign-in assertion failing)
 
 ## Scripts
 
@@ -227,6 +240,13 @@ Open `http://localhost:3000` in your browser.
 - [Development Roadmap](docs/DEVELOPMENT_ROADMAP.md) · [Release Plan](docs/RELEASE_PLAN.md) · [Development Backlog](DEVELOPMENT_BACKLOG.md)
 - [Database Gap Analysis](docs/DATABASE_GAP_ANALYSIS.md) · [Security Review](docs/SECURITY_REVIEW_REPORT.md) · [Security Gap Analysis](docs/SECURITY_GAP_ANALYSIS.md) · [Repository Audit](docs/REPOSITORY_AUDIT.md)
 - [UI/UX Audit](docs/ui-ux-audit.md) · [UI/UX Roadmap](docs/ui-ux-improvement-roadmap.md)
+
+## Known limitations
+
+- Credit Wallet and Payment & Billing are in development. Their backend services and API routes remain available, and direct API access is not blocked by the UI changes.
+- Cloud AI adapters are preserved, but cloud provider selection and cloud consent controls are not part of the active interface.
+- Local AI depends on the internal Credit Service reservation and the existing welcome-credit allocation. There is no user-facing wallet or payment step for that allocation.
+- Live payment gateway, cloud AI, and cloud sync flows have not been verified against external services.
 
 ## License
 

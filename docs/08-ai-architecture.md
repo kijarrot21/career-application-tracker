@@ -1,14 +1,16 @@
 # 08. Hybrid AI Engine Architecture
 
 **Phase:** 3: Hybrid AI Engine
-**Status:** Core engine, adapters, router, schemas, prompts, job persistence, privacy modes and consent gates COMPLETE. Live cloud providers NOT TESTED.
+**Status:** Core engine, adapters, router, schemas, prompts, job persistence, privacy modes and consent gates COMPLETE. Local AI is the available user-facing path; Cloud AI provider selection and consent UI are not exposed. Live cloud providers NOT TESTED.
 **Primary Directory:** `src/server/ai/`
 
 ---
 
 ## 1. Provider-Independent Architecture Overview
 
-The Hybrid AI Engine decouples career intelligence tasks from any single model vendor and supports both **local execution** (zero cloud transmission) and **cloud execution** behind a unified server-side interface.
+The Hybrid AI Engine decouples career intelligence tasks from any single model vendor and supports both local execution (zero cloud transmission) and cloud execution behind a unified server-side interface.
+
+Local AI configuration and execution are available in the active product. OpenAI and Gemini adapters are preserved for future development, but cloud provider selection and cloud consent controls are not exposed in Settings.
 
 ```text
 src/server/ai/
@@ -66,6 +68,8 @@ Every provider implements `AiProvider`:
 | **OpenAI** (`openai.provider.ts`) | Cloud | Adapter implemented (`/models`, `/chat/completions`); verified via mocked HTTP `fetchFn` for success, `401`, and secret non-leakage | Adapter interface & contract only when `OPENAI_API_KEY` is unset; requires server key for live calls |
 | **Google Gemini** (`gemini.provider.ts`) | Cloud | Adapter implemented (`/models`, `:generateContent` via `x-goog-api-key` header); verified via mocked HTTP `fetchFn` for success, timeout, and `429` | Adapter interface & contract only when `GEMINI_API_KEY` is unset; requires server key for live calls |
 
+OpenAI and Gemini rows describe adapter-level implementation. Neither provider can be selected through the active Settings interface while Cloud AI is coming soon.
+
 ---
 
 ## 3. AI Privacy Modes & Consent Enforcement
@@ -73,7 +77,7 @@ Every provider implements `AiProvider`:
 Configured per user in `user_settings` (configurable in `/settings` Section 5):
 
 1. **`local_only` (Local AI Only):** Strictly permits local execution (`ollama`). Explicit requests for cloud providers raise `PRIVACY_MODE_BLOCKED`.
-2. **`cloud_allowed` (Cloud AI):** Allows configured cloud providers (`openai`, `gemini`), **but** still requires explicit consent (`user_settings.aiCloudDocumentConsent` or per-task `consentGranted`) before sending private career documents.
+2. **`cloud_allowed` (Cloud AI):** Allows configured cloud providers (`openai`, `gemini`), **but** still requires explicit consent (`user_settings.aiCloudDocumentConsent` or per-task `consentGranted`) before sending private career documents. This mode is retained in the server contract but disabled in Settings while Cloud AI is coming soon.
 3. **`ask_before_each` (Ask Before Every AI Task, Default):** Every AI job pauses at `status = "awaiting_consent"` with `ai_analysis_sources` persisted and **no provider call made**, until explicitly resumed via `approveAndRunAiJobService(userId, jobId)`.
 
 **Key Isolation Guarantee:** `OPENAI_API_KEY` and `GEMINI_API_KEY` exist solely in `src/lib/env.ts` server memory. Only sanitized boolean `configured` statuses reach `/settings`.
@@ -107,6 +111,7 @@ Added via migration `src/db/migrations/0003_modern_the_fury.sql`:
 
 | Area | Status | Notes |
 |---|---|---|
+| User-facing AI provider selection | Local AI available; Cloud AI coming soon | Local endpoint, model, and provider controls remain editable. OpenAI/Gemini options and `cloud_allowed` are disabled in Settings. |
 | Provider contract, JSON extraction and Zod validation | COMPLETE | `src/server/ai/providers/provider.types.ts`, `src/server/ai/providers/json-output.ts`. |
 | Ollama, OpenAI and Gemini adapters | COMPLETE at the adapter and contract level | `src/server/ai/providers/ollama.provider.ts`, `openai.provider.ts`, `gemini.provider.ts`. Verified with mocked HTTP `fetchFn` only. |
 | Router, privacy modes, consent gate and async jobs | COMPLETE | `src/server/ai/router/ai-task-router.ts`, `src/server/ai/router/provider-selector.ts`. |

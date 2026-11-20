@@ -1,8 +1,8 @@
 # 12. Payment Architecture and Integration
 
 **Phase:** 6: Payment Architecture and Integration
-**Status:** Schema, gateway abstraction, Midtrans and Stripe sandbox adapters, webhook security, reconciliation, refunds and UI COMPLETE with simulated providers. Live payment gateways NOT TESTED. Production charging BLOCKED until explicit approval.
-**Primary UI Route:** `/credits`
+**Status:** Schema, gateway abstraction, Midtrans and Stripe sandbox adapters, webhook security, reconciliation and refunds COMPLETE with simulated providers. User-facing checkout and billing UI IN DEVELOPMENT and not exposed in the active product. Live payment gateways NOT TESTED. Production charging BLOCKED until explicit approval.
+**Primary UI Route:** `/credits` (currently renders an unavailable state after authentication; wallet and checkout implementation is retained)
 **Webhook Endpoint:** `POST /api/payments/webhook/[provider]`
 
 ---
@@ -56,7 +56,9 @@ Business orchestration (`src/server/services/payments.ts`) programs strictly aga
 
 ## 5. UI Verification Guarantee (`/credits`)
 
-`CreditsWalletClient` (`src/components/credits/credits-wallet-client.tsx`) renders package selection, gateway selection, pending checkout links, order status details, transaction logs, and manual verification (`Verify Status`). Success confirmation is rendered **strictly** from verified server order state (`order.status === "paid" && order.creditsGranted === true`), never from URL parameters alone.
+The active `/credits` route renders an unavailable state after authentication. Package selection, gateway selection, checkout links, order details, transaction logs, and `Verify Status` are not reachable from the active interface.
+
+The implementation remains in `CreditsWalletClient` (`src/components/credits/credits-wallet-client.tsx`) for a future enabled state. When enabled, success confirmation is rendered strictly from verified server order state (`order.status === "paid" && order.creditsGranted === true`), never from URL parameters alone. Backend services and API routes remain intact.
 
 ---
 
@@ -64,6 +66,7 @@ Business orchestration (`src/server/services/payments.ts`) programs strictly aga
 
 | Area | Status | Notes |
 |---|---|---|
+| User-facing checkout and billing UI | IN DEVELOPMENT | Wallet, checkout, top-up and billing controls are not exposed in the active product. Backend services and API routes are preserved. |
 | Payment schema and gateway abstraction | COMPLETE | `src/db/schema/payments.ts`, migration `src/db/migrations/0005_tiresome_siren.sql`, `src/server/payments/providers/payment-provider.types.ts`. |
 | Midtrans sandbox adapter (IDR, Snap, SHA-512 webhook) | COMPLETE | `src/server/payments/providers/midtrans.provider.ts`. |
 | Stripe sandbox adapter (USD cents, Checkout Sessions, HMAC-SHA256) | COMPLETE | `src/server/payments/providers/stripe.provider.ts`. |

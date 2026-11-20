@@ -101,12 +101,13 @@ The database layer supports two modes via a single Drizzle schema (`dialect: "po
 - Fonts loaded offline-safe via `geist/font/sans` and `geist/font/mono`.
 
 ### 2.7 Hybrid AI Engine (`src/server/ai/`)
-- **Providers:** Ollama (local) + OpenAI + Gemini (cloud) behind a provider-agnostic router (`src/server/ai/providers/`).
+- **Providers:** Ollama (local) + OpenAI + Gemini (cloud) behind a provider-agnostic router (`src/server/ai/providers/`). Local AI is available in the UI; cloud provider selection is disabled while Cloud AI is coming soon.
 - **Consent gate:** cloud AI calls require explicit user consent; local mode and deterministic fallbacks work fully offline.
 - **Structured output:** Zod schemas per capability (CV parse/evaluate/correct/generate, job match, skill gap, roadmap) in `src/server/ai/schemas/`.
 - **Prompt-injection defense** and grounding rules: AI outputs never mutate career facts or pipeline state without explicit user confirmation (`src/server/ai/security/`).
 
 ### 2.8 Credits & Payments (`src/lib/domain/credits.ts`, `src/lib/domain/payments.ts`, `src/server/payments/`)
+- These are backend and API subsystems. User-facing wallet, checkout, and billing interfaces are in development and not exposed in the active product. Local AI still uses the internal Credit Service reservation with the existing welcome-credit allocation.
 - **Atomic credit wallet:** server-authoritative balance using `FOR UPDATE` row locks + compare-and-swap updates + idempotency keys; append-only ledger and reservations.
 - **Providers:** Midtrans (webhook signature SHA-512 verification) and Stripe (webhook HMAC verification); checkout, webhook ingestion, and refunds.
 - All monetization flows degrade gracefully when gateway credentials are unconfigured.

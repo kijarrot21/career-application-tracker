@@ -1,8 +1,8 @@
 # 11. Credit-Based Monetization System
 
 **Phase:** 5: Credit-Based Monetization
-**Status:** Wallet, ledger, reservation engine, router integration, pricing and UI COMPLETE. Credit package admin CRUD PARTIAL (catalog only). Live payment gateway NOT TESTED.
-**Primary Route:** `/credits`
+**Status:** Ledger, reservation engine, router integration and pricing COMPLETE. User-facing wallet UI IN DEVELOPMENT and not exposed in the active product. Credit package admin CRUD PARTIAL (catalog only). Live payment gateway NOT TESTED.
+**Primary Route:** `/credits` (currently renders an unavailable state after authentication; the wallet implementation is retained behind the feature flag)
 
 ---
 
@@ -70,12 +70,15 @@ New wallets initialize idempotently via `ensureCreditWalletService()` with a con
 
 ## 5. UI (`/credits`)
 
-`src/components/credits/credits-wallet-client.tsx` (`CreditsWalletClient`) displays:
-- **Credit Wallet KPIs:** Available balance, reserved credits, lifetime spent, lifetime granted.
-- **Low-Balance Warning:** Alert banner when `availableBalance <= lowBalanceThreshold`.
-- **Credit Packages Preview:** IDR & USD package cards clearly labeled `"Online Checkout Not Activated"`.
-- **AI Task Pricing Schedule & Reservation Status:** Live configurable DB pricing and active/settled holds.
-- **Append-Only Credit Ledger Table:** Complete transaction history with deltas, post-balances, reference types, and reasons.
+The active `/credits` route requires authentication and then renders a bilingual unavailable state. It does not query wallet, order, or transaction data while the feature is disabled. `src/components/credits/credits-wallet-client.tsx` (`CreditsWalletClient`) is retained for a future enabled state and would display:
+
+- Credit Wallet KPIs: available balance, reserved credits, lifetime spent, lifetime granted.
+- Low-balance warning when `availableBalance <= lowBalanceThreshold`.
+- IDR and USD package cards labeled "Online Checkout Not Activated".
+- AI task pricing schedule and active or settled reservation holds.
+- Append-only credit ledger with deltas, post-balances, reference types, and reasons.
+
+None of these controls or figures are presented to users today.
 
 ---
 
@@ -83,6 +86,7 @@ New wallets initialize idempotently via `ensureCreditWalletService()` with a con
 
 | Area | Status | Notes |
 |---|---|---|
+| User-facing wallet UI | IN DEVELOPMENT | `/credits` shows an unavailable state after authentication; `CreditsWalletClient` is preserved but not rendered. |
 | Wallet, ledger and reserve/capture/release/refund/adjust | COMPLETE | `src/server/services/credits.ts`, `src/db/schema/credits.ts`, migration `src/db/migrations/0004_hesitant_goblin_queen.sql`. |
 | Optimistic and pessimistic concurrency controls, strict idempotency | COMPLETE | Verified under concurrent requests in integration tests. |
 | Ledger integrity check and configurable pricing table | COMPLETE | `verifyWalletLedgerIntegrityService()`, `resolveAiTaskPricingService()`, `src/db/seed/credits.ts`. |
