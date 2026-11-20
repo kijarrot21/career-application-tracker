@@ -63,6 +63,10 @@ export class OpenAiProvider implements AiProvider {
     return config?.model?.trim() || env.OPENAI_MODEL || "gpt-4o-mini";
   }
 
+  getDefaultTimeoutMs(): number {
+    return env.AI_REQUEST_TIMEOUT_MS;
+  }
+
   async checkHealth(config?: AiModelConfig): Promise<AiProviderHealth> {
     const defaultModel = this.getDefaultModel(config);
     const apiKey = this.getApiKey();
@@ -179,6 +183,7 @@ export class OpenAiProvider implements AiProvider {
         }),
       },
       timeoutMs: request.modelConfig?.timeoutMs,
+      providerDefaultTimeoutMs: this.getDefaultTimeoutMs(),
       provider: "openai",
       fetchFn: this.fetchFn,
     });

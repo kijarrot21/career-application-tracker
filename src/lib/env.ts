@@ -24,6 +24,14 @@ const envSchema = z.object({
   GEMINI_MODEL: z.string().optional().default("gemini-2.5-flash"),
   OLLAMA_BASE_URL: z.string().optional().default("http://127.0.0.1:11434"),
   OLLAMA_MODEL: z.string().optional().default("qwen2.5:7b"),
+  // Local CPU inference is substantially slower than cloud inference. Keep a
+  // bounded, separately configurable timeout so cloud defaults stay unchanged.
+  OLLAMA_REQUEST_TIMEOUT_MS: z.coerce
+    .number()
+    .int()
+    .min(1000)
+    .max(180000)
+    .default(120000),
   AI_REQUEST_TIMEOUT_MS: z.coerce.number().int().min(1000).max(180000).default(30000),
   AI_ALLOW_PRIVATE_LOCAL_ENDPOINT: z.string().optional().default("false"),
   // Payment Gateway Sandbox Configuration (real-money checkout requires explicit owner approval)

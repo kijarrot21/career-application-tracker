@@ -63,6 +63,10 @@ export class GeminiProvider implements AiProvider {
     return config?.model?.trim() || env.GEMINI_MODEL || "gemini-2.5-flash";
   }
 
+  getDefaultTimeoutMs(): number {
+    return env.AI_REQUEST_TIMEOUT_MS;
+  }
+
   async checkHealth(config?: AiModelConfig): Promise<AiProviderHealth> {
     const defaultModel = this.getDefaultModel(config);
     const apiKey = this.getApiKey();
@@ -186,6 +190,7 @@ export class GeminiProvider implements AiProvider {
         }),
       },
       timeoutMs: request.modelConfig?.timeoutMs,
+      providerDefaultTimeoutMs: this.getDefaultTimeoutMs(),
       provider: "gemini",
       fetchFn: this.fetchFn,
     });

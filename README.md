@@ -246,7 +246,8 @@ Use the existing variable names. There is no `AI_PROVIDER` environment variable;
 |---|---|---|
 | `OLLAMA_BASE_URL` | `http://127.0.0.1:11434` | Local Ollama endpoint. The adapter rejects invalid or unsafe URLs. |
 | `OLLAMA_MODEL` | `qwen2.5:7b` | Model name used when no per-user override is set. |
-| `AI_REQUEST_TIMEOUT_MS` | `30000` | Per-request timeout in milliseconds. |
+| `AI_REQUEST_TIMEOUT_MS` | `30000` | Global fallback timeout in milliseconds for cloud providers. |
+| `OLLAMA_REQUEST_TIMEOUT_MS` | `120000` | Inference timeout for the local Ollama provider (bounded to 1000–180000 ms). Overrides the global fallback for Ollama only. |
 | `AI_ALLOW_PRIVATE_LOCAL_ENDPOINT` | `false` | Advanced endpoint-validation toggle. Leave `false` for normal loopback use. |
 
 These names are already documented in `.env.example`. To use the recommended model on this machine, add or update this line in `.env.local`:
@@ -256,6 +257,8 @@ OLLAMA_MODEL=qwen2.5:3b
 ```
 
 Do not commit `.env.local`. Restart `npm run dev` after changing environment files. In Settings, choose **AI Privacy Mode = Local AI Only** and **Preferred Provider = Ollama (Local)** or **Automatic (Respect Privacy Mode)**. `local_only` permits Ollama and rejects OpenAI/Gemini with `PRIVACY_MODE_BLOCKED`.
+
+Timeout precedence for inference: explicit per-task/model `timeoutMs` → provider default (`OLLAMA_REQUEST_TIMEOUT_MS` for Ollama, `AI_REQUEST_TIMEOUT_MS` for cloud providers) → `AI_REQUEST_TIMEOUT_MS`. Health checks use a separate 5-second default capped at 10 seconds. The timeout covers the full HTTP lifecycle, including response-body consumption.
 
 ### Run the application
 
@@ -301,7 +304,7 @@ Live verification on 2026-11-20 used macOS 27.2.1 (arm64, 8 GB RAM), Ollama 0.40
 | `model not found` / `model not available` | Model name not pulled or wrong override | `ollama list` | `ollama pull <model>` or correct `OLLAMA_MODEL` / Settings override. |
 | Application reports `ENDPOINT_INVALID` | Endpoint is not a valid local URL | Inspect `OLLAMA_BASE_URL` | Use `http://127.0.0.1:11434`; keep `AI_ALLOW_PRIVATE_LOCAL_ENDPOINT=false` unless required. |
 | Application reports `PROVIDER_UNAVAILABLE` | Ollama reachable but model missing | `ollama list` and `/api/tags` | Pull the configured model or change the override to an installed model. |
-| Request times out | Large model or slow CPU | `AI_REQUEST_TIMEOUT_MS` value and Ollama logs | Increase the timeout up to 180000 ms, or use a smaller model such as `qwen2.5:3b`. |
+| Request times out | Local CPU inference exceeds the timeout | `OLLAMA_REQUEST_TIMEOUT_MS` value and Ollama logs | Raise `OLLAMA_REQUEST_TIMEOUT_MS` up to 180000 ms, or use a smaller model such as `qwen2.5:3b`. Cloud fallback never occurs in `local_only`. |
 | Insufficient RAM or heavy swapping | Model too large for 8 GB | Activity Monitor memory pressure | Use `qwen2.5:3b`; close other memory-heavy apps. |
 | Slow inference | Model size / CPU limits | Ollama logs | Prefer a 3B quantized model; shorten prompts; avoid parallel heavy tasks. |
 | Docker cannot reach host Ollama | `127.0.0.1` resolves to the container | `curl http://host.docker.internal:11434/api/tags` from the container | Set `OLLAMA_BASE_URL=http://host.docker.internal:11434` for the container. |

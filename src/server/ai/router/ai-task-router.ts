@@ -156,6 +156,29 @@ function clampAttempts(raw?: number): number {
 }
 
 /**
+ * Merges per-task overrides into the selected provider/model configuration.
+ * Nullish values are ignored so a valid selection or provider default is never
+ * replaced with `undefined` / `null` (the latter is how paused jobs persist
+ * "no override"). Used by both new executions and consent resumptions.
+ */
+export function mergeExecutionModelConfig(
+  selected: AiModelConfig,
+  overrides: {
+    temperature?: number;
+    maxOutputTokens?: number;
+    timeoutMs?: number | null;
+  },
+): AiModelConfig {
+  return {
+    ...selected,
+    temperature: overrides.temperature ?? selected.temperature,
+    maxOutputTokens:
+      overrides.maxOutputTokens ?? selected.maxOutputTokens,
+    timeoutMs: overrides.timeoutMs ?? selected.timeoutMs,
+  };
+}
+
+/**
  * Orchestrates privacy-mode checks, consent gates, prompt versioning, provider
  * retries, Zod structured validation, and atomic persistence in `ai_analysis_jobs`,
  * `ai_career_analyses`, and `ai_analysis_sources`.
@@ -415,12 +438,11 @@ export async function executeAiTask<TSchema extends z.ZodTypeAny>(
     taskType: params.taskType,
     locale,
     provider: selection.provider,
-    modelConfig: {
-      ...selection.modelConfig,
+    modelConfig: mergeExecutionModelConfig(selection.modelConfig, {
       temperature: params.temperature,
       maxOutputTokens: params.maxOutputTokens,
       timeoutMs: params.timeoutMs,
-    },
+    }),
     resolvedModel: selection.resolvedModel,
     promptVersionTag: promptTemplate.tag,
     systemPrompt: promptTemplate.systemPrompt,
@@ -733,12 +755,11 @@ export async function approveAndRunAiJobService(
     taskType: job.taskType,
     locale: job.locale,
     provider: selection.provider,
-    modelConfig: {
-      ...selection.modelConfig,
+    modelConfig: mergeExecutionModelConfig(selection.modelConfig, {
       temperature: req.temperature,
       maxOutputTokens: req.maxOutputTokens,
-      timeoutMs: req.timeoutMs ?? undefined,
-    },
+      timeoutMs: req.timeoutMs,
+    }),
     resolvedModel: selection.resolvedModel,
     promptVersionTag: job.promptVersionTag,
     systemPrompt: req.systemPrompt,

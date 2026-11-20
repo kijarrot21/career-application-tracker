@@ -1,4 +1,4 @@
-import type { z } from "zod";
+import { z } from "zod";
 import type { AiUsageMetadata } from "@/lib/domain/ai";
 import { env } from "@/lib/env";
 import { validateLocalAiEndpoint } from "../security/endpoint-validator";
@@ -60,6 +60,10 @@ export class OllamaProvider implements AiProvider {
 
   getDefaultModel(config?: AiModelConfig): string {
     return config?.model?.trim() || env.OLLAMA_MODEL || "qwen2.5:7b";
+  }
+
+  getDefaultTimeoutMs(): number {
+    return env.OLLAMA_REQUEST_TIMEOUT_MS;
   }
 
   async checkHealth(config?: AiModelConfig): Promise<AiProviderHealth> {
@@ -167,6 +171,12 @@ export class OllamaProvider implements AiProvider {
       ? `${request.userPrompt}\n\nOutput Schema Contract:\n${request.outputContractHint}`
       : request.userPrompt;
 
+    // `format: "json"` only guarantees valid JSON, not the task's shape. Small
+    // local models routinely return wrong-typed fields when the contract is
+    // text-only. Passing the Zod-derived JSON Schema makes Ollama constrain
+    // generation to the schema, so INVALID_OUTPUT becomes exceptional.
+    const responseFormat = z.toJSONSchema(request.schema);
+
     const res = await fetchWithTimeout({
       url: `${baseUrl}/api/chat`,
       init: {
@@ -175,7 +185,7 @@ export class OllamaProvider implements AiProvider {
         body: JSON.stringify({
           model,
           stream: false,
-          format: "json",
+          format: responseFormat,
           options: {
             temperature: request.modelConfig?.temperature ?? 0.2,
             num_predict: request.modelConfig?.maxOutputTokens ?? 2048,
@@ -187,8 +197,18 @@ export class OllamaProvider implements AiProvider {
         }),
       },
       timeoutMs: request.modelConfig?.timeoutMs,
+      providerDefaultTimeoutMs: this.getDefaultTimeoutMs(),
       provider: "ollama",
       fetchFn: this.fetchFn,
+      diagnostics: {
+        taskType: request.taskType,
+        model,
+        promptChars: request.systemPrompt.length + userContent.length,
+        estimatedInputTokens:
+          estimateTokensFromText(request.systemPrompt) +
+          estimateTokensFromText(userContent),
+        outputTokenLimit: request.modelConfig?.maxOutputTokens ?? 2048,
+      },
     });
 
     if (!res.ok) {

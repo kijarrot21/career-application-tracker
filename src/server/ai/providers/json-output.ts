@@ -98,17 +98,44 @@ export function parseAndValidateStructuredJson<TSchema extends z.ZodTypeAny>(
 }
 
 /**
- * Executes fetch with strict AbortController timeout and normalized network/HTTP errors.
+ * Resolves the effective inference timeout with nullish semantics:
+ * explicit task/model override -> provider default -> environment fallback.
+ * `null` (used by persisted `pendingTaskRequest`) is treated as "not set".
+ */
+export function resolveRequestTimeoutMs(params: {
+  explicitTimeoutMs?: number | null;
+  providerDefaultTimeoutMs?: number;
+}): number {
+  return (
+    params.explicitTimeoutMs ??
+    params.providerDefaultTimeoutMs ??
+    env.AI_REQUEST_TIMEOUT_MS
+  );
+}
+
+const NULL_BODY_STATUS_CODES = new Set([204, 205, 304]);
+
+/**
+ * Executes a fetch whose full lifecycle (connection, response headers and
+ * response body) is bounded by one AbortController timeout. The body is
+ * buffered before the timer is cleared so provider-level `json()` / `text()`
+ * reads can never stall outside the timeout window. The returned Response is
+ * a drop-in replacement with the same status, headers and body semantics.
  */
 export async function fetchWithTimeout(params: {
   url: string;
   init: RequestInit;
-  timeoutMs?: number;
+  timeoutMs?: number | null;
+  providerDefaultTimeoutMs?: number;
   provider: AiProviderId;
   fetchFn?: FetchLike;
+  diagnostics?: Record<string, string | number | boolean | null>;
 }): Promise<Response> {
   const fetchFn = params.fetchFn ?? fetch;
-  const timeoutMs = params.timeoutMs ?? env.AI_REQUEST_TIMEOUT_MS;
+  const timeoutMs = resolveRequestTimeoutMs({
+    explicitTimeoutMs: params.timeoutMs,
+    providerDefaultTimeoutMs: params.providerDefaultTimeoutMs,
+  });
   const controller = new AbortController();
   const timer = setTimeout(() => {
     controller.abort(new Error(`Request timed out after ${timeoutMs}ms`));
@@ -119,12 +146,35 @@ export async function fetchWithTimeout(params: {
       ...params.init,
       signal: controller.signal,
     });
-    return response;
+
+    // Keep the timeout active while the body is consumed. `stream: false`
+    // providers send the body with the headers, but a stalled or chunked body
+    // must still abort instead of hanging after the timer was cleared.
+    const body = NULL_BODY_STATUS_CODES.has(response.status)
+      ? null
+      : await response.arrayBuffer();
+
+    return new Response(body, {
+      status: response.status,
+      statusText: response.statusText,
+      headers: response.headers,
+    });
   } catch (err) {
     const isAbort =
       controller.signal.aborted ||
       (err instanceof Error && err.name === "AbortError");
     if (isAbort) {
+      if (params.diagnostics) {
+        // Structured, non-sensitive metadata only. Never log prompts or bodies.
+        console.warn(
+          "[ai-provider] request timed out",
+          JSON.stringify({
+            provider: params.provider,
+            timeoutMs,
+            ...params.diagnostics,
+          }),
+        );
+      }
       throw new AiProviderError(
         "TIMEOUT",
         `${params.provider} request timed out after ${timeoutMs}ms.`,

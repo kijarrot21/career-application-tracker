@@ -110,6 +110,8 @@ export interface AiProvider {
   readonly capabilities: AiProviderCapabilities;
   isConfigured(config?: AiModelConfig): boolean;
   getDefaultModel(config?: AiModelConfig): string;
+  /** Provider-specific default inference timeout; task overrides win over this. */
+  getDefaultTimeoutMs?(): number;
   checkHealth(config?: AiModelConfig): Promise<AiProviderHealth>;
   estimateUsage(request: {
     systemPrompt: string;
