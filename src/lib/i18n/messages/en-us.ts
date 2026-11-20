@@ -104,6 +104,44 @@ export const EN_US_MESSAGES: TranslationMessages = {
       project: "/project",
     },
   },
+  featureAvailability: {
+    features: {
+      localAI: "Local AI",
+      creditWallet: "Credit Wallet",
+      payments: "Payment & Billing",
+      cloudAI: "Cloud AI",
+    },
+    statuses: {
+      available: "Available",
+      "in-development": "In Development",
+      "coming-soon": "Coming Soon",
+      "temporarily-unavailable": "Temporarily Unavailable",
+    },
+    disabledNavHint: "This feature is not available yet.",
+    localAI: {
+      title: "Local AI",
+      message:
+        "Local AI is available and is the active focus of AI development. No wallet access, top-up, or payment is required.",
+    },
+    creditWallet: {
+      title: "Credit Wallet",
+      message:
+        "Credit management is in development and is not available for use yet. AI tasks continue to run through the existing internal credit allocation.",
+    },
+    paymentsBilling: {
+      title: "Payment & Billing",
+      message:
+        "Payments and billing management are not available yet. They will be enabled in a future release.",
+    },
+    cloudAI: {
+      title: "Cloud AI",
+      message:
+        "Cloud AI integration is in development. AI development currently focuses on Local AI.",
+      settingsNote:
+        "Configure local AI privacy and endpoint settings here. Cloud AI is coming soon; current AI development focuses on Local AI.",
+      settingsTitle: "5. AI Privacy & Local Provider Mode",
+    },
+  },
   settings: {
     pageTitle: "Settings, Pipeline Customization & Data Privacy",
     pageDescription:

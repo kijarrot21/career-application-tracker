@@ -3,7 +3,6 @@
 import {
   Archive,
   Briefcase,
-  Coins,
   Kanban,
   RefreshCw,
   Search,
@@ -162,14 +161,6 @@ export function CommandMenu({
               >
                 <Sparkles className="h-4 w-4 text-primary-text" />
                 Open AI CV Studio
-              </button>
-              <button
-                type="button"
-                onClick={() => goTo("/credits")}
-                className="flex w-full cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2 text-left text-[13px] font-medium text-foreground transition-colors hover:bg-surface-subtle hover:text-primary-text"
-              >
-                <Coins className="h-4 w-4 text-primary-text" />
-                Open credit wallet
               </button>
               <button
                 type="button"

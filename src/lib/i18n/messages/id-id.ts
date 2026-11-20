@@ -104,6 +104,44 @@ export const ID_ID_MESSAGES: TranslationMessages = {
       project: "/proyek",
     },
   },
+  featureAvailability: {
+    features: {
+      localAI: "AI Lokal",
+      creditWallet: "Dompet Kredit",
+      payments: "Pembayaran & Tagihan",
+      cloudAI: "AI Cloud",
+    },
+    statuses: {
+      available: "Tersedia",
+      "in-development": "Dalam Pengembangan",
+      "coming-soon": "Segera Hadir",
+      "temporarily-unavailable": "Sementara Tidak Tersedia",
+    },
+    disabledNavHint: "Fitur ini belum tersedia.",
+    localAI: {
+      title: "AI Lokal",
+      message:
+        "AI Lokal tersedia dan menjadi fokus aktif pengembangan AI. Tidak perlu membuka dompet kredit, melakukan top-up, atau pembayaran.",
+    },
+    creditWallet: {
+      title: "Dompet Kredit",
+      message:
+        "Pengelolaan kredit sedang dalam tahap pengembangan dan belum tersedia untuk digunakan. Tugas AI tetap berjalan melalui alokasi kredit internal yang sudah ada.",
+    },
+    paymentsBilling: {
+      title: "Pembayaran & Tagihan",
+      message:
+        "Fitur pembayaran dan pengelolaan tagihan belum tersedia. Fitur ini akan diaktifkan pada pengembangan berikutnya.",
+    },
+    cloudAI: {
+      title: "AI Cloud",
+      message:
+        "Integrasi AI Cloud sedang dalam tahap pengembangan. Saat ini, pengembangan AI difokuskan pada AI Lokal.",
+      settingsNote:
+        "Atur privasi dan endpoint AI Lokal di sini. AI Cloud segera hadir; pengembangan AI saat ini difokuskan pada AI Lokal.",
+      settingsTitle: "5. Privasi AI & Mode Penyedia Lokal",
+    },
+  },
   settings: {
     pageTitle: "Pengaturan, Kustomisasi Pipeline & Privasi Data",
     pageDescription:

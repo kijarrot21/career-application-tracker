@@ -6,6 +6,7 @@ import type {
 } from "@/lib/constants";
 import type { ArchiveOutcome } from "@/lib/domain/archive";
 import type { HelpModuleKey } from "@/lib/domain/contextual-help";
+import type { FeatureAvailabilityStatus } from "@/lib/domain/feature-availability";
 import type {
   OnboardingMode,
   TutorialSection,
@@ -97,6 +98,34 @@ export interface TranslationMessages {
     workArrangement: Record<"onsite" | "hybrid" | "remote", string>;
     searchStatus: Record<SearchStatus, string>;
     salaryPeriod: Record<SalaryPeriod, string>;
+  };
+  featureAvailability: {
+    features: {
+      localAI: string;
+      creditWallet: string;
+      payments: string;
+      cloudAI: string;
+    };
+    statuses: Record<FeatureAvailabilityStatus, string>;
+    disabledNavHint: string;
+    localAI: {
+      title: string;
+      message: string;
+    };
+    creditWallet: {
+      title: string;
+      message: string;
+    };
+    paymentsBilling: {
+      title: string;
+      message: string;
+    };
+    cloudAI: {
+      title: string;
+      message: string;
+      settingsNote: string;
+      settingsTitle: string;
+    };
   };
   settings: {
     pageTitle: string;

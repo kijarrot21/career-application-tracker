@@ -18,6 +18,10 @@ import { toast } from "sonner";
 import { useTranslations } from "@/components/i18n/locale-provider";
 import { OnboardingSettingsCard } from "@/components/settings/onboarding-settings-card";
 import {
+  getFeatureAvailability,
+  isFeatureEnabled,
+} from "@/lib/domain/feature-availability";
+import {
   Badge,
   Button,
   Card,
@@ -27,6 +31,7 @@ import {
   PageHeader,
   Select,
   StageBadge,
+  StatusBadge,
 } from "@/components/ui";
 import {
   SEARCH_STATUSES,
@@ -34,6 +39,8 @@ import {
   type SearchStatus,
 } from "@/lib/constants";
 import {
+  getLocalizedFeatureLabel,
+  getLocalizedFeatureStatusLabel,
   getLocalizedSearchStatusLabel,
   getMessages,
   getSupportedCurrencyOptions,
@@ -107,6 +114,18 @@ export function SettingsClient({
   const [isPending, startTransition] = useTransition();
   const { locale: activeLocale, messages } = useTranslations();
 
+  const localAIAvailability = getFeatureAvailability("localAI");
+  const localAIStatusLabel = getLocalizedFeatureStatusLabel(
+    localAIAvailability.status,
+    activeLocale,
+  );
+  const cloudAIAvailability = getFeatureAvailability("cloudAI");
+  const cloudAISupported = isFeatureEnabled("cloudAI");
+  const cloudAIStatusLabel = getLocalizedFeatureStatusLabel(
+    cloudAIAvailability.status,
+    activeLocale,
+  );
+
   // 1. Workspace locale & search status state
   const [preferredLocale, setPreferredLocale] = useState<AppLocale>(
     normalizeLocale(settings.preferredLocale ?? activeLocale),
@@ -147,10 +166,20 @@ export function SettingsClient({
 
   // 5. AI privacy mode state
   const [aiPrivacyMode, setAiPrivacyMode] = useState<AiPrivacyMode>(
-    settings.aiPrivacyMode,
+    cloudAISupported
+      ? settings.aiPrivacyMode
+      : settings.aiPrivacyMode === "cloud_allowed"
+        ? "ask_before_each"
+        : settings.aiPrivacyMode,
   );
   const [aiPreferredProvider, setAiPreferredProvider] =
-    useState<AiPreferredProvider>(settings.aiPreferredProvider);
+    useState<AiPreferredProvider>(
+      cloudAISupported
+        ? settings.aiPreferredProvider
+        : settings.aiPreferredProvider === "ollama"
+          ? "ollama"
+          : "auto",
+    );
   const [aiOllamaEndpoint, setAiOllamaEndpoint] = useState(
     settings.aiOllamaEndpoint ?? DEFAULT_OLLAMA_ENDPOINT,
   );
@@ -158,7 +187,7 @@ export function SettingsClient({
     settings.aiOllamaModel ?? "",
   );
   const [aiCloudDocumentConsent, setAiCloudDocumentConsent] = useState(
-    settings.aiCloudDocumentConsent,
+    cloudAISupported && settings.aiCloudDocumentConsent,
   );
 
   // 6. Account deletion state
@@ -174,8 +203,11 @@ export function SettingsClient({
           aiPreferredProvider,
           aiOllamaEndpoint: aiOllamaEndpoint.trim() || null,
           aiOllamaModel: aiOllamaModel.trim() || null,
-          aiCloudDocumentConsent:
-            aiPrivacyMode === "local_only" ? false : aiCloudDocumentConsent,
+          aiCloudDocumentConsent: cloudAISupported
+            ? aiPrivacyMode === "local_only"
+              ? false
+              : aiCloudDocumentConsent
+            : false,
         });
         toast.success("AI privacy and provider preferences saved.");
         router.refresh();
@@ -694,23 +726,64 @@ export function SettingsClient({
           <div className="flex items-center gap-2">
             <Cpu className="h-4 w-4 text-primary-text" />
             <h2 className="text-section-title text-foreground">
-              5. AI Privacy &amp; Hybrid Provider Mode
+              {messages.featureAvailability.cloudAI.settingsTitle}
             </h2>
           </div>
           <p className="text-muted-foreground">
-            Control how career documents and job descriptions are routed between
-            local and cloud AI providers. API keys remain strictly server-side.
+            {messages.featureAvailability.cloudAI.settingsNote}
           </p>
 
+          <div
+            role="status"
+            className="flex flex-wrap items-center gap-2 rounded-xl border border-border-subtle bg-surface-subtle p-3"
+          >
+            <StatusBadge
+              label={`${getLocalizedFeatureLabel("localAI", activeLocale)} — ${localAIStatusLabel}`}
+              tone={localAIAvailability.tone}
+            />
+            <span className="text-muted-foreground">
+              {messages.featureAvailability.localAI.message}
+            </span>
+          </div>
+
+          {!cloudAISupported && (
+            <div
+              role="status"
+              className="flex flex-wrap items-center gap-2 rounded-xl border border-border-subtle bg-surface-subtle p-3"
+            >
+              <StatusBadge
+                label={cloudAIStatusLabel}
+                tone={cloudAIAvailability.tone}
+              />
+              <span className="text-muted-foreground">
+                {messages.featureAvailability.cloudAI.message}
+              </span>
+            </div>
+          )}
+
           <div className="flex flex-wrap gap-2">
-            {aiProviders.map((p) => (
-              <Badge
-                key={p.id}
-                variant={p.configured ? "success" : "secondary"}
-              >
-                {p.label}: {p.configured ? `Configured (${p.defaultModel})` : "Not configured"}
-              </Badge>
-            ))}
+            {aiProviders.map((p) => {
+              const cloudUnavailable = p.locality === "cloud" && !cloudAISupported;
+              return (
+                <Badge
+                  key={p.id}
+                  variant={
+                    cloudUnavailable
+                      ? "secondary"
+                      : p.configured
+                        ? "success"
+                        : "secondary"
+                  }
+                >
+                  {p.label}:{" "}
+                  {cloudUnavailable
+                    ? cloudAIStatusLabel
+                    : p.configured
+                      ? `Configured (${p.defaultModel})`
+                      : "Not configured"}
+                </Badge>
+              );
+            })}
           </div>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -729,11 +802,16 @@ export function SettingsClient({
                   }
                 }}
               >
-                {AI_PRIVACY_MODES.map((m) => (
-                  <option key={m} value={m}>
-                    {AI_PRIVACY_MODE_LABELS[m]}
-                  </option>
-                ))}
+                {AI_PRIVACY_MODES.map((m) => {
+                  const cloudModeUnavailable =
+                    m === "cloud_allowed" && !cloudAISupported;
+                  return (
+                    <option key={m} value={m} disabled={cloudModeUnavailable}>
+                      {AI_PRIVACY_MODE_LABELS[m]}
+                      {cloudModeUnavailable ? ` — ${cloudAIStatusLabel}` : ""}
+                    </option>
+                  );
+                })}
               </Select>
             </FormField>
 
@@ -745,11 +823,18 @@ export function SettingsClient({
                   setAiPreferredProvider(e.target.value as AiPreferredProvider)
                 }
               >
-                {AI_PREFERRED_PROVIDERS.map((p) => (
-                  <option key={p} value={p}>
-                    {AI_PROVIDER_LABELS[p]}
-                  </option>
-                ))}
+                {AI_PREFERRED_PROVIDERS.map((p) => {
+                  const cloudProviderUnavailable =
+                    p !== "auto" && p !== "ollama" && !cloudAISupported;
+                  return (
+                    <option key={p} value={p} disabled={cloudProviderUnavailable}>
+                      {AI_PROVIDER_LABELS[p]}
+                      {cloudProviderUnavailable
+                        ? ` — ${cloudAIStatusLabel}`
+                        : ""}
+                    </option>
+                  );
+                })}
               </Select>
             </FormField>
 
@@ -778,7 +863,7 @@ export function SettingsClient({
             </FormField>
           </div>
 
-          {aiPrivacyMode !== "local_only" && (
+          {cloudAISupported && aiPrivacyMode !== "local_only" && (
             <label className="flex items-start gap-2 rounded-lg border border-border-subtle bg-surface-subtle p-3 text-foreground">
               <input
                 type="checkbox"

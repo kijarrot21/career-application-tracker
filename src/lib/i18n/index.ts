@@ -1,5 +1,9 @@
 import type { JobPriority, SearchStatus, TriageStatus } from "@/lib/constants";
 import type { ArchiveOutcome } from "@/lib/domain/archive";
+import type {
+  FeatureAvailabilityStatus,
+  FeatureKey,
+} from "@/lib/domain/feature-availability";
 import type { Outcome, StageType } from "@/lib/domain/stages";
 import { EN_US_MESSAGES } from "./messages/en-us";
 import { ID_ID_MESSAGES } from "./messages/id-id";
@@ -213,6 +217,20 @@ export function getLocalizedSearchStatusLabel(
   locale?: string | null,
 ): string {
   return getMessages(locale).statuses.searchStatus[status] ?? status;
+}
+
+export function getLocalizedFeatureLabel(
+  feature: FeatureKey,
+  locale?: string | null,
+): string {
+  return getMessages(locale).featureAvailability.features[feature] ?? feature;
+}
+
+export function getLocalizedFeatureStatusLabel(
+  status: FeatureAvailabilityStatus,
+  locale?: string | null,
+): string {
+  return getMessages(locale).featureAvailability.statuses[status] ?? status;
 }
 
 export function getLocalizedErrorMessage(

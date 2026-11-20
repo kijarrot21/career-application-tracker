@@ -24,15 +24,30 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { useTranslations } from "@/components/i18n/locale-provider";
-import { Button, Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui";
+import {
+  Button,
+  StatusBadge,
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui";
 import { signOut } from "@/lib/auth-client";
-import type { TranslationMessages } from "@/lib/i18n";
+import {
+  getFeatureAvailability,
+  type FeatureKey,
+} from "@/lib/domain/feature-availability";
+import {
+  getLocalizedFeatureLabel,
+  getLocalizedFeatureStatusLabel,
+  type TranslationMessages,
+} from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
 interface NavItem {
   key: Extract<keyof TranslationMessages["nav"], string>;
   href: string;
   icon: React.ComponentType<{ className?: string }>;
+  feature?: FeatureKey;
 }
 
 const PIPELINE_NAV_ITEMS: NavItem[] = [
@@ -53,7 +68,7 @@ const ASSET_NAV_ITEMS: NavItem[] = [
 ];
 
 const FOOTER_NAV_ITEMS: NavItem[] = [
-  { key: "credits", href: "/credits", icon: Coins },
+  { key: "credits", href: "/credits", icon: Coins, feature: "creditWallet" },
   { key: "sync", href: "/sync", icon: RefreshCw },
   { key: "settings", href: "/settings", icon: Settings },
 ];
@@ -80,7 +95,7 @@ export function AppSidebar({
 }) {
   const pathname = usePathname();
   const router = useRouter();
-  const { messages } = useTranslations();
+  const { locale, messages } = useTranslations();
   const [collapsedOverride, setCollapsedOverride] = useState<boolean | null>(
     null,
   );
@@ -101,25 +116,68 @@ export function AppSidebar({
       const label = messages.nav[item.key];
       const active =
         pathname === item.href || pathname.startsWith(`${item.href}/`);
+      const availability = item.feature
+        ? getFeatureAvailability(item.feature)
+        : null;
+      const isUnavailable = availability ? !availability.enabled : false;
+      const statusLabel = availability
+        ? getLocalizedFeatureStatusLabel(availability.status, locale)
+        : null;
+      const featureLabel = item.feature
+        ? getLocalizedFeatureLabel(item.feature, locale)
+        : label;
+      const accessibleLabel = isUnavailable
+        ? `${featureLabel} — ${statusLabel}: ${messages.featureAvailability.disabledNavHint}`
+        : label;
+      const isHighlighted = active && !isUnavailable;
 
-      const linkEl = (
+      const baseClass = cn(
+        "flex items-center gap-3 rounded-xl px-3 py-2.5 text-[14px] leading-5 transition-all",
+        isCollapsed && "justify-center px-0",
+        isHighlighted
+          ? "bg-primary font-semibold text-white shadow-xs"
+          : "font-medium text-muted-foreground hover:bg-surface-subtle hover:text-foreground",
+        isUnavailable &&
+          "cursor-not-allowed opacity-60 hover:bg-transparent hover:text-muted-foreground",
+      );
+
+      const linkEl = isUnavailable ? (
+        <button
+          key={item.key}
+          type="button"
+          disabled
+          aria-disabled="true"
+          aria-label={accessibleLabel}
+          title={accessibleLabel}
+          className={baseClass}
+        >
+          <Icon
+            className={cn(
+              "h-[18px] w-[18px] shrink-0",
+              isHighlighted ? "text-white" : "text-primary-text",
+            )}
+          />
+          <span className={cn("truncate", labelVisibilityClass)}>{label}</span>
+          {!isCollapsed && availability && (
+            <StatusBadge
+              label={statusLabel ?? ""}
+              tone={availability.tone}
+              className="ml-auto shrink-0 px-1.5 py-0 text-[9px]"
+            />
+          )}
+        </button>
+      ) : (
         <Link
           key={item.key}
           href={item.href}
           onClick={onCloseMobile}
           aria-current={active ? "page" : undefined}
-          className={cn(
-            "flex items-center gap-3 rounded-xl px-3 py-2.5 text-[14px] leading-5 transition-all",
-            isCollapsed && "justify-center px-0",
-            active
-              ? "bg-primary font-semibold text-white shadow-xs"
-              : "font-medium text-muted-foreground hover:bg-surface-subtle hover:text-foreground",
-          )}
+          className={baseClass}
         >
           <Icon
             className={cn(
               "h-[18px] w-[18px] shrink-0",
-              active ? "text-white" : "text-primary-text",
+              isHighlighted ? "text-white" : "text-primary-text",
             )}
           />
           <span className={cn("truncate", labelVisibilityClass)}>
@@ -131,8 +189,20 @@ export function AppSidebar({
       if (isCollapsed) {
         return (
           <Tooltip key={item.key}>
-            <TooltipTrigger asChild>{linkEl}</TooltipTrigger>
-            <TooltipContent side="right">{label}</TooltipContent>
+            <TooltipTrigger asChild>
+              {isUnavailable ? (
+                <span
+                  tabIndex={0}
+                  className="inline-flex"
+                  aria-label={accessibleLabel}
+                >
+                  {linkEl}
+                </span>
+              ) : (
+                linkEl
+              )}
+            </TooltipTrigger>
+            <TooltipContent side="right">{accessibleLabel}</TooltipContent>
           </Tooltip>
         );
       }
