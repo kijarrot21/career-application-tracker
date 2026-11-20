@@ -25,7 +25,7 @@ import {
   INTERVIEW_TYPES,
   SUBMISSION_METHODS,
 } from "@/lib/constants";
-import { todayInTimeZone } from "@/lib/domain/business-days";
+import { isIsoDate, todayInTimeZone } from "@/lib/domain/business-days";
 import {
   initialFollowUpDueOn,
   nextFollowUpInSequence,
@@ -48,7 +48,11 @@ export const recordSubmissionSchema = z.object({
   title: z.string().trim().optional().nullable(),
   jobUrl: z.string().trim().optional().nullable(),
   location: z.string().trim().optional().nullable(),
-  submittedOn: z.string().trim().min(10, "Submission date is required"),
+  submittedOn: z
+    .string()
+    .trim()
+    .min(10, "Submission date is required")
+    .refine(isIsoDate, "Submission date must be a valid YYYY-MM-DD date"),
   platformSourceId: z.string().uuid().optional().nullable(),
   submissionMethod: z.enum(SUBMISSION_METHODS).default("platform"),
   applicationUrl: z.string().trim().optional().nullable(),
