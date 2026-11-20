@@ -4,6 +4,7 @@ import {
   Briefcase,
   ExternalLink,
   Plus,
+  RotateCcw,
   Search,
   Send,
 } from "lucide-react";
@@ -82,6 +83,23 @@ export function JobsListClient({
 
   const [applyTarget, setApplyTarget] =
     useState<VacancyOptionForSubmission | null>(null);
+
+  const hasActiveFilters =
+    search.trim().length > 0 ||
+    triageFilter !== "all" ||
+    priorityFilter !== "all" ||
+    sourceFilter !== "all" ||
+    arrangementFilter !== "all" ||
+    sortBy !== "newest";
+
+  function resetFilters() {
+    setSearch("");
+    setTriageFilter("all");
+    setPriorityFilter("all");
+    setSourceFilter("all");
+    setArrangementFilter("all");
+    setSortBy("newest");
+  }
 
   const filtered = vacancies
     .filter((v) => {
@@ -270,6 +288,17 @@ export function JobsListClient({
             {arr === "all" ? "All" : WORK_ARRANGEMENT_LABELS[arr]}
           </Button>
         ))}
+        {hasActiveFilters && (
+          <Button
+            type="button"
+            variant="secondary"
+            size="lg"
+            onClick={resetFilters}
+          >
+            <RotateCcw className="h-3.5 w-3.5" />
+            Reset
+          </Button>
+        )}
         <Badge variant="secondary" className="ml-auto font-mono tabular-nums">
           {filtered.length} {filtered.length === 1 ? "vacancy" : "vacancies"}
         </Badge>
