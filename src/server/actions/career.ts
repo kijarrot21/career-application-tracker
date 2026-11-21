@@ -12,6 +12,10 @@ import {
   linkDocumentVersionToApplicationService,
   saveAssessmentService,
   unlinkDocumentVersionFromApplicationService,
+  updateDocumentService,
+  updateDocumentVersionService,
+  type updateDocumentSchema,
+  type updateDocumentVersionSchema,
   type updateInterviewFullSchema,
   updateInterviewFullService,
   upsertJobOfferService,
@@ -87,6 +91,22 @@ export async function unlinkDocumentVersionFromApplicationAction(
   await unlinkDocumentVersionFromApplicationService(user.id, linkId);
   revalidateCareerPaths(applicationId);
   return { ok: true };
+}
+
+export async function updateDocumentAction(input: z.infer<typeof updateDocumentSchema>) {
+  const user = await requireUser();
+  const updated = await updateDocumentService(user.id, input);
+  revalidateCareerPaths();
+  return updated;
+}
+
+export async function updateDocumentVersionAction(
+  input: z.infer<typeof updateDocumentVersionSchema>,
+) {
+  const user = await requireUser();
+  const updated = await updateDocumentVersionService(user.id, input);
+  revalidateCareerPaths();
+  return updated;
 }
 
 export async function deleteDocumentAction(documentId: string) {

@@ -5,12 +5,17 @@ import {
   Eye,
   FilePlus2,
   FileText,
+  Info,
   Layers,
   Link2,
+  Pencil,
   Plus,
+  RefreshCw,
   Search,
+  ShieldCheck,
   Trash2,
   X,
+  XCircle,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -34,18 +39,28 @@ import {
   PageHeader,
   SampleBadge,
   Select,
+  Textarea,
 } from "@/components/ui";
 import {
   DOCUMENT_CATEGORIES,
   DOCUMENT_CATEGORY_LABELS,
   type DocumentCategory,
+  DOCUMENT_PROCESSING_STATUS_LABELS,
+  type DocumentProcessingStatus,
 } from "@/lib/constants";
 import { formatDateTime } from "@/lib/format";
 import {
   deleteDocumentAction,
   linkDocumentVersionToApplicationAction,
   unlinkDocumentVersionFromApplicationAction,
+  updateDocumentAction,
+  updateDocumentVersionAction,
 } from "@/server/actions/career";
+import {
+  approveCvExtractionAction,
+  cancelCvExtractionAction,
+  retryCvExtractionAction,
+} from "@/server/actions/documents";
 import type { getDocumentsModuleData } from "@/server/queries/career";
 
 type DocumentsData = Awaited<ReturnType<typeof getDocumentsModuleData>>;
@@ -59,6 +74,25 @@ function formatBytes(bytes: number | null | undefined): string {
   return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
 }
 
+function statusVariant(
+  status: DocumentProcessingStatus,
+): "secondary" | "info" | "warning" | "success" | "destructive" {
+  switch (status) {
+    case "uploaded":
+      return "secondary";
+    case "queued":
+      return "info";
+    case "processing":
+      return "warning";
+    case "awaiting_review":
+      return "info";
+    case "completed":
+      return "success";
+    case "failed":
+      return "destructive";
+  }
+}
+
 export function DocumentsClient({ data }: { data: DocumentsData }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -67,8 +101,25 @@ export function DocumentsClient({ data }: { data: DocumentsData }) {
   const [categoryFilter, setCategoryFilter] = useState<
     DocumentCategory | "all"
   >("all");
+  const [mimeFilter, setMimeFilter] = useState("all");
   const [search, setSearch] = useState("");
   const [showUploadPanel, setShowUploadPanel] = useState(false);
+
+  const [editDoc, setEditDoc] = useState<DocumentRow | null>(null);
+  const [editDocTitle, setEditDocTitle] = useState("");
+  const [editDocCategory, setEditDocCategory] =
+    useState<DocumentCategory>("master_cv");
+  const [editDocDescription, setEditDocDescription] = useState("");
+  const [editVersion, setEditVersion] = useState<{
+    doc: DocumentRow;
+    version: VersionRow;
+  } | null>(null);
+  const [editVersionLabel, setEditVersionLabel] = useState("");
+  const [editVersionNotes, setEditVersionNotes] = useState("");
+  const [detailsVersion, setDetailsVersion] = useState<{
+    doc: DocumentRow;
+    version: VersionRow;
+  } | null>(null);
 
   // Upload / Add Version state
   const [targetDocId, setTargetDocId] = useState<string>("");
@@ -82,6 +133,9 @@ export function DocumentsClient({ data }: { data: DocumentsData }) {
     "cv",
   );
   const [uploading, setUploading] = useState(false);
+  const [processingVersionId, setProcessingVersionId] = useState<string | null>(
+    null,
+  );
 
   // Preview & Delete modal state
   const [previewVersion, setPreviewVersion] = useState<{
@@ -90,8 +144,19 @@ export function DocumentsClient({ data }: { data: DocumentsData }) {
   } | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<DocumentRow | null>(null);
 
+  const availableMimes = Array.from(
+    new Set(
+      data.documents.flatMap((d) =>
+        d.versions.map((v) => v.mimeType).filter((m): m is string => Boolean(m)),
+      ),
+    ),
+  ).sort();
+
   const filteredDocs = data.documents.filter((d) => {
     if (categoryFilter !== "all" && d.category !== categoryFilter) return false;
+    if (mimeFilter !== "all" && !d.versions.some((v) => v.mimeType === mimeFilter)) {
+      return false;
+    }
     if (search.trim()) {
       const q = search.toLowerCase();
       const inTitle = d.title.toLowerCase().includes(q);
@@ -131,24 +196,30 @@ export function DocumentsClient({ data }: { data: DocumentsData }) {
         fd.set("linkApplicationId", linkAppId);
         fd.set("linkRole", linkRole);
       }
-      const file = fileInputRef.current?.files?.[0];
-      if (file) {
-        fd.set("file", file);
+      const files = Array.from(fileInputRef.current?.files ?? []);
+      for (const file of files) {
+        fd.append("files", file);
       }
 
       const res = await fetch("/api/documents/upload", {
         method: "POST",
         body: fd,
       });
-      const payload = (await res.json()) as { error?: string };
-      if (!res.ok) {
+      const payload = (await res.json()) as {
+        error?: string;
+        uploaded?: number;
+        failed?: number;
+      };
+      if (!res.ok && !payload.uploaded) {
         throw new Error(payload.error || "Upload failed");
       }
 
       toast.success(
         targetDocId
           ? `Added version ${versionLabel} to "${title}".`
-          : `Saved document "${title}" (${versionLabel}).`,
+          : `Saved ${payload.uploaded ?? files.length} document(s)${
+              payload.failed ? ` (${payload.failed} failed)` : ""
+            }.`,
       );
       setTargetDocId("");
       setTitle("");
@@ -197,6 +268,85 @@ export function DocumentsClient({ data }: { data: DocumentsData }) {
         router.refresh();
       } catch (err) {
         toast.error(err instanceof Error ? err.message : "Could not delete");
+      }
+    });
+  }
+
+  function openEditDoc(doc: DocumentRow) {
+    setEditDoc(doc);
+    setEditDocTitle(doc.title);
+    setEditDocCategory(doc.category as DocumentCategory);
+    setEditDocDescription(doc.description ?? "");
+  }
+
+  function handleSaveDoc() {
+    if (!editDoc) return;
+    startTransition(async () => {
+      try {
+        await updateDocumentAction({
+          documentId: editDoc.id,
+          title: editDocTitle,
+          category: editDocCategory,
+          description: editDocDescription,
+        });
+        toast.success("Document updated.");
+        setEditDoc(null);
+        router.refresh();
+      } catch (err) {
+        toast.error(err instanceof Error ? err.message : "Could not update");
+      }
+    });
+  }
+
+  function openEditVersion(doc: DocumentRow, version: VersionRow) {
+    setEditVersion({ doc, version });
+    setEditVersionLabel(version.label);
+    setEditVersionNotes(version.notes ?? "");
+  }
+
+  function handleSaveVersion() {
+    if (!editVersion) return;
+    startTransition(async () => {
+      try {
+        await updateDocumentVersionAction({
+          versionId: editVersion.version.id,
+          label: editVersionLabel,
+          notes: editVersionNotes,
+        });
+        toast.success("Version updated.");
+        setEditVersion(null);
+        router.refresh();
+      } catch (err) {
+        toast.error(err instanceof Error ? err.message : "Could not update");
+      }
+    });
+  }
+
+  function runProcessingAction(
+    versionId: string,
+    action: () => Promise<
+      { status?: string; errorCode?: string } | { ok: boolean }
+    >,
+    successMessage: string,
+  ) {
+    setProcessingVersionId(versionId);
+    startTransition(async () => {
+      try {
+        const result = await action();
+        if ("status" in result && result.status === "awaiting_review") {
+          toast.success("Extraction ready for review in Career Profile.");
+        } else if ("status" in result && result.status === "failed") {
+          toast.error(
+            `Extraction failed: ${result.errorCode ?? "EXTRACTION_FAILED"}. See version details.`,
+          );
+        } else {
+          toast.success(successMessage);
+        }
+        router.refresh();
+      } catch (err) {
+        toast.error(err instanceof Error ? err.message : "Could not update processing");
+      } finally {
+        setProcessingVersionId(null);
       }
     });
   }
@@ -314,6 +464,7 @@ export function DocumentsClient({ data }: { data: DocumentsData }) {
                   ref={fileInputRef}
                   type="file"
                   inputSize="lg"
+                  multiple
                   accept=".pdf,.png,.jpg,.jpeg,.webp,.docx,.txt,.md"
                 />
               </FormField>
@@ -409,6 +560,20 @@ export function DocumentsClient({ data }: { data: DocumentsData }) {
               className="pl-9"
             />
           </div>
+          <Select
+            aria-label="Filter by file type"
+            selectSize="lg"
+            value={mimeFilter}
+            onChange={(e) => setMimeFilter(e.target.value)}
+            className="w-full sm:w-60"
+          >
+            <option value="all">All file types</option>
+            {availableMimes.map((mime) => (
+              <option key={mime} value={mime}>
+                {mime}
+              </option>
+            ))}
+          </Select>
           <Badge variant="secondary" className="font-mono tabular-nums">
             {filteredDocs.length} document(s)
           </Badge>
@@ -492,6 +657,14 @@ export function DocumentsClient({ data }: { data: DocumentsData }) {
                   <Button
                     variant="secondary"
                     size="sm"
+                    onClick={() => openEditDoc(doc)}
+                  >
+                    <Pencil className="h-3.5 w-3.5" />
+                    Edit Details
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    size="sm"
                     onClick={() => openNewVersionModal(doc)}
                   >
                     <Plus className="h-3.5 w-3.5" />
@@ -525,6 +698,20 @@ export function DocumentsClient({ data }: { data: DocumentsData }) {
                         <span className="font-semibold text-foreground">
                           {ver.label}
                         </span>
+                        <Badge
+                          variant={statusVariant(ver.processingStatus)}
+                          className="gap-1"
+                        >
+                          {DOCUMENT_PROCESSING_STATUS_LABELS[ver.processingStatus]}
+                        </Badge>
+                        {ver.processingError && (
+                          <span
+                            className="font-mono text-[10px] text-destructive-on-soft"
+                            title="Processing error code"
+                          >
+                            {ver.processingError}
+                          </span>
+                        )}
                         {ver.filename && (
                           <span className="font-mono text-[11px] text-muted-foreground">
                             ({ver.filename})
@@ -594,6 +781,80 @@ export function DocumentsClient({ data }: { data: DocumentsData }) {
                     </div>
 
                     <div className="flex flex-wrap items-center gap-2">
+                      {ver.processingStatus === "failed" && (
+                        <Button
+                          variant="soft"
+                          size="sm"
+                          disabled={processingVersionId === ver.id}
+                          onClick={() =>
+                            runProcessingAction(
+                              ver.id,
+                              () => retryCvExtractionAction(ver.id),
+                              "Extraction queued again.",
+                            )
+                          }
+                        >
+                          <RefreshCw className="h-3.5 w-3.5" />
+                          Retry Extraction
+                        </Button>
+                      )}
+                      {ver.processingStatus === "queued" && ver.aiJobId && (
+                        <>
+                          <Button
+                            variant="primary"
+                            size="sm"
+                            disabled={processingVersionId === ver.id}
+                            onClick={() =>
+                              runProcessingAction(
+                                ver.id,
+                                () => approveCvExtractionAction(ver.id),
+                                "AI job approved.",
+                              )
+                            }
+                          >
+                            <ShieldCheck className="h-3.5 w-3.5" />
+                            Approve AI
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            disabled={processingVersionId === ver.id}
+                            onClick={() =>
+                              runProcessingAction(
+                                ver.id,
+                                () => cancelCvExtractionAction(ver.id),
+                                "AI job cancelled.",
+                              )
+                            }
+                          >
+                            <XCircle className="h-3.5 w-3.5" />
+                            Cancel AI
+                          </Button>
+                        </>
+                      )}
+                      {ver.processingStatus === "awaiting_review" && (
+                        <Button variant="soft" size="sm" asChild>
+                          <Link href="/profile">Review in Profile</Link>
+                        </Button>
+                      )}
+                      <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        onClick={() => openEditVersion(doc, ver)}
+                        aria-label={`Edit version ${ver.label}`}
+                        title="Edit version label and notes"
+                      >
+                        <Pencil className="h-3.5 w-3.5" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        onClick={() => setDetailsVersion({ doc, version: ver })}
+                        aria-label={`Details for version ${ver.label}`}
+                        title="Document details and metadata"
+                      >
+                        <Info className="h-3.5 w-3.5" />
+                      </Button>
                       <div className="flex items-center gap-1.5">
                         <Link2 className="h-3.5 w-3.5 text-muted-foreground" />
                         <Select
@@ -725,6 +986,131 @@ export function DocumentsClient({ data }: { data: DocumentsData }) {
                 )}
               </div>
             </>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={Boolean(editDoc)}
+        onOpenChange={(next) => !next && setEditDoc(null)}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit document details</DialogTitle>
+            <DialogDescription>
+              Rename the document, change its category, or update its description.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <FormField label="Title" htmlFor="edit-doc-title" required>
+              <Input
+                id="edit-doc-title"
+                value={editDocTitle}
+                onChange={(e) => setEditDocTitle(e.target.value)}
+              />
+            </FormField>
+            <FormField label="Category">
+              <Select
+                value={editDocCategory}
+                onChange={(e) =>
+                  setEditDocCategory(e.target.value as DocumentCategory)
+                }
+              >
+                {DOCUMENT_CATEGORIES.map((c) => (
+                  <option key={c} value={c}>
+                    {DOCUMENT_CATEGORY_LABELS[c]}
+                  </option>
+                ))}
+              </Select>
+            </FormField>
+            <FormField label="Description" htmlFor="edit-doc-desc">
+              <Textarea
+                id="edit-doc-desc"
+                value={editDocDescription}
+                onChange={(e) => setEditDocDescription(e.target.value)}
+              />
+            </FormField>
+          </div>
+          <div className="flex justify-end gap-2 pt-4">
+            <Button variant="secondary" onClick={() => setEditDoc(null)}>
+              Cancel
+            </Button>
+            <Button variant="primary" onClick={handleSaveDoc} disabled={isPending}>
+              Save Changes
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={Boolean(editVersion)}
+        onOpenChange={(next) => !next && setEditVersion(null)}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit version</DialogTitle>
+            <DialogDescription>
+              Update the label and changelog without replacing the file.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <FormField label="Version label" htmlFor="edit-ver-label" required>
+              <Input
+                id="edit-ver-label"
+                value={editVersionLabel}
+                onChange={(e) => setEditVersionLabel(e.target.value)}
+              />
+            </FormField>
+            <FormField label="Notes" htmlFor="edit-ver-notes">
+              <Textarea
+                id="edit-ver-notes"
+                value={editVersionNotes}
+                onChange={(e) => setEditVersionNotes(e.target.value)}
+              />
+            </FormField>
+          </div>
+          <div className="flex justify-end gap-2 pt-4">
+            <Button variant="secondary" onClick={() => setEditVersion(null)}>
+              Cancel
+            </Button>
+            <Button variant="primary" onClick={handleSaveVersion} disabled={isPending}>
+              Save Changes
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={Boolean(detailsVersion)}
+        onOpenChange={(next) => !next && setDetailsVersion(null)}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Document metadata</DialogTitle>
+            <DialogDescription>
+              {detailsVersion?.doc.title} ({detailsVersion?.version.label})
+            </DialogDescription>
+          </DialogHeader>
+          {detailsVersion && (
+            <dl className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              {[
+                ["Filename", detailsVersion.version.filename ?? "Metadata only"],
+                ["File type", detailsVersion.version.mimeType ?? "n/a"],
+                ["Size", formatBytes(detailsVersion.version.sizeBytes)],
+                ["Processing status", DOCUMENT_PROCESSING_STATUS_LABELS[detailsVersion.version.processingStatus]],
+                ["Attempts", String(detailsVersion.version.processingAttempts)],
+                ["Uploaded", formatDateTime(detailsVersion.version.createdAt)],
+                ["SHA-256", detailsVersion.version.sha256 ?? "n/a"],
+                ["Error code", detailsVersion.version.processingError ?? "none"],
+              ].map(([label, value]) => (
+                <div key={label} className="space-y-1">
+                  <dt className="text-label-sm text-muted-foreground">{label}</dt>
+                  <dd className="break-all font-mono text-[11px] text-foreground">
+                    {value}
+                  </dd>
+                </div>
+              ))}
+            </dl>
           )}
         </DialogContent>
       </Dialog>

@@ -14,10 +14,12 @@ export const ID_PROMPT_TEMPLATES: Record<AiTaskType, PromptTemplateDefinition> =
       "Anda adalah mesin ekstraksi CV yang akurat untuk sistem pelacakan karier.",
       "Ekstrak informasi pribadi, pendidikan, pengalaman kerja, keahlian, sertifikasi, proyek, dan pencapaian yang tertulis eksplisit di CV.",
       "Biarkan field bernilai null jika tidak tersedia. Catat tanggal/detail yang meragukan pada uncertainFields untuk verifikasi pengguna.",
+      "Untuk setiap field yang diekstrak, sertakan entri fieldEvidence berisi section, fieldPath, confidence (0-100), dan supportingText sesingkat mungkin yang dikutip dari CV. Berikan confidence rendah jika nilai diperkirakan atau parsial. Jangan mengarang bukti.",
+      "Cantumkan nama bahasa dan tingkat kemahiran yang dinyatakan saja pada languageProficiencies. Jangan menyimpulkan atribut pribadi yang sensitif.",
       ID_COMMON_FOOTER,
     ].join("\n\n"),
     outputContractHint:
-      "Objek JSON sesuai skema { profile, experiences, educations, skills, certifications, projects, achievements, spokenLanguages, uncertainFields, extractionNotes }.",
+      "Objek JSON sesuai skema { profile, experiences, educations, skills, certifications, projects, achievements, spokenLanguages, languageProficiencies, uncertainFields, fieldEvidence, extractionNotes }.",
   },
   cv_evaluate: {
     taskType: "cv_evaluate",

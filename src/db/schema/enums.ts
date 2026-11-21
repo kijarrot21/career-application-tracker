@@ -65,6 +65,7 @@ import {
   ASSESSMENT_TYPES,
   OFFER_DECISIONS,
   DOCUMENT_CATEGORIES,
+  DOCUMENT_PROCESSING_STATUSES,
   EMAIL_LINK_STATUSES,
   COMM_SOURCES,
   EMAIL_PROVIDERS,
@@ -93,6 +94,10 @@ export const interviewResultEnum = pgEnum("interview_result", INTERVIEW_RESULTS)
 export const assessmentTypeEnum = pgEnum("assessment_type", ASSESSMENT_TYPES);
 export const offerDecisionEnum = pgEnum("offer_decision", OFFER_DECISIONS);
 export const documentCategoryEnum = pgEnum("document_category", DOCUMENT_CATEGORIES);
+export const documentProcessingStatusEnum = pgEnum(
+  "document_processing_status",
+  DOCUMENT_PROCESSING_STATUSES,
+);
 export const followUpTypeEnum = pgEnum("follow_up_type", FOLLOW_UP_TYPES);
 export const followUpStatusEnum = pgEnum("follow_up_status", FOLLOW_UP_STATUSES);
 export const closureOutcomeEnum = pgEnum("closure_outcome", ARCHIVE_OUTCOMES);

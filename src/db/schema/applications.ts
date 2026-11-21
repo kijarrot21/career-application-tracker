@@ -33,6 +33,7 @@ import {
   commDirectionEnum,
   commSourceEnum,
   documentCategoryEnum,
+  documentProcessingStatusEnum,
   emailClassificationEnum,
   emailLinkStatusEnum,
   emailProviderEnum,
@@ -83,11 +84,20 @@ export const documentVersions = pgTable(
     sizeBytes: integer("size_bytes"),
     sha256: text("sha256"),
     notes: text("notes"),
+    processingStatus: documentProcessingStatusEnum("processing_status")
+      .notNull()
+      .default("uploaded"),
+    aiJobId: uuid("ai_job_id"),
+    aiAnalysisId: uuid("ai_analysis_id"),
+    processingAttempts: integer("processing_attempts").notNull().default(0),
+    processingError: text("processing_error"),
+    processedAt: timestamp("processed_at", { withTimezone: true }),
     ...timestamps,
   },
   (t) => [
     unique("document_versions_id_user_uq").on(t.id, t.userId),
     uniqueIndex("document_versions_doc_ver_uq").on(t.documentId, t.versionNo),
+    index("document_versions_user_status_idx").on(t.userId, t.processingStatus),
     foreignKey({
       name: "document_versions_doc_fk",
       columns: [t.documentId, t.userId],

@@ -162,6 +162,21 @@ export interface CvImportDraftPayload {
     technologies?: string[];
     projectUrl?: string | null;
   }>;
+  /** Provenance shown in the review UI. Never applied to Career Profile. */
+  reviewMeta?: {
+    fields: Array<{
+      section: string;
+      fieldPath: string;
+      confidence: number;
+      evidence?: string | null;
+      existingValue?: string | null;
+    }>;
+    unmapped: Array<{
+      section: string;
+      fieldPath: string;
+      value: string;
+    }>;
+  };
 }
 
 export function validateDateRange(params: {

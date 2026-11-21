@@ -478,6 +478,103 @@ export async function uploadOrVersionDocumentService(
   return { documentId: docId, version: createdVersion };
 }
 
+export const updateDocumentSchema = z.object({
+  documentId: z.string().uuid(),
+  title: z.string().trim().min(1).max(200).optional(),
+  category: z.enum(DOCUMENT_CATEGORIES).optional(),
+  description: z.string().trim().max(2000).optional().nullable(),
+});
+
+/**
+ * Renames a document, changes its category, or updates its description.
+ * Ownership is enforced with a composite (id, user_id) predicate.
+ */
+export async function updateDocumentService(
+  userId: string,
+  rawInput: z.input<typeof updateDocumentSchema>,
+) {
+  const input = updateDocumentSchema.parse(rawInput);
+  const db = await ensureDbReady();
+
+  const [existing] = await db
+    .select()
+    .from(documents)
+    .where(and(eq(documents.id, input.documentId), eq(documents.userId, userId)));
+  if (!existing) throw new DomainError("Document not found.");
+
+  const [updated] = await db
+    .update(documents)
+    .set({
+      ...(input.title !== undefined ? { title: input.title } : {}),
+      ...(input.category !== undefined ? { category: input.category } : {}),
+      ...(input.description !== undefined ? { description: input.description } : {}),
+      updatedAt: new Date(),
+    })
+    .where(and(eq(documents.id, input.documentId), eq(documents.userId, userId)))
+    .returning();
+
+  await writeAudit(db, {
+    userId,
+    entityType: "document",
+    entityId: input.documentId,
+    action: "update",
+    summary: `Updated document ${updated.title}`,
+  });
+
+  return updated;
+}
+
+export const updateDocumentVersionSchema = z.object({
+  versionId: z.string().uuid(),
+  label: z.string().trim().min(1).max(120).optional(),
+  notes: z.string().trim().max(2000).optional().nullable(),
+});
+
+/** Updates a single version's label and notes without touching its file or processing state. */
+export async function updateDocumentVersionService(
+  userId: string,
+  rawInput: z.input<typeof updateDocumentVersionSchema>,
+) {
+  const input = updateDocumentVersionSchema.parse(rawInput);
+  const db = await ensureDbReady();
+
+  const [existing] = await db
+    .select()
+    .from(documentVersions)
+    .where(
+      and(
+        eq(documentVersions.id, input.versionId),
+        eq(documentVersions.userId, userId),
+      ),
+    );
+  if (!existing) throw new DomainError("Document version not found.");
+
+  const [updated] = await db
+    .update(documentVersions)
+    .set({
+      ...(input.label !== undefined ? { label: input.label } : {}),
+      ...(input.notes !== undefined ? { notes: input.notes } : {}),
+      updatedAt: new Date(),
+    })
+    .where(
+      and(
+        eq(documentVersions.id, input.versionId),
+        eq(documentVersions.userId, userId),
+      ),
+    )
+    .returning();
+
+  await writeAudit(db, {
+    userId,
+    entityType: "document_version",
+    entityId: input.versionId,
+    action: "update",
+    summary: `Updated version label and notes`,
+  });
+
+  return updated;
+}
+
 export async function linkDocumentVersionToApplicationService(
   userId: string,
   params: {

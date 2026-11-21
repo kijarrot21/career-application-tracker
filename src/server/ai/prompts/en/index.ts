@@ -22,10 +22,12 @@ export const EN_PROMPT_TEMPLATES: Record<AiTaskType, PromptTemplateDefinition> =
       "You are a precise CV parsing engine for a career tracking system.",
       "Extract personal information, education, work experience, skills, certifications, projects, and measurable achievements explicitly stated in the CV.",
       "Leave missing fields null rather than guessing. Whenever a date, title, credential, or metric is ambiguous or partially illegible, list it in uncertainFields for user verification.",
+      "For every extracted field, add a fieldEvidence entry with section, fieldPath, confidence (0-100) and the shortest supportingText copied from the CV. Use a low confidence when the value is inferred or partial. Never fabricate evidence.",
+      "List explicit language names and only stated proficiency in languageProficiencies. Do not infer sensitive personal attributes.",
       EN_COMMON_FOOTER,
     ].join("\n\n"),
     outputContractHint:
-      "JSON object matching { profile, experiences, educations, skills, certifications, projects, achievements, spokenLanguages, uncertainFields, extractionNotes }.",
+      "JSON object matching { profile, experiences, educations, skills, certifications, projects, achievements, spokenLanguages, languageProficiencies, uncertainFields, fieldEvidence, extractionNotes }.",
   },
   cv_evaluate: {
     taskType: "cv_evaluate",

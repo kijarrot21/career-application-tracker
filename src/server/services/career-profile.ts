@@ -1026,6 +1026,30 @@ export const stageCvImportSchema = z.object({
       }),
     )
     .optional(),
+  reviewMeta: z
+    .object({
+      fields: z
+        .array(
+          z.object({
+            section: z.string().trim().min(1).max(80),
+            fieldPath: z.string().trim().min(1).max(160),
+            confidence: z.number().int().min(0).max(100),
+            evidence: z.string().trim().max(1000).nullable().optional(),
+            existingValue: z.string().trim().max(2000).nullable().optional(),
+          }),
+        )
+        .default([]),
+      unmapped: z
+        .array(
+          z.object({
+            section: z.string().trim().min(1).max(80),
+            fieldPath: z.string().trim().min(1).max(160),
+            value: z.string().trim().max(2000),
+          }),
+        )
+        .default([]),
+    })
+    .optional(),
 });
 
 export async function stageCvImportReviewService(
@@ -1069,6 +1093,7 @@ export async function stageCvImportReviewService(
     skills: input.skills,
     certifications: input.certifications,
     projects: input.projects,
+    ...(input.reviewMeta ? { reviewMeta: input.reviewMeta } : {}),
   };
 
   // Staging only updates `pendingReviewPayload`; verified records remain untouched!
@@ -1302,6 +1327,25 @@ export async function applyCvImportReviewService(
         ),
       );
 
+    // Finalize the source version inside the same transaction. If any profile
+    // write above fails, this status update rolls back with it.
+    if (docVerId) {
+      await tx
+        .update(documentVersions)
+        .set({
+          processingStatus: "completed",
+          processingError: null,
+          processedAt: new Date(),
+          updatedAt: new Date(),
+        })
+        .where(
+          and(
+            eq(documentVersions.id, docVerId),
+            eq(documentVersions.userId, userId),
+          ),
+        );
+    }
+
     await writeAudit(tx, {
       userId,
       entityType: "career_profile",
@@ -1327,12 +1371,39 @@ export async function applyCvImportReviewService(
 export async function discardCvImportReviewService(userId: string) {
   const db = await ensureDbReady();
   const profile = await ensureCareerProfile(userId);
-  await db
-    .update(careerProfiles)
-    .set({ pendingReviewPayload: null, updatedAt: new Date() })
-    .where(
-      and(eq(careerProfiles.id, profile.id), eq(careerProfiles.userId, userId)),
-    );
+  const sourceVersionId = profile.pendingReviewPayload?.sourceDocumentVersionId ?? null;
+
+  await db.transaction(async (tx) => {
+    await tx
+      .update(careerProfiles)
+      .set({ pendingReviewPayload: null, updatedAt: new Date() })
+      .where(
+        and(eq(careerProfiles.id, profile.id), eq(careerProfiles.userId, userId)),
+      );
+    if (sourceVersionId) {
+      await tx
+        .update(documentVersions)
+        .set({
+          processingStatus: "completed",
+          processingError: null,
+          processedAt: new Date(),
+          updatedAt: new Date(),
+        })
+        .where(
+          and(
+            eq(documentVersions.id, sourceVersionId),
+            eq(documentVersions.userId, userId),
+          ),
+        );
+    }
+    await writeAudit(tx, {
+      userId,
+      entityType: "career_profile",
+      entityId: profile.id,
+      action: "delete",
+      summary: "Discarded staged CV import review",
+    });
+  });
   return { ok: true };
 }
 

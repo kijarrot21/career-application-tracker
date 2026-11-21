@@ -80,6 +80,18 @@ export const aiParsedProjectSchema = z.object({
   projectUrl: z.string().trim().max(300).nullable().optional(),
 });
 
+export const aiFieldEvidenceSchema = z.object({
+  section: z.string().trim().min(1).max(80),
+  fieldPath: z.string().trim().min(1).max(160),
+  confidence: z.number().int().min(0).max(100),
+  supportingText: z.string().trim().max(600).nullable().optional(),
+});
+
+export const aiLanguageProficiencySchema = z.object({
+  language: z.string().trim().min(1).max(80),
+  proficiency: z.enum(SKILL_PROFICIENCIES).nullable().optional(),
+});
+
 export const aiUncertainFieldSchema = z.object({
   section: z.string().trim().min(1).max(80),
   fieldPath: z.string().trim().min(1).max(160),
@@ -96,7 +108,9 @@ export const cvDataSchema = z.object({
   projects: z.array(aiParsedProjectSchema).default([]),
   achievements: z.array(z.string().trim().min(1).max(600)).default([]),
   spokenLanguages: z.array(z.string().trim().min(1)).default([]),
+  languageProficiencies: z.array(aiLanguageProficiencySchema).default([]),
   uncertainFields: z.array(aiUncertainFieldSchema).default([]),
+  fieldEvidence: z.array(aiFieldEvidenceSchema).default([]),
   extractionNotes: z.array(z.string().trim()).default([]),
 });
 

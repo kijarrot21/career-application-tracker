@@ -35,6 +35,22 @@ type ProfilePatchField =
   | "country"
   | "totalExperienceYears";
 
+type ExistingProfile = {
+  fullName?: string | null;
+  headline?: string | null;
+  summary?: string | null;
+  contactEmail?: string | null;
+  contactPhone?: string | null;
+  location?: string | null;
+  country?: string | null;
+  totalExperienceYears?: number | null;
+  experiences?: Array<{ companyName: string; jobTitle: string }>;
+  educations?: Array<{ institution: string }>;
+  skills?: Array<{ skillName: string; proficiencyLevel?: string | null }>;
+  certifications?: Array<{ name: string }>;
+  projects?: Array<{ name: string }>;
+};
+
 export function StageCvImportDialog({
   open,
   onClose,
@@ -139,9 +155,9 @@ export function StageCvImportDialog({
           <DialogTitle>Stage CV Import for Review</DialogTitle>
           <DialogDescription>
             Link a CV from your Document Repository and stage candidate updates
-            for review. No verified profile records will be overwritten
-            automatically (AI parsing will plug into this staging queue in a
-            future phase).
+            for review. AI-extracted CVs are staged here automatically after
+            upload. No verified profile record is overwritten without your
+            explicit approval.
           </DialogDescription>
         </DialogHeader>
 
@@ -255,17 +271,56 @@ export function StageCvImportDialog({
   );
 }
 
+function confidenceVariant(
+  confidence: number,
+): "success" | "warning" | "destructive" {
+  if (confidence >= 70) return "success";
+  if (confidence >= 40) return "warning";
+  return "destructive";
+}
+
+function ItemField({
+  label,
+  value,
+  onChange,
+  multiline,
+}: {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  multiline?: boolean;
+}) {
+  return (
+    <FormField label={label}>
+      {multiline ? (
+        <Textarea
+          rows={2}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+        />
+      ) : (
+        <Input value={value} onChange={(e) => onChange(e.target.value)} />
+      )}
+    </FormField>
+  );
+}
+
 export function ReviewStagedCvImportDialog({
   open,
   onClose,
   staged,
+  existingProfile,
 }: {
   open: boolean;
   onClose: () => void;
   staged: CvImportDraftPayload;
+  existingProfile?: ExistingProfile;
 }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const [draft, setDraft] = useState<CvImportDraftPayload>(() =>
+    JSON.parse(JSON.stringify(staged)),
+  );
 
   const availableFields = (
     [
@@ -280,20 +335,14 @@ export function ReviewStagedCvImportDialog({
     ] as const
   ).filter(
     (k) =>
-      staged.profilePatch?.[k] !== undefined &&
-      staged.profilePatch?.[k] !== null &&
-      staged.profilePatch?.[k] !== "",
+      draft.profilePatch?.[k] !== undefined &&
+      draft.profilePatch?.[k] !== null &&
+      draft.profilePatch?.[k] !== "",
   );
 
   const [selectedFields, setSelectedFields] = useState<ProfilePatchField[]>([
     ...availableFields,
   ]);
-  const [editedHeadline, setEditedHeadline] = useState(
-    staged.profilePatch?.headline ?? "",
-  );
-  const [editedSummary, setEditedSummary] = useState(
-    staged.profilePatch?.summary ?? "",
-  );
   const [selectedExpIds, setSelectedExpIds] = useState<string[]>(
     (staged.experiences ?? []).map((e) => e.tempId),
   );
@@ -314,6 +363,73 @@ export function ReviewStagedCvImportDialog({
     setList(list.includes(val) ? list.filter((x) => x !== val) : [...list, val]);
   }
 
+  function setAll(enabled: boolean) {
+    setSelectedFields(enabled ? [...availableFields] : []);
+    setSelectedExpIds(enabled ? (draft.experiences ?? []).map((e) => e.tempId) : []);
+    setSelectedEduIds(enabled ? (draft.educations ?? []).map((e) => e.tempId) : []);
+    setSelectedSkillIds(enabled ? (draft.skills ?? []).map((s) => s.tempId) : []);
+    setSelectedCertIds(
+      enabled ? (draft.certifications ?? []).map((c) => c.tempId) : [],
+    );
+    setSelectedProjIds(enabled ? (draft.projects ?? []).map((p) => p.tempId) : []);
+  }
+
+  function metaFor(fieldPath: string) {
+    return draft.reviewMeta?.fields.find((f) => f.fieldPath === fieldPath);
+  }
+
+  function evidenceBlock(fieldPath: string) {
+    const meta = metaFor(fieldPath);
+    return (
+      <>
+        {meta && (
+          <Badge variant={confidenceVariant(meta.confidence)}>
+            {meta.confidence}% confidence
+          </Badge>
+        )}
+        {meta?.evidence && (
+          <span className="block text-[11px] text-muted-foreground">
+            Evidence: {meta.evidence}
+          </span>
+        )}
+      </>
+    );
+  }
+
+  function existingValue(field: ProfilePatchField) {
+    const value = existingProfile?.[field];
+    return value === null || value === undefined ? null : String(value);
+  }
+
+  function updateProfileField(field: ProfilePatchField, value: string) {
+    setDraft((prev) => ({
+      ...prev,
+      profilePatch: {
+        ...prev.profilePatch,
+        [field]:
+          field === "totalExperienceYears"
+            ? value === ""
+              ? null
+              : Number(value)
+            : value,
+      },
+    }));
+  }
+
+  function updateItemField<T extends { tempId: string }>(
+    section: "experiences" | "educations" | "skills" | "certifications" | "projects",
+    tempId: string,
+    field: string,
+    value: string,
+  ) {
+    setDraft((prev) => ({
+      ...prev,
+      [section]: (prev[section] as T[] | undefined)?.map((item) =>
+        item.tempId === tempId ? { ...item, [field]: value } : item,
+      ),
+    }));
+  }
+
   function handleApply() {
     startTransition(async () => {
       try {
@@ -324,19 +440,7 @@ export function ReviewStagedCvImportDialog({
           acceptedSkillIds: selectedSkillIds,
           acceptedCertificationIds: selectedCertIds,
           acceptedProjectIds: selectedProjIds,
-          reviewedPayload: {
-            sourceDocumentVersionId: staged.sourceDocumentVersionId,
-            profilePatch: {
-              ...staged.profilePatch,
-              headline: editedHeadline || staged.profilePatch?.headline,
-              summary: editedSummary || staged.profilePatch?.summary,
-            },
-            experiences: staged.experiences as never,
-            educations: staged.educations as never,
-            skills: staged.skills as never,
-            certifications: staged.certifications as never,
-            projects: staged.projects as never,
-          },
+          reviewedPayload: draft as never,
         });
         toast.success(
           "Selected CV import items verified and saved to Master Career Profile.",
@@ -370,192 +474,388 @@ export function ReviewStagedCvImportDialog({
 
   return (
     <Dialog open={open} onOpenChange={(next) => !next && onClose()}>
-      <DialogContent className="max-h-[88vh] max-w-2xl overflow-y-auto">
+      <DialogContent className="max-h-[90vh] max-w-4xl overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Review &amp; Correct Staged CV Import</DialogTitle>
           <DialogDescription>
-            Select only the fields and records you confirm as accurate. Unchecked
-            items are ignored, and existing verified records are never silently
-            overwritten.
+            Every field shows the proposed value, your current value when it
+            differs, and extraction confidence with supporting text. Edit before
+            accepting. Only checked items are applied; verified records are never
+            silently overwritten.
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4 text-xs">
-          <div className="flex items-center gap-2 rounded-xl border border-warning-border bg-warning-soft px-3 py-2 text-warning-on-soft">
-            <ShieldAlert className="h-4 w-4 shrink-0" />
-            <span>
+          <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-warning-border bg-warning-soft px-3 py-2 text-warning-on-soft">
+            <span className="flex items-center gap-2">
+              <ShieldAlert className="h-4 w-4 shrink-0" />
               Source:{" "}
               <strong>
                 {staged.sourceDocumentLabel ?? "Structured Import Draft"}
               </strong>
             </span>
+            <div className="flex gap-2">
+              <Button size="xs" variant="secondary" onClick={() => setAll(true)}>
+                Accept all reviewed
+              </Button>
+              <Button size="xs" variant="ghost" onClick={() => setAll(false)}>
+                Deselect all
+              </Button>
+            </div>
           </div>
 
           {availableFields.length > 0 && (
-            <div className="space-y-2 rounded-xl border border-border-subtle p-3">
+            <section className="space-y-2 rounded-xl border border-border-subtle p-3">
               <p className="font-semibold text-foreground">
-                Profile Fields (Explicit Opt-In Overwrite)
+                Professional Information &amp; Summary
               </p>
-              <div className="space-y-2">
-                {availableFields.map((field) => (
-                  <label key={field} className="flex items-start gap-2">
-                    <input
-                      type="checkbox"
-                      checked={selectedFields.includes(field)}
-                      onChange={() =>
-                        toggle(selectedFields, field, setSelectedFields)
-                      }
-                      className="mt-1"
-                    />
-                    <span className="flex-1">
-                      <span className="font-semibold capitalize text-foreground">
-                        {field}:{" "}
-                      </span>
-                      {field === "headline" ? (
-                        <Input
-                          value={editedHeadline}
-                          onChange={(e) => setEditedHeadline(e.target.value)}
-                          className="mt-1 h-8"
-                        />
-                      ) : field === "summary" ? (
-                        <Textarea
-                          rows={2}
-                          value={editedSummary}
-                          onChange={(e) => setEditedSummary(e.target.value)}
-                          className="mt-1"
-                        />
-                      ) : (
-                        <span className="text-muted-foreground">
-                          {String(staged.profilePatch?.[field] ?? "")}
-                        </span>
-                      )}
-                    </span>
-                  </label>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {(staged.experiences?.length ?? 0) > 0 && (
-            <div className="space-y-2 rounded-xl border border-border-subtle p-3">
-              <p className="font-semibold text-foreground">
-                Staged Work Experiences
-              </p>
-              {staged.experiences!.map((exp) => (
-                <label
-                  key={exp.tempId}
-                  className="flex items-start gap-2 rounded-lg bg-surface-subtle p-2"
-                >
-                  <input
-                    type="checkbox"
-                    checked={selectedExpIds.includes(exp.tempId)}
-                    onChange={() =>
-                      toggle(selectedExpIds, exp.tempId, setSelectedExpIds)
-                    }
-                    className="mt-0.5"
-                  />
-                  <span>
-                    <strong className="text-foreground">
-                      {exp.jobTitle} · {exp.companyName}
-                    </strong>
-                    <span className="block text-muted-foreground">
-                      {exp.startDate} to{" "}
-                      {exp.isCurrent ? "Present" : (exp.endDate ?? "N/A")}
-                    </span>
-                  </span>
-                </label>
-              ))}
-            </div>
-          )}
-
-          {(staged.skills?.length ?? 0) > 0 && (
-            <div className="space-y-2 rounded-xl border border-border-subtle p-3">
-              <p className="font-semibold text-foreground">Staged Skills</p>
-              <div className="flex flex-wrap gap-2">
-                {staged.skills!.map((sk) => (
-                  <label
-                    key={sk.tempId}
-                    className="inline-flex items-center gap-1.5 rounded-lg border border-border-subtle bg-surface-subtle px-2.5 py-1.5"
+              {availableFields.map((field) => {
+                const current = existingValue(field);
+                const proposed = String(draft.profilePatch?.[field] ?? "");
+                const changed = current !== null && current !== proposed;
+                return (
+                  <div
+                    key={field}
+                    className="space-y-1.5 rounded-lg bg-surface-subtle p-2"
                   >
+                    <div className="flex flex-wrap items-center gap-2">
+                      <input
+                        type="checkbox"
+                        aria-label={`Accept ${field}`}
+                        checked={selectedFields.includes(field)}
+                        onChange={() =>
+                          toggle(selectedFields, field, setSelectedFields)
+                        }
+                      />
+                      <span className="font-semibold capitalize text-foreground">
+                        {field}
+                      </span>
+                      {changed && (
+                        <Badge variant="warning">
+                          Current: {current}
+                        </Badge>
+                      )}
+                      {evidenceBlock(`profile.${field}`)}
+                    </div>
+                    {field === "summary" ? (
+                      <Textarea
+                        rows={2}
+                        value={proposed}
+                        onChange={(e) => updateProfileField(field, e.target.value)}
+                      />
+                    ) : (
+                      <Input
+                        type={
+                          field === "totalExperienceYears" ? "number" : "text"
+                        }
+                        value={proposed}
+                        onChange={(e) => updateProfileField(field, e.target.value)}
+                      />
+                    )}
+                  </div>
+                );
+              })}
+            </section>
+          )}
+
+          {(draft.experiences?.length ?? 0) > 0 && (
+            <section className="space-y-2 rounded-xl border border-border-subtle p-3">
+              <p className="font-semibold text-foreground">Work Experience</p>
+              {draft.experiences!.map((exp, index) => (
+                <div
+                  key={exp.tempId}
+                  className="space-y-2 rounded-lg bg-surface-subtle p-2"
+                >
+                  <div className="flex flex-wrap items-center gap-2">
                     <input
                       type="checkbox"
-                      checked={selectedSkillIds.includes(sk.tempId)}
+                      aria-label={`Accept experience ${exp.companyName}`}
+                      checked={selectedExpIds.includes(exp.tempId)}
                       onChange={() =>
-                        toggle(selectedSkillIds, sk.tempId, setSelectedSkillIds)
+                        toggle(selectedExpIds, exp.tempId, setSelectedExpIds)
                       }
                     />
-                    <span className="font-medium text-foreground">
-                      {sk.skillName}
+                    <span className="font-semibold text-foreground">
+                      {exp.companyName} · {exp.jobTitle}
                     </span>
-                    {sk.category && <Badge variant="outline">{sk.category}</Badge>}
-                  </label>
-                ))}
+                    {existingProfile?.experiences?.some(
+                      (e) =>
+                        e.companyName.toLowerCase() ===
+                        exp.companyName.toLowerCase(),
+                    ) && <Badge variant="warning">Existing entry found</Badge>}
+                    {evidenceBlock(`experiences[${index}].jobTitle`)}
+                  </div>
+                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                    <ItemField
+                      label="Company"
+                      value={exp.companyName}
+                      onChange={(v) =>
+                        updateItemField("experiences", exp.tempId, "companyName", v)
+                      }
+                    />
+                    <ItemField
+                      label="Job title"
+                      value={exp.jobTitle}
+                      onChange={(v) =>
+                        updateItemField("experiences", exp.tempId, "jobTitle", v)
+                      }
+                    />
+                    <ItemField
+                      label="Start date"
+                      value={exp.startDate}
+                      onChange={(v) =>
+                        updateItemField("experiences", exp.tempId, "startDate", v)
+                      }
+                    />
+                    <ItemField
+                      label="End date"
+                      value={exp.endDate ?? ""}
+                      onChange={(v) =>
+                        updateItemField("experiences", exp.tempId, "endDate", v)
+                      }
+                    />
+                    <div className="sm:col-span-2">
+                      <ItemField
+                        label="Responsibilities"
+                        value={exp.responsibilities ?? ""}
+                        multiline
+                        onChange={(v) =>
+                          updateItemField(
+                            "experiences",
+                            exp.tempId,
+                            "responsibilities",
+                            v,
+                          )
+                        }
+                      />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </section>
+          )}
+
+          {(draft.educations?.length ?? 0) > 0 && (
+            <section className="space-y-2 rounded-xl border border-border-subtle p-3">
+              <p className="font-semibold text-foreground">Education</p>
+              {draft.educations!.map((edu, index) => (
+                <div
+                  key={edu.tempId}
+                  className="space-y-2 rounded-lg bg-surface-subtle p-2"
+                >
+                  <div className="flex flex-wrap items-center gap-2">
+                    <input
+                      type="checkbox"
+                      aria-label={`Accept education ${edu.institution}`}
+                      checked={selectedEduIds.includes(edu.tempId)}
+                      onChange={() =>
+                        toggle(selectedEduIds, edu.tempId, setSelectedEduIds)
+                      }
+                    />
+                    <span className="font-semibold text-foreground">
+                      {edu.institution}
+                    </span>
+                    {evidenceBlock(`educations[${index}].institution`)}
+                  </div>
+                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+                    <ItemField
+                      label="Institution"
+                      value={edu.institution}
+                      onChange={(v) =>
+                        updateItemField("educations", edu.tempId, "institution", v)
+                      }
+                    />
+                    <ItemField
+                      label="Degree"
+                      value={edu.degreeTitle ?? ""}
+                      onChange={(v) =>
+                        updateItemField("educations", edu.tempId, "degreeTitle", v)
+                      }
+                    />
+                    <ItemField
+                      label="Field of study"
+                      value={edu.fieldOfStudy ?? ""}
+                      onChange={(v) =>
+                        updateItemField("educations", edu.tempId, "fieldOfStudy", v)
+                      }
+                    />
+                  </div>
+                </div>
+              ))}
+            </section>
+          )}
+
+          {(draft.skills?.length ?? 0) > 0 && (
+            <section className="space-y-2 rounded-xl border border-border-subtle p-3">
+              <p className="font-semibold text-foreground">Skills &amp; Languages</p>
+              <div className="flex flex-wrap gap-2">
+                {draft.skills!.map((sk, index) => {
+                  const existing = existingProfile?.skills?.find(
+                    (s) =>
+                      s.skillName.toLowerCase() === sk.skillName.toLowerCase(),
+                  );
+                  return (
+                    <div
+                      key={sk.tempId}
+                      className="w-full space-y-1.5 rounded-lg bg-surface-subtle p-2 sm:w-[calc(50%-0.5rem)]"
+                    >
+                      <div className="flex flex-wrap items-center gap-2">
+                        <input
+                          type="checkbox"
+                          aria-label={`Accept skill ${sk.skillName}`}
+                          checked={selectedSkillIds.includes(sk.tempId)}
+                          onChange={() =>
+                            toggle(selectedSkillIds, sk.tempId, setSelectedSkillIds)
+                          }
+                        />
+                        <Badge variant={sk.category === "language" ? "info" : "outline"}>
+                          {sk.category ?? "technical"}
+                        </Badge>
+                        {existing && (
+                          <Badge variant="warning">
+                            Current: {existing.proficiencyLevel ?? "not set"}
+                          </Badge>
+                        )}
+                        {evidenceBlock(`skills[${index}].skillName`)}
+                      </div>
+                      <ItemField
+                        label="Skill"
+                        value={sk.skillName}
+                        onChange={(v) =>
+                          updateItemField("skills", sk.tempId, "skillName", v)
+                        }
+                      />
+                    </div>
+                  );
+                })}
               </div>
-            </div>
+            </section>
           )}
 
-          {(staged.educations?.length ?? 0) > 0 && (
-            <div className="space-y-2 rounded-xl border border-border-subtle p-3">
-              <p className="font-semibold text-foreground">Staged Education</p>
-              {staged.educations!.map((edu) => (
-                <label key={edu.tempId} className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={selectedEduIds.includes(edu.tempId)}
-                    onChange={() =>
-                      toggle(selectedEduIds, edu.tempId, setSelectedEduIds)
-                    }
-                  />
-                  <span>
-                    <strong>{edu.institution}</strong>
-                    {edu.fieldOfStudy ? ` · ${edu.fieldOfStudy}` : ""}
-                  </span>
-                </label>
+          {(draft.certifications?.length ?? 0) > 0 && (
+            <section className="space-y-2 rounded-xl border border-border-subtle p-3">
+              <p className="font-semibold text-foreground">Certifications</p>
+              {draft.certifications!.map((cert, index) => (
+                <div
+                  key={cert.tempId}
+                  className="space-y-2 rounded-lg bg-surface-subtle p-2"
+                >
+                  <div className="flex flex-wrap items-center gap-2">
+                    <input
+                      type="checkbox"
+                      aria-label={`Accept certification ${cert.name}`}
+                      checked={selectedCertIds.includes(cert.tempId)}
+                      onChange={() =>
+                        toggle(selectedCertIds, cert.tempId, setSelectedCertIds)
+                      }
+                    />
+                    <span className="font-semibold text-foreground">
+                      {cert.name}
+                    </span>
+                    {evidenceBlock(`certifications[${index}].name`)}
+                  </div>
+                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+                    <ItemField
+                      label="Name"
+                      value={cert.name}
+                      onChange={(v) =>
+                        updateItemField("certifications", cert.tempId, "name", v)
+                      }
+                    />
+                    <ItemField
+                      label="Issuer"
+                      value={cert.issuingOrganization}
+                      onChange={(v) =>
+                        updateItemField(
+                          "certifications",
+                          cert.tempId,
+                          "issuingOrganization",
+                          v,
+                        )
+                      }
+                    />
+                    <ItemField
+                      label="Issue date"
+                      value={cert.issueDate ?? ""}
+                      onChange={(v) =>
+                        updateItemField("certifications", cert.tempId, "issueDate", v)
+                      }
+                    />
+                  </div>
+                </div>
               ))}
-            </div>
+            </section>
           )}
 
-          {(staged.certifications?.length ?? 0) > 0 && (
-            <div className="space-y-2 rounded-xl border border-border-subtle p-3">
+          {(draft.projects?.length ?? 0) > 0 && (
+            <section className="space-y-2 rounded-xl border border-border-subtle p-3">
+              <p className="font-semibold text-foreground">Projects</p>
+              {draft.projects!.map((proj, index) => (
+                <div
+                  key={proj.tempId}
+                  className="space-y-2 rounded-lg bg-surface-subtle p-2"
+                >
+                  <div className="flex flex-wrap items-center gap-2">
+                    <input
+                      type="checkbox"
+                      aria-label={`Accept project ${proj.name}`}
+                      checked={selectedProjIds.includes(proj.tempId)}
+                      onChange={() =>
+                        toggle(selectedProjIds, proj.tempId, setSelectedProjIds)
+                      }
+                    />
+                    <span className="font-semibold text-foreground">
+                      {proj.name}
+                    </span>
+                    {evidenceBlock(`projects[${index}].name`)}
+                  </div>
+                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                    <ItemField
+                      label="Name"
+                      value={proj.name}
+                      onChange={(v) =>
+                        updateItemField("projects", proj.tempId, "name", v)
+                      }
+                    />
+                    <ItemField
+                      label="Role"
+                      value={proj.role ?? ""}
+                      onChange={(v) =>
+                        updateItemField("projects", proj.tempId, "role", v)
+                      }
+                    />
+                    <div className="sm:col-span-2">
+                      <ItemField
+                        label="Description"
+                        value={proj.description ?? ""}
+                        multiline
+                        onChange={(v) =>
+                          updateItemField("projects", proj.tempId, "description", v)
+                        }
+                      />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </section>
+          )}
+
+          {(draft.reviewMeta?.unmapped.length ?? 0) > 0 && (
+            <section className="space-y-1 rounded-xl border border-border-subtle p-3">
               <p className="font-semibold text-foreground">
-                Staged Certifications
+                Extracted data without a Career Profile field
               </p>
-              {staged.certifications!.map((cert) => (
-                <label key={cert.tempId} className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={selectedCertIds.includes(cert.tempId)}
-                    onChange={() =>
-                      toggle(selectedCertIds, cert.tempId, setSelectedCertIds)
-                    }
-                  />
-                  <span>
-                    <strong>{cert.name}</strong> ({cert.issuingOrganization})
-                  </span>
-                </label>
-              ))}
-            </div>
-          )}
-
-          {(staged.projects?.length ?? 0) > 0 && (
-            <div className="space-y-2 rounded-xl border border-border-subtle p-3">
-              <p className="font-semibold text-foreground">Staged Projects</p>
-              {staged.projects!.map((proj) => (
-                <label key={proj.tempId} className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={selectedProjIds.includes(proj.tempId)}
-                    onChange={() =>
-                      toggle(selectedProjIds, proj.tempId, setSelectedProjIds)
-                    }
-                  />
-                  <span>
-                    <strong>{proj.name}</strong>
-                    {proj.role ? ` (${proj.role})` : ""}
-                  </span>
-                </label>
-              ))}
-            </div>
+              <p className="text-muted-foreground">
+                Kept for review only. It is not written to your profile.
+              </p>
+              <ul className="list-inside list-disc space-y-0.5 text-muted-foreground">
+                {draft.reviewMeta!.unmapped.map((entry, index) => (
+                  <li key={`${entry.fieldPath}-${index}`}>
+                    {entry.section}: {entry.value}
+                  </li>
+                ))}
+              </ul>
+            </section>
           )}
         </div>
 
@@ -567,7 +867,7 @@ export function ReviewStagedCvImportDialog({
             disabled={isPending}
           >
             <XCircle className="h-3.5 w-3.5" />
-            Discard Draft
+            Reject Extraction
           </Button>
           <div className="flex items-center gap-2">
             <Button type="button" variant="secondary" onClick={onClose}>

@@ -204,6 +204,27 @@ export const DOCUMENT_CATEGORY_LABELS: Record<DocumentCategory, string> = {
   offer: "Employment Offer",
 };
 
+export const DOCUMENT_PROCESSING_STATUSES = [
+  "uploaded",
+  "queued",
+  "processing",
+  "awaiting_review",
+  "completed",
+  "failed",
+] as const;
+export type DocumentProcessingStatus = (typeof DOCUMENT_PROCESSING_STATUSES)[number];
+export const DOCUMENT_PROCESSING_STATUS_LABELS: Record<
+  DocumentProcessingStatus,
+  string
+> = {
+  uploaded: "Uploaded",
+  queued: "Queued",
+  processing: "Processing",
+  awaiting_review: "Awaiting Review",
+  completed: "Completed",
+  failed: "Failed",
+};
+
 export const FOLLOW_UP_TYPES = ["follow_up", "deadline", "interview_prep", "custom"] as const;
 export type FollowUpType = (typeof FOLLOW_UP_TYPES)[number];
 export const FOLLOW_UP_TYPE_LABELS: Record<FollowUpType, string> = {

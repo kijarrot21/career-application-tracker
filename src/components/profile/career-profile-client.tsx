@@ -1272,6 +1272,7 @@ export function CareerProfileClient({
           open={reviewCvOpen}
           onClose={() => setReviewCvOpen(false)}
           staged={profile.pendingReviewPayload}
+          existingProfile={profile}
         />
       )}
 
